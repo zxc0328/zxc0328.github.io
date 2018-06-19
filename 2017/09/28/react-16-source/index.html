@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="React," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意  React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：  允许在render函数中返回节点数组和字符串。  render() {   // 再也不用在外面套一个父节点了   return [     // 别忘了加上key">
+<meta name="keywords" content="React">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React 16 Fiber源码速览">
 <meta property="og:url" content="http://yoursite.com/2017/09/28/react-16-source/index.html">
@@ -128,7 +129,7 @@
 <meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fkorwi0836j20oz2f71b8.jpg">
 <meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fknn7fnubmj20eb08wjt7.jpg">
 <meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkota00kyhj20o402ydg3.jpg">
-<meta property="og:updated_time" content="2018-06-19T02:51:15.517Z">
+<meta property="og:updated_time" content="2018-06-19T11:27:49.822Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React 16 Fiber源码速览">
 <meta name="twitter:description" content="本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意  React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：  允许在render函数中返回节点数组和字符串。  render() {   // 再也不用在外面套一个父节点了   return [     // 别忘了加上key">
@@ -329,6 +330,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/React/" itemprop="url" rel="index">
+                    <span itemprop="name">React</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -774,6 +797,12 @@ exports.mountChildFibersInPlace = ChildReconciler(false, false);
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/React/" rel="tag"># React</a>
+          
+        </div>
+      
 
       
       
@@ -883,7 +912,7 @@ exports.mountChildFibersInPlace = ChildReconciler(false, false);
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -894,7 +923,7 @@ exports.mountChildFibersInPlace = ChildReconciler(false, false);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -1147,5 +1176,24 @@ exports.mountChildFibersInPlace = ChildReconciler(false, false);
 
   
 
+  <div id="comments"></div>
+
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+
+<script>
+const gitment = new Gitment({
+  owner: 'zxc0328',
+  repo: 'https://github.com/zxc0328/zxc0328.github.io',
+  oauth: {
+    client_id: '302ba372e27f8bae34df',
+    client_secret: '7c8df18cdd7bbefb5f685b207a1d2846910c29e7',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+</script>
 </body>
 </html>

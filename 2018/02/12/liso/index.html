@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="server,c," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
+<meta name="keywords" content="server,c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Liso源码阅读笔记">
 <meta property="og:url" content="http://yoursite.com/2018/02/12/liso/index.html">
@@ -105,7 +106,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
 <meta property="og:image" content="https://wx2.sinaimg.cn/mw1024/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg">
-<meta property="og:updated_time" content="2018-06-19T02:51:15.514Z">
+<meta property="og:updated_time" content="2018-06-19T11:34:44.088Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Liso源码阅读笔记">
 <meta name="twitter:description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
@@ -307,6 +308,39 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -452,6 +486,14 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/server/" rel="tag"># server</a>
+          
+            <a href="/tags/c/" rel="tag"># c</a>
+          
+        </div>
+      
 
       
       
@@ -561,7 +603,7 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -572,7 +614,7 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -825,5 +867,24 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
 
   
 
+  <div id="comments"></div>
+
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+
+<script>
+const gitment = new Gitment({
+  owner: 'zxc0328',
+  repo: 'https://github.com/zxc0328/zxc0328.github.io',
+  oauth: {
+    client_id: '302ba372e27f8bae34df',
+    client_secret: '7c8df18cdd7bbefb5f685b207a1d2846910c29e7',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+</script>
 </body>
 </html>

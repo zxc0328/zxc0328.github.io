@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Source code reading," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="目前网上有很多「XX源码分析」这样的文章，不过这些文章分析源码的范围有限，有时候讲的内容不是读者最关心的。同时我也注意到，源码是在不断更新的，文章里写的源码往往已经过时了。因为这些问题，很多同学都喜欢自己看源码，自己动手，丰衣足食。 这篇文章主要讲的是阅读大型的前端开源项目比如 React、Vue、Webpack、Babel 的源码时的一些技巧。目的是让大家在遇到需要阅读源码才能解决的问题时，可以">
+<meta name="keywords" content="Source code reading">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何阅读大型前端开源项目的源码">
 <meta property="og:url" content="http://yoursite.com/2018/05/01/react-source-reading-howto/index.html">
@@ -109,7 +110,7 @@
 <meta property="og:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1fqshma4atzj21js0ietdc.jpg">
 <meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fqx8qcid0aj200i00q053.jpg">
 <meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fqvtw441ytj20c60ukae9.jpg">
-<meta property="og:updated_time" content="2018-06-19T02:51:15.517Z">
+<meta property="og:updated_time" content="2018-06-19T11:35:07.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何阅读大型前端开源项目的源码">
 <meta name="twitter:description" content="目前网上有很多「XX源码分析」这样的文章，不过这些文章分析源码的范围有限，有时候讲的内容不是读者最关心的。同时我也注意到，源码是在不断更新的，文章里写的源码往往已经过时了。因为这些问题，很多同学都喜欢自己看源码，自己动手，丰衣足食。 这篇文章主要讲的是阅读大型的前端开源项目比如 React、Vue、Webpack、Babel 的源码时的一些技巧。目的是让大家在遇到需要阅读源码才能解决的问题时，可以">
@@ -311,6 +312,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Source-code-reading/" itemprop="url" rel="index">
+                    <span itemprop="name">Source code reading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -426,6 +449,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Source-code-reading/" rel="tag"># Source code reading</a>
+          
+        </div>
+      
 
       
       
@@ -535,7 +564,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -546,7 +575,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -799,5 +828,24 @@
 
   
 
+  <div id="comments"></div>
+
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+
+<script>
+const gitment = new Gitment({
+  owner: 'zxc0328',
+  repo: 'https://github.com/zxc0328/zxc0328.github.io',
+  oauth: {
+    client_id: '302ba372e27f8bae34df',
+    client_secret: '7c8df18cdd7bbefb5f685b207a1d2846910c29e7',
+  },
+  // ...
+  // For more available options, check out the documentation below
+})
+
+gitment.render('comments')
+</script>
 </body>
 </html>
