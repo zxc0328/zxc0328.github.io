@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Webpack," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Webpack 4 发布已经有一段时间了。Webpack 的版本号已经来到了 4.12.x。但因为 Webpack 官方还没有完成迁移指南，在文档层面上还有所欠缺，大部分人对升级 Webpack 还是一头雾水。 不过 Webpack 的开发团队已经写了一些零散的文章，官网上也有了新版配置的文档。社区中一些开发者也已经成功试水，升级到了 Webpack 4，并且总结成了博客。所以我也终于去了解了 W">
+<meta name="keywords" content="Webpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Webpack 4 配置最佳实践">
+<meta property="og:url" content="http://yoursite.com/2018/06/19/webpack-4-config-best-practices/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="Webpack 4 发布已经有一段时间了。Webpack 的版本号已经来到了 4.12.x。但因为 Webpack 官方还没有完成迁移指南，在文档层面上还有所欠缺，大部分人对升级 Webpack 还是一头雾水。 不过 Webpack 的开发团队已经写了一些零散的文章，官网上也有了新版配置的文档。社区中一些开发者也已经成功试水，升级到了 Webpack 4，并且总结成了博客。所以我也终于去了解了 W">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://cdn.yuque.com/lark/0/2018/png/97613/1527958892306-f1799341-b89d-42fb-ab63-863d6365a874.png">
+<meta property="og:updated_time" content="2018-06-19T11:14:44.274Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Webpack 4 配置最佳实践">
+<meta name="twitter:description" content="Webpack 4 发布已经有一段时间了。Webpack 的版本号已经来到了 4.12.x。但因为 Webpack 官方还没有完成迁移指南，在文档层面上还有所欠缺，大部分人对升级 Webpack 还是一头雾水。 不过 Webpack 的开发团队已经写了一些零散的文章，官网上也有了新版配置的文档。社区中一些开发者也已经成功试水，升级到了 Webpack 4，并且总结成了博客。所以我也终于去了解了 W">
+<meta name="twitter:image" content="https://cdn.yuque.com/lark/0/2018/png/97613/1527958892306-f1799341-b89d-42fb-ab63-863d6365a874.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/19/webpack-4-config-best-practices/"/>
+
+
+
+
+
+  <title>Webpack 4 配置最佳实践 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/19/webpack-4-config-best-practices/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Webpack 4 配置最佳实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-19T19:12:49+08:00">
+                2018-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Webpack/" itemprop="url" rel="index">
+                    <span itemprop="name">Webpack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Webpack 4 发布已经有一段时间了。Webpack 的版本号已经来到了 4.12.x。但因为 Webpack 官方还没有完成迁移指南，在文档层面上还有所欠缺，大部分人对升级 Webpack 还是一头雾水。</p>
+<p>不过 Webpack 的开发团队已经写了一些零散的文章，官网上也有了新版配置的文档。社区中一些开发者也已经成功试水，升级到了 Webpack 4，并且总结成了博客。所以我也终于去了解了 Webpack 4 的具体情况。以下就是我对迁移到 Webpack 4 的一些经验。</p>
+<p>本文的重点在：</p>
+<ul>
+<li>Webpack 4 在配置上带来了哪些便利？要迁移需要修改配置文件的哪些内容？</li>
+<li>之前的 Webpack 配置最佳实践在 Webpack 4 这个版本，还适用吗？</li>
+</ul>
+<a id="more"></a>
+<h3 id="Webpack-4-之前的-Webpack-最佳实践"><a href="#Webpack-4-之前的-Webpack-最佳实践" class="headerlink" title="Webpack 4 之前的 Webpack 最佳实践"></a>Webpack 4 之前的 Webpack 最佳实践</h3><p>这里以 Vue 官方的 Webpack 模板 <a href="https://github.com/vuejs-templates/webpack" target="_blank" rel="noopener">vuejs-templates/webpack</a> 为例，说说 Webpack 4 之前，社区里比较成熟的 Webpack 配置文件是怎样组织的。</p>
+<h4 id="区分开发和生产环境"><a href="#区分开发和生产环境" class="headerlink" title="区分开发和生产环境"></a>区分开发和生产环境</h4><p>大致的目录结构是这样的：</p>
+<pre><code>+ build
++ config
++ src
+
+</code></pre><p>在 build 目录下有四个 webpack 的配置。分别是：</p>
+<ul>
+<li>webpack.base.conf.js</li>
+<li>webpack.dev.conf.js</li>
+<li>webpack.prod.conf.js</li>
+<li>webpack.test.conf.js</li>
+</ul>
+<p>这分别对应开发、生产和测试环境的配置。其中 webpack.base.conf.js 是一些公共的配置项。我们使用 <a href="https://github.com/survivejs/webpack-merge" target="_blank" rel="noopener">webpack-merge</a> 把这些公共配置项和环境特定的配置项 merge 起来，成为一个完整的配置项。比如 webpack.dev.conf.js 中：</p>
+<pre><code class="javascript">&#39;use strict&#39;
+const merge = require(&#39;webpack-merge&#39;)
+const baseWebpackConfig = require(&#39;./webpack.base.conf&#39;)
+
+const devWebpackConfig = merge(baseWebpackConfig, {
+   ...
+})
+</code></pre>
+<p>这三个环境不仅有一部分配置不同，更关键的是，每个配置中用 <code>webpack.DefinePlugin</code> 向代码注入了 <code>NODE\_ENV</code> 这个环境变量。</p>
+<p>这个变量在不同环境下有不同的值，比如 dev 环境下就是 development。这些环境变量的值是在 config 文件夹下的配置文件中定义的。Webpack 首先从配置文件中读取这个值，然后注入。比如这样：</p>
+<p><em>build/webpack.dev.js</em></p>
+<pre><code class="javascript">plugins: [
+  new webpack.DefinePlugin({
+    &#39;process.env&#39;: require(&#39;../config/dev.env.js&#39;)
+  }),
+]
+</code></pre>
+<p><em>config/dev.env.js</em></p>
+<pre><code class="javascript">module.exports ={
+  NODE_ENV: &#39;&quot;development&quot;&#39;
+}
+</code></pre>
+<p>至于不同环境下环境变量具体的值，比如开发环境是 development，生产环境是 production，其实是大家约定俗成的。</p>
+<p>框架、库的作者，或者是我们的业务代码里，都会有一些根据环境做判断，执行不同逻辑的代码，比如这样：</p>
+<pre><code class="javascript">if (process.env.NODE_ENV !== &#39;production&#39;) {
+  console.warn(&quot;error!&quot;)
+}
+</code></pre>
+<p>这些代码会在代码压缩的时候被预执行一次，然后如果条件表达式的值是 true，那这个 true 分支里的内容就被移除了。这是一种编译时的死代码优化。这种区分不同的环境，并给环境变量设置不同的值的实践，让我们开启了编译时按环境对代码进行针对性优化的可能。</p>
+<h4 id="Code-Splitting-amp-amp-Long-term-caching"><a href="#Code-Splitting-amp-amp-Long-term-caching" class="headerlink" title="Code Splitting &amp;&amp; Long-term caching"></a>Code Splitting &amp;&amp; Long-term caching</h4><p>Code Splitting 一般需要做这些事情：</p>
+<ul>
+<li>为 Vendor 单独打包（Vendor 指第三方的库或者公共的基础组件，因为 Vendor 的变化比较少，单独打包利于缓存）</li>
+<li>为 Manifest （Webpack 的 Runtime 代码）单独打包</li>
+<li>为不同入口的公共业务代码打包（同理，也是为了缓存和加载速度）</li>
+<li>为异步加载的代码打一个公共的包</li>
+</ul>
+<p>Code Splitting 一般是通过配置 CommonsChunkPlugin 来完成的。一个典型的配置如下，分别为 vendor、manifest 和 vendor-async 配置了 CommonsChunkPlugin。</p>
+<pre><code class="javascript">    new webpack.optimize.CommonsChunkPlugin({
+      name: &#39;vendor&#39;,
+      minChunks (module) {
+        return (
+          module.resource &amp;&amp;
+          /\.js$/.test(module.resource) &amp;&amp;
+          module.resource.indexOf(
+            path.join(__dirname, &#39;../node_modules&#39;)
+          ) === 0
+        )
+      }
+    }),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: &#39;manifest&#39;,
+      minChunks: Infinity
+    }),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: &#39;app&#39;,
+      async: &#39;vendor-async&#39;,
+      children: true,
+      minChunks: 3
+    }),
+</code></pre>
+<p>CommonsChunkPlugin 的特点就是配置比较难懂，大家的配置往往是复制过来的，这些代码基本上成了模板代码（boilerplate）。如果 Code Splitting 的要求简单倒好，如果有比较特殊的要求，比如把不同入口的 vendor 打不同的包，那就很难配置了。总的来说配置 Code Splitting 是一个比较痛苦的事情。</p>
+<p>而 Long-term caching 策略是这样的：给静态文件一个很长的缓存过期时间，比如一年。然后在给文件名里加上一个 hash，每次构建时，当文件内容改变时，文件名中的 hash 也会改变。浏览器在根据文件名作为文件的标识，所以当 hash 改变时，浏览器就会重新加载这个文件。</p>
+<p>Webpack 的 Output 选项中可以配置文件名的 hash，比如这样：</p>
+<pre><code class="javascript">output: {
+  path: config.build.assetsRoot,
+  filename: utils.assetsPath(&#39;js/[name].[chunkhash].js&#39;),
+  chunkFilename: utils.assetsPath(&#39;js/[id].[chunkhash].js&#39;)
+},
+</code></pre>
+<h3 id="Webpack-4-下的最佳实践"><a href="#Webpack-4-下的最佳实践" class="headerlink" title="Webpack 4 下的最佳实践"></a>Webpack 4 下的最佳实践</h3><h4 id="Webpack-4-的变与不变"><a href="#Webpack-4-的变与不变" class="headerlink" title="Webpack 4 的变与不变"></a>Webpack 4 的变与不变</h4><p>Webpack 4 这个版本的 API 有一些 breaking change，但不代表说这个版本就发生了翻天覆地的变化。其实变化的点只有几个。而且只要你仔细了解了这些变化，你一定会拍手叫好。</p>
+<p>迁移到 Webpack 4 也只需要检查一下 <a href="https://dev.to/flexdinesh/upgrade-to-webpack-4---5bc5" target="_blank" rel="noopener">checklist</a>，看看这些点是否都覆盖到了，就可以了。</p>
+<h4 id="开发和生产环境的区分"><a href="#开发和生产环境的区分" class="headerlink" title="开发和生产环境的区分"></a>开发和生产环境的区分</h4><p>Webpack 4 引入了 <a href="https://webpack.js.org/concepts/mode/" target="_blank" rel="noopener">mode</a> 这个选项。这个选项的值可以是 development 或者 production。</p>
+<p>设置了 mode 之后会把 <code>process.env.NODE\_ENV</code> 也设置为 development 或者 production。然后在 production 模式下，会默认开启 UglifyJsPlugin 等等一堆插件。</p>
+<p>Webpack 4 支持零配置使用，可以从命令行指定 entry 的位置，如果不指定，就是 <code>src/index.js</code>。mode 参数也可以从命令行参数传入。这样一些常用的生产环境打包优化都可以直接启用。</p>
+<p>我们需要注意，Webpack 4 的零配置是有限度的，如果要加上自己想加的插件，或者要加多个 entry，还是需要一个配置文件。</p>
+<p>虽然如此，Webpack 4 在各个方面都做了努力，努力让零配置可以做的事情更多。这种内置优化的方式使得我们在项目起步的时候，可以把主要精力放在业务开发上，等后期业务变复杂之后，才需要关注配置文件的编写。</p>
+<p>在 Webpack 4 推出 mode 这个选项之前，如果想要为不同的开发环境打造不同的构建选项，我们只能通过建立多个 Webpack 配置且分别设置不同的环境变量值这种方式。这也是社区里的最佳实践。</p>
+<p>Webpack 4 推出的 mode 选项，其实是一种<strong>对社区中最佳实践的吸收</strong>。这种思路我是很赞同的。开源项目来自于社区，在社区中成长，从社区中吸收养分，然后回报社区，这是一个良性循环。最近我在很多前端项目中都看到了类似的趋势。接下来要讲的其他几个 Webpack 4 的特性也是和社区的反馈离不开的。</p>
+<p>那么上文中介绍的使用多个 Webpack 配置，以及手动环境变量注入的方式，是否在 Webpack 4 下就不适用了呢？其实不然。<strong>在Webpack 4 下，对于一个正经的项目，我们依然需要多个不同的配置文件</strong>。如果我们对为测试环境的打包做一些特殊处理，我们还需要在那个配置文件里用 <code>webpack.DefinePlugin</code> 手动注入 <code>NODE\_ENV</code> 的值（比如 test）。</p>
+<blockquote>
+<p>Webpack 4 下如果需要一个 test 环境，那 test 环境的 mode 也是 development。因为 mode 只有开发和生产两种，测试环境应该是属于开发阶段。</p>
+</blockquote>
+<h4 id="第三方库-build-的选择"><a href="#第三方库-build-的选择" class="headerlink" title="第三方库 build 的选择"></a>第三方库 build 的选择</h4><p>在 Webpack 3 时代，我们需要在生产环境的的 Webpack 配置里给第三方库设置 alias，把这个库的路径设置为 production build 文件的路径。以此来引入生产版本的依赖。</p>
+<p>比如这样：</p>
+<pre><code class="javascript">resolve: {
+  extensions: [&quot;.js&quot;, &quot;.vue&quot;, &quot;.json&quot;],
+  alias: {
+    vue$: &quot;vue/dist/vue.runtime.min.js&quot;
+  }
+},
+</code></pre>
+<p>在 Webpack 4 引入了 mode 之后，对于部分依赖，我们可以不用配置 alias，比如 React。React 的入口文件是这样的：</p>
+<pre><code class="javascript">&#39;use strict&#39;;
+
+if (process.env.NODE_ENV === &#39;production&#39;) {
+  module.exports = require(&#39;./cjs/react.production.min.js&#39;);
+} else {
+  module.exports = require(&#39;./cjs/react.development.js&#39;);
+}
+
+</code></pre>
+<p>这样就实现了 0 配置自动选择生产 build。</p>
+<p>但大部分的第三库并没有做这个入口的环境判断。所以这种情况下我们还是需要手动配置 alias。</p>
+<h4 id="Code-Splitting"><a href="#Code-Splitting" class="headerlink" title="Code Splitting"></a>Code Splitting</h4><p>Webpack 4 下还有一个大改动，就是废弃了 CommonsChunkPlugin，引入了 <code>optimization.splitChunks</code> 这个选项。</p>
+<p><code>optimization.splitChunks</code> 默认是不用设置的。如果 mode 是 production，那 Webpack 4 就会开启 Code Splitting。</p>
+<blockquote>
+<p>默认 Webpack 4 只会对按需加载的代码做分割。如果我们需要配置初始加载的代码也加入到代码分割中，可以设置 <code>splitChunks.chunks</code> 为 <code>&#39;all&#39;</code>。</p>
+</blockquote>
+<p>Webpack 4 的 Code Splitting 最大的特点就是配置简单（0配置起步），和<strong>基于内置规则自动拆分</strong>。内置的代码切分的规则是这样的：</p>
+<ul>
+<li>新 bundle 被两个及以上模块引用，或者来自 node_modules</li>
+<li>新 bundle 大于 30kb （压缩之前）</li>
+<li>异步加载并发加载的 bundle 数不能大于 5 个</li>
+<li>初始加载的 bundle 数不能大于 3 个</li>
+</ul>
+<p>简单的说，Webpack 会把代码中的公共模块自动抽出来，变成一个包，前提是这个包大于 30kb，不然 Webpack 是不会抽出公共代码的，因为增加一次请求的成本是不能忽视的。</p>
+<p>具体的业务场景下，具体的拆分逻辑，可以看 <a href="https://webpack.js.org/plugins/split-chunks-plugin/" target="_blank" rel="noopener">SplitChunksPlugin 的文档</a>以及 <a href="https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366" target="_blank" rel="noopener">webpack 4: Code Splitting, chunk graph and the splitChunks optimization</a> 这篇博客。这两篇文章基本罗列了所有可能出现的情况。</p>
+<p>如果是普通的应用，Webpack 4 内置的规则就足够了。</p>
+<p>如果是特殊的需求，Webpack 4 的 <code>optimization.splitChunks</code> API也可以满足。</p>
+<p>splitChunks 有一个参数叫 cacheGroups，这个参数类似之前的 CommonChunks 实例。cacheGroups 里每个对象就是一个用户定义的 chunk。</p>
+<p>之前我们讲到，Webpack 4 内置有一套代码分割的规则，那用户也可以自定义 cacheGroups，也就是自定义 chunk。那一个 module 应该被抽到哪个 chunk 呢？这是由 cacheGroups 的抽取范围控制的。每个 cacheGroups 都可以定义自己抽取模块的范围，也就是哪些文件中的公共代码会抽取到自己这个 chunk 中。不同的 cacheGroups 之间的模块范围如果有交集，我们可以用 priority 属性控制优先级。Webpack 4 默认的抽取的优先级是最低的，所以模块会优先被抽取到用户的自定义 chunk 中。</p>
+<blockquote>
+</blockquote>
+<p>splitChunksPlugin 提供了两种控制 chunk 抽取模块范围的方式。一种是 test 属性。这个属性可以传入字符串、正则或者函数，所有的 module 都会去匹配 test 传入的条件，如果条件符合，就被纳入这个 chunk 的备选模块范围。如果我们传入的条件是字符串或者正则，那匹配的流程是这样的：首先匹配 module 的路径，然后匹配 module 之前所在 chunk 的 name。</p>
+<p>比如我们想把所有 node_modules 中引入的模块打包成一个模块：</p>
+<pre><code class="javascript">  vendors1: {
+    test: /[\\/]node_modules[\\/]/,
+    name: &#39;vendor&#39;,
+    chunks: &#39;all&#39;,
+  }
+</code></pre>
+<p>因为从 node_modules 中加载的依赖路径中都带有 node_modules，所以这个正则会匹配所有从 node_modules 中加载的依赖。</p>
+<p>test 属性可以以 module 为单位控制 chunk 的抽取范围，是一种细粒度比较小的方式。splitChunksPlugin 的第二种控制抽取模块范围的方式就是 chunks 属性。chunks 可以是字符串，比如 <code>&#39;all&#39;|&#39;async&#39;|&#39;initial&#39;</code>，分别代表了全部 chunk，按需加载的 chunk 以及初始加载的 chunk。chunks 也可以是一个函数，在这个函数里我们可以拿到 <code>chunk.name</code>。这给了我们通过入口来分割代码的能力。这是一种细粒度比较大的方式，以 chunk 为单位。</p>
+<p>举个例子，比如我们有 a, b, c 三个入口。我们希望 a，b 的公共代码单独打包为 common。也就是说 c 的代码不参与公共代码的分割。</p>
+<p>我们可以定义一个 cacheGroups，然后设置 chunks 属性为一个函数，这个函数负责过滤这个 cacheGroups 包含的 chunk 是哪些。示例代码如下：</p>
+<pre><code>  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        common: {
+          chunks(chunk) {
+            return chunk.name !== &#39;c&#39;;
+          },
+          name: &#39;common&#39;,
+          minChunks: 2,
+        },
+      },
+    },
+  },
+</code></pre><p>上面配置的意思就是：我们想把 a，b 入口中的公共代码单独打包为一个名为 common 的 chunk。使用 <code>chunk.name</code>，我们可以轻松的完成这个需求。</p>
+<p>在上面的情况中，我们知道 chunks 属性可以用来按入口切分几组公共代码。现在我们来看一个稍微复杂一些的情况：对不同分组入口中引入的 node_modules 中的依赖进行分组。</p>
+<p>比如我们有 a, b, c, d 四个入口。我们希望 a，b 的依赖打包为 vendor1，c, d 的依赖打包为 vendor2。</p>
+<p>这个需求要求我们对入口和模块都做过滤，所以我们需要使用 test 属性这个细粒度比较小的方式。我们的思路就是，写两个 cacheGroup，一个 cacheGroup 的判断条件是：如果 module 在 a 或者 b chunk 被引入，并且 module 的路径包含 <code>node\_modules</code>，那这个 module 就应该被打包到 vendors1 中。 vendors2 同理。</p>
+<pre><code class="javascript">  vendors1: {
+    test: module =&gt; {
+      for (const chunk of module.chunksIterable) {
+            if (chunk.name &amp;&amp; /(a|b)/.test(chunk.name)) {
+                if (module.nameForCondition() &amp;&amp; /[\\/]node_modules[\\/]/.test(module.nameForCondition())) {
+                 return true;
+             }
+            }
+       }
+      return false;
+    },
+    minChunks: 2,
+    name: &#39;vendors1&#39;,
+    chunks: &#39;all&#39;,
+  },
+  vendors2: {
+    test: module =&gt; {
+      for (const chunk of module.chunksIterable) {
+            if (chunk.name &amp;&amp; /(c|d)/.test(chunk.name)) {
+                if (module.nameForCondition() &amp;&amp; /[\\/]node_modules[\\/]/.test(module.nameForCondition())) {
+                 return true;
+             }
+            }
+       }
+      return false;
+    },
+    minChunks: 2,
+    name: &#39;vendors2&#39;,
+    chunks: &#39;all&#39;,
+  },
+};
+
+</code></pre>
+<h4 id="Long-term-caching"><a href="#Long-term-caching" class="headerlink" title="Long-term caching"></a>Long-term caching</h4><p>Long-term caching 这里，基本的操作和 Webpack 3 是一样的。不过 Webpack 3 的 Long-term caching 在操作的时候，有个小问题，这个问题是关于 chunk 内容和 hash 变化不一致的：</p>
+<p><strong>在公共代码 Vendor 内容不变的情况下，添加 entry，或者 external 依赖，或者异步模块的时候，Vendor 的 hash 会改变</strong>。</p>
+<p>之前 Webpack 官方的专栏里面有一篇文章讲这个问题：<a href="https://medium.com/webpack/predictable-long-term-caching-with-webpack-d3eee1d3fa31" target="_blank" rel="noopener">Predictable long term caching with Webpack</a>。给出了一个解决方案。</p>
+<p>这个方案的核心就是，Webpack 内部维护了一个自增的 id，每个 chunk 都有一个 id。所以当增加 entry 或者其他类型 chunk 的时候，id 就会变化，导致内容没有变化的 chunk 的 id 也发生了变化。</p>
+<p>对此我们的应对方案是，使用 <code>webpack.NamedChunksPlugin</code> 把 chunk id 变为一个字符串标识符，这个字符包一般就是模块的相对路径。这样模块的 chunk id 就可以稳定下来。</p>
+<p><img src="https://cdn.yuque.com/lark/0/2018/png/97613/1527958892306-f1799341-b89d-42fb-ab63-863d6365a874.png" alt="Screen Shot 2018-06-03 at 12.59.28 AM.png | left"></p>
+<p><em>这里的 vendors1 就是 chunk id</em></p>
+<blockquote>
+<p><a href="https://webpack.js.org/plugins/hashed-module-ids-plugin/" target="_blank" rel="noopener">HashedModuleIdsPlugin</a> 的作用和 NamedChunksPlugin 是一样的，只不过 HashedModuleIdsPlugin 把根据模块相对路径生成的 hash 作为 chunk id，这样 chunk id 会更短。因此在生产中更推荐用 HashedModuleIdsPlugin。</p>
+</blockquote>
+<p>这篇文章说还讲到，<code>webpack.NamedChunksPlugin</code> 只能对普通的 Webpack 模块起作用，异步模块，external 模块是不会起作用的。</p>
+<blockquote>
+<p>异步模块可以在 import 的时候加上 chunkName 的注释，比如这样：import(/<em> webpackChunkName: “lodash” </em>/ ‘lodash’).then() 这样就有 Name 了</p>
+</blockquote>
+<p>所以我们需要再使用一个插件：<a href="https://github.com/timse/name-all-modules-plugin" target="_blank" rel="noopener">name-all-modules-plugin</a></p>
+<blockquote>
+<p>这个插件中用到一些老的 API，Webpack 4 会发出警告，这个 <a href="https://github.com/timse/name-all-modules-plugin/pull/2" target="_blank" rel="noopener">pr</a> 有新的版本，不过作者不一定会 merge。我们使用的时候可以直接 copy 这个插件的代码到我们的 Webpack 配置里面。</p>
+</blockquote>
+<p>做了这些工作之后，我们的 Vendor 的 ChunkId 就再也不会发生不该发生的变化了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Webpack 4 的改变主要是对社区中最佳实践的吸收。Webpack 4 通过新的 API 大大提升了 Code Splitting 的体验。但 Long-term caching 中 Vendor hash 的问题还是没有解决，需要手动配置。本文主要介绍的就是 Webpack 配置最佳实践在 Webpack 3.x 和 4.x 背景下的异同。希望对读者的 Webpack 4 项目的配置文件组织有所帮助。</p>
+<p>另外，推荐 <a href="https://survivejs.com/webpack/" target="_blank" rel="noopener"><em>SURVIVEJS - WEBPACK</em></a> 这个在线教程。这个教程总结了 Webpack 在实际开发中的实践，并且把材料更新到了最新的 Webpack 4。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Webpack/" rel="tag"># Webpack</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/14/casbin-iris/" rel="next" title="Iris + Casbin 权限控制实战">
+                <i class="fa fa-chevron-left"></i> Iris + Casbin 权限控制实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">56</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Webpack-4-之前的-Webpack-最佳实践"><span class="nav-number">1.</span> <span class="nav-text">Webpack 4 之前的 Webpack 最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#区分开发和生产环境"><span class="nav-number">1.1.</span> <span class="nav-text">区分开发和生产环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-Splitting-amp-amp-Long-term-caching"><span class="nav-number">1.2.</span> <span class="nav-text">Code Splitting &amp;&amp; Long-term caching</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Webpack-4-下的最佳实践"><span class="nav-number">2.</span> <span class="nav-text">Webpack 4 下的最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Webpack-4-的变与不变"><span class="nav-number">2.1.</span> <span class="nav-text">Webpack 4 的变与不变</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发和生产环境的区分"><span class="nav-number">2.2.</span> <span class="nav-text">开发和生产环境的区分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三方库-build-的选择"><span class="nav-number">2.3.</span> <span class="nav-text">第三方库 build 的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-Splitting"><span class="nav-number">2.4.</span> <span class="nav-text">Code Splitting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Long-term-caching"><span class="nav-number">2.5.</span> <span class="nav-text">Long-term caching</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
