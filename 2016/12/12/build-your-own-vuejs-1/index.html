@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="In the book Build your own Vuejs, we will build a Vuejs from scratch. And you will learn how Vuejs works internally, which helps a lot for your daily development with vue. Inspired by the amazing book">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Build your own Vuejs Chapter1 Vue Overview">
+<meta property="og:url" content="http://yoursite.com/2016/12/12/build-your-own-vuejs-1/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="In the book Build your own Vuejs, we will build a Vuejs from scratch. And you will learn how Vuejs works internally, which helps a lot for your daily development with vue. Inspired by the amazing book">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://occc3ev3l.qnssl.com/Vue%20source%20overview.png">
+<meta property="og:image" content="http://cdn4.snapgram.co/images/2016/12/11/ScreenShot2016-12-12at2.02.17AM.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.502Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Build your own Vuejs Chapter1 Vue Overview">
+<meta name="twitter:description" content="In the book Build your own Vuejs, we will build a Vuejs from scratch. And you will learn how Vuejs works internally, which helps a lot for your daily development with vue. Inspired by the amazing book">
+<meta name="twitter:image" content="https://occc3ev3l.qnssl.com/Vue%20source%20overview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/12/build-your-own-vuejs-1/"/>
+
+
+
+
+
+  <title>Build your own Vuejs Chapter1 Vue Overview | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/build-your-own-vuejs-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Build your own Vuejs Chapter1 Vue Overview</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T17:11:50+08:00">
+                2016-12-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>In the book Build your own Vuejs, we will build a Vuejs from scratch. And you will learn how Vuejs works internally, which helps a lot for your daily development with vue.</p>
+<p>Inspired by the amazing book Build your own Angularjs, the code of Build your own Vuejs will be developed in a test-driven way.</p>
+<p>We’ll focus on Vuejs 2.0. And we assume our reader have played around with Vuejs once and know basics about Vuejs APIs.</p>
+<a id="more"></a>
+<h2 id="Chapter1-Vuejs-Overview"><a href="#Chapter1-Vuejs-Overview" class="headerlink" title="Chapter1: Vuejs Overview"></a>Chapter1: Vuejs Overview</h2><p>Vuejs is a simple yet powerful MVVM library. It helps us to build a modern user interface for the web.</p>
+<p>By the time of writing, Vuejs has 36,312 stars on Github. And 230,250 monthly downloads on npm. Vuejs 2.0 brings in a lightweight virtual DOM implementation for render layer. This unlock more possibilities like server-side rendering and native component rendering.</p>
+<p>Vuejs claims to be a progressive JavaScript framework. Though the core library of Vuejs is quite small. Vuejs has many accompanying tools &amp; supporting libraries. So you can build large-scale application using the Vuejs ecosystem.</p>
+<h3 id="Components-of-Vuejs-internals"><a href="#Components-of-Vuejs-internals" class="headerlink" title="Components of Vuejs internals"></a>Components of Vuejs internals</h3><p>Let’s get acquaintance with the core components of Vuejs internals. Vue internals falls into serval parts:</p>
+<p><img src="https://occc3ev3l.qnssl.com/Vue%20source%20overview.png" alt="Vue internal"></p>
+<h4 id="Instance-lifecycle"><a href="#Instance-lifecycle" class="headerlink" title="Instance lifecycle"></a>Instance lifecycle</h4><p>A new Vue instance will go through several phases. Such as observing data, initializing events, compiling the template, and render. And you can register  lifecycle hooks that will be called in the specific phase.</p>
+<h4 id="Reactivity-system"><a href="#Reactivity-system" class="headerlink" title="Reactivity system"></a>Reactivity system</h4><p>The so called <em>reactivity system</em> is where vue’s data-view binding magic comes from. When you set vue instance’s data, the view updated accordingly, and vice versa. </p>
+<p>Vue use <code>Object.defineProperty</code> to make data object’s property reactive. Along with the famous <em>Observer Pattern</em> to link data change and view render together.</p>
+<h4 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h4><p>Virtual DOM is the tree representation of the actual DOM tree that lives in the memory as JavaScript Objects. </p>
+<p>When data changes, vue will render a brand new virtual DOM tree, and keep the old one. The virtual DOM module diff two trees and patch the change into the actual DOM tree.</p>
+<p>Vue use <a href="https://github.com/snabbdom/snabbdom" target="_blank" rel="noopener">snabbdom</a> as the base of its virtual DOM implementation. And modify a bit to make it work with Vue’s other component.</p>
+<h4 id="Compiler"><a href="#Compiler" class="headerlink" title="Compiler"></a>Compiler</h4><p>The job of the compiler is to compile template into render functions(ASTs). It parses HTML along with Vue directives (Vue directives are just plain HTML attribute) and other entities into a tree. It also detects the maximum static sub trees (sub trees with no dynamic bindings) and hoists them out of the render. The HTML parser Vue uses is originally written by <a href="http://ejohn.org" target="_blank" rel="noopener">John Resig</a>.</p>
+<blockquote>
+<p>We will not cover the implementation detail of the Compiler in this book. Since we can use build tools to compile vue template into render functions in build time, Compiler is not a part of vue runtime. And we can even write render functions directly, so Compiler is not an essential part to understand vue internals.</p>
+</blockquote>
+<h3 id="Set-up-development-environment"><a href="#Set-up-development-environment" class="headerlink" title="Set up development environment"></a>Set up development environment</h3><p>Before we can start building our own Vue.js, we need to set up a few things. Including module bundler and testing tools, since we will use a test-driven workflow.</p>
+<p>Since this is a JavaScript project, and we’gonna use some fancy tools, the first thing to do is run <code>npm init</code> and set up some information about this project. </p>
+<h4 id="Set-up-Rollup-for-module-bundling"><a href="#Set-up-Rollup-for-module-bundling" class="headerlink" title="Set up Rollup for module bundling"></a>Set up Rollup for module bundling</h4><p>We will use Rollup for module bundling. <a href="http://rollupjs.org" target="_blank" rel="noopener">Rollup</a> is a JavaScript module bundler. It allows you to write your application or library as a set of modules – using modern ES2015 import/export syntax. And Vuejs use Rollup for module bundling too.</p>
+<p>We gotta write a configuration for Rollup to make it work. Under root directory, touch <code>rollup.conf.js</code>:</p>
+<pre><code>export default {
+  entry: &#39;src/instance/index.js&#39;,
+  format: &#39;umd&#39;,
+  moduleName: &#39;Vue&#39;,
+  dest: &#39;dist/vue.js&#39; 
+};
+</code></pre><p>And don’t forget to run <code>npm install rollup rollup-watch --save-dev</code>.</p>
+<h4 id="Set-up-Karma-and-Jasmine-for-testing"><a href="#Set-up-Karma-and-Jasmine-for-testing" class="headerlink" title="Set up Karma and Jasmine for testing"></a>Set up Karma and Jasmine for testing</h4><p>Testing will require quite a few packages, run:</p>
+<pre><code>npm install karma jasmine karma-jasmine karma-chrome-launcher
+ karma-rollup-plugin --save-dev
+</code></pre><p>Under root directory, touch <code>karma.conf.js</code>:</p>
+<pre><code>module.exports = function(config) {
+  config.set({
+    frameworks: [&#39;jasmine&#39;],
+    files: [
+      &#39;./test/**/*.js&#39;
+    ],
+    browsers: [&#39;Chrome&#39;],
+    preprocessors: {
+     &#39;./test/**/*.js&#39;: [&#39;rollup&#39;]
+    },
+    rollupPreprocessor: {
+      format: &#39;iife&#39;,
+      sourceMap: &#39;inline&#39;
+    }
+  })
+}
+</code></pre><h4 id="Directory-structure"><a href="#Directory-structure" class="headerlink" title="Directory structure"></a>Directory structure</h4><pre><code>- package.json
+- rollup.conf.js
+- node_modules
+- dist
+- test
+- src
+    - observer
+    - instance
+    - util
+    - vdom
+
+</code></pre><h3 id="Bootstrapping"><a href="#Bootstrapping" class="headerlink" title="Bootstrapping"></a>Bootstrapping</h3><p>We’ll add some npm script for convenience. </p>
+<p><em>package.json</em></p>
+<pre><code>&quot;scripts&quot;: {
+   &quot;build&quot;: &quot;rollup -c&quot;,
+   &quot;watch&quot;: &quot;rollup -c -w&quot;,
+   &quot;test&quot;: &quot;karma start&quot;
+}
+</code></pre><p>To bootstrap our own Vuejs, let’s write our first test case.</p>
+<p><em>test/options/options.spec.js</em></p>
+<pre><code>import Vue from &quot;../src/instance/index&quot;;
+
+describe(&#39;Proxy test&#39;, function() {
+  it(&#39;should proxy vm._data.a = vm.a&#39;, function() {
+      var vm = new Vue({
+          data:{
+              a:2
+          }
+      })
+    expect(vm.a).toEqual(2);
+  });
+});
+</code></pre><p>This test case tests whether props on vm’s data like <code>vm._data.a</code> are proxied to vm itself, like <code>vm.a</code>. This is one of Vue’s little tricks.</p>
+<p>So we can write our first line of real code now, in </p>
+<p><em>src/instance/index.js</em></p>
+<pre><code>import { initMixin } from &#39;./init&#39;
+
+function Vue (options) {
+  this._init(options)
+}
+
+initMixin(Vue)
+
+export default Vue
+</code></pre><p>This is nothing exciting, just Vue constructor calling <code>this._init</code>. So let’s find out how the <code>initMixin</code> fucntion work:</p>
+<p><em>src/instance/init.js</em></p>
+<pre><code>import { initState } from &#39;./state&#39;
+
+export function initMixin (Vue) {
+  Vue.prototype._init = function (options) {
+      var vm = this
+      vm.$options = options
+      initState(vm)
+  }
+}
+</code></pre><p>The instance method of Vue Class are injected using a mixin pattern. We’ll find this mixin pattern quite common when writing Vuejs’s instance method later. Mixin is just a function that takes a constructor, add some methods to its prototype, and return the constructor.</p>
+<p>So <code>initMixin</code> add <code>_init</code> method to <code>Vue.prototype</code>. And this method calls <code>initState</code> from <code>state.js</code>:</p>
+<p><em>src/instance/state.js</em></p>
+<pre><code>
+export function initState(vm) {
+  initData(vm)
+}
+
+function initData(vm) {
+  var data = vm.$options.data
+  vm._data = data
+  // proxy data on instance
+  var keys = Object.keys(data)
+
+  var i = keys.length
+  while (i--) {
+    proxy(vm, keys[i])
+  }
+}
+
+function proxy(vm, key) {
+    Object.defineProperty(vm, key, {
+      configurable: true,
+      enumerable: true,
+      get: function proxyGetter() {
+        return vm._data[key]
+      },
+      set: function proxySetter(val) {
+        vm._data[key] = val
+      }
+    })
+}
+</code></pre><p>Finally, we got to the place where proxy takes place. <code>initState</code> calls <code>initData</code>, and <code>initData</code> iterates all keys of <code>vm._data</code>, calls <code>proxy</code> on each value.</p>
+<p><code>proxy</code> define a property on <code>vm</code> using the same key, and this property has both getter and setter, which actually get/set data from <code>vm._data</code>.</p>
+<p>So that’s how <code>vm.a</code> is proxied to <code>vm._data.a</code>.</p>
+<p>Run <code>npm run build</code> and <code>npm run test</code>. You should see something like this:</p>
+<p><img src="http://cdn4.snapgram.co/images/2016/12/11/ScreenShot2016-12-12at2.02.17AM.png" alt="success"></p>
+<p>Bravo! You successfully bootstrapped your own Vuejs! Keep working!</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/29/timeline/" rel="next" title="聊聊Chrome Devtools的Timeline">
+                <i class="fa fa-chevron-left"></i> 聊聊Chrome Devtools的Timeline
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/19/ios-story/" rel="prev" title="华师匣子iOS版开发记">
+                华师匣子iOS版开发记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Chapter1-Vuejs-Overview"><span class="nav-number">1.</span> <span class="nav-text">Chapter1: Vuejs Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Components-of-Vuejs-internals"><span class="nav-number">1.1.</span> <span class="nav-text">Components of Vuejs internals</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Instance-lifecycle"><span class="nav-number">1.1.1.</span> <span class="nav-text">Instance lifecycle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reactivity-system"><span class="nav-number">1.1.2.</span> <span class="nav-text">Reactivity system</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Virtual-DOM"><span class="nav-number">1.1.3.</span> <span class="nav-text">Virtual DOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Compiler"><span class="nav-number">1.1.4.</span> <span class="nav-text">Compiler</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-up-development-environment"><span class="nav-number">1.2.</span> <span class="nav-text">Set up development environment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Set-up-Rollup-for-module-bundling"><span class="nav-number">1.2.1.</span> <span class="nav-text">Set up Rollup for module bundling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set-up-Karma-and-Jasmine-for-testing"><span class="nav-number">1.2.2.</span> <span class="nav-text">Set up Karma and Jasmine for testing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Directory-structure"><span class="nav-number">1.2.3.</span> <span class="nav-text">Directory structure</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bootstrapping"><span class="nav-number">1.3.</span> <span class="nav-text">Bootstrapping</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

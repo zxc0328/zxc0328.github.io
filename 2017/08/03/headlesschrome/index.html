@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="TL;DR给太长不看同学的内容速览：  Headless是Chrome 59中加入的一种新的运行模式 Headless Chrome可以替代PhantomJS，并且更加强大 可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试 chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装 可以使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Headless Chrome截图服务实战">
+<meta property="og:url" content="http://yoursite.com/2017/08/03/headlesschrome/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="TL;DR给太长不看同学的内容速览：  Headless是Chrome 59中加入的一种新的运行模式 Headless Chrome可以替代PhantomJS，并且更加强大 可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试 chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装 可以使用">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fi6if8s30uj203d023q2q.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fi6i22r84kj21402hdjux.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.507Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Headless Chrome截图服务实战">
+<meta name="twitter:description" content="TL;DR给太长不看同学的内容速览：  Headless是Chrome 59中加入的一种新的运行模式 Headless Chrome可以替代PhantomJS，并且更加强大 可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试 chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装 可以使用">
+<meta name="twitter:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/03/headlesschrome/"/>
+
+
+
+
+
+  <title>Headless Chrome截图服务实战 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/03/headlesschrome/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Headless Chrome截图服务实战</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-03T09:26:25+08:00">
+                2017-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p>给太长不看同学的内容速览：</p>
+<ul>
+<li>Headless是Chrome 59中加入的一种新的运行模式</li>
+<li>Headless Chrome可以替代PhantomJS，并且更加强大</li>
+<li>可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试</li>
+<li>chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装</li>
+<li>可以使用<code>Emulation.setVisibleSize</code>对<strong>整个页面</strong>进行截屏</li>
+</ul>
+<a id="more"></a>
+<h3 id="PhantomJS的问题"><a href="#PhantomJS的问题" class="headerlink" title="PhantomJS的问题"></a>PhantomJS的问题</h3><p>之前有数报表的导出图片功能是用PhantomJS做的。PhantomJS有两个很大的问题：第一是，它的渲染引擎和JavaScript引擎基于Qt5，版本不是很高，所以渲染的时候会有一些兼容问题，而且JavaScript引擎也相对比较古老（最新的PhantomJS release是2.1版，这个版本基于Qt5.5。Qt5.5使用的Chromium内核版本是40，Chromium现在最新版本是62）。第二，PhantomJS现在已经处于一种维护不多的状态（Github上有1901个open issues）。</p>
+<p>作为一个个人项目，PhantomJS在各种自动化测试以及页面自动化操作中被广泛使用，达到了很高的高度。但因为以上两个缺点，使用PhantomJS将不会是长久之计。</p>
+<h3 id="Chrome的Headless模式"><a href="#Chrome的Headless模式" class="headerlink" title="Chrome的Headless模式"></a>Chrome的Headless模式</h3><p>Headless Chrome其实不是一个全新的工具，而是普通的Chrome浏览器的headless模式。headless就是指Chrome的UI部分是不运行的。</p>
+<p>所以只要你的机器上安装了Chrome 59+，你就可以使用Headless Chrome。相比之前<code>npm install</code>时经常要从bitbucket下载PhantomJS binary的麻烦事，Headless Chrome要方便不少，毕竟Web开发者一般都安装了Chrome。</p>
+<p>你可以在命令行中用headless模式启动Chrome：</p>
+<pre><code>chrome \
+  --headless \                   # Runs Chrome in headless mode.
+  --disable-gpu \                # Temporarily needed for now.
+  --remote-debugging-port=9222 \
+  https://www.chromestatus.com   # URL to open. Defaults to about:blank.
+</code></pre><p>我们可以直接在Chrome的CLI中进行一些操作，比如截屏：</p>
+<pre><code>chrome --headless --disable-gpu --screenshot --window-size=1280,1696 https://www.chromestatus.com/
+</code></pre><p>但一般我们很少会这样直接使用Headless Chrome。对这部分有兴趣的同学可以看<a href="https://developers.google.com/web/updates/2017/04/headless-chrome" target="_blank" rel="noopener">官方文档</a>，这里就不多说了。</p>
+<p>Headless Chrome的最大的优点就是，它就是Chrome，所以可以保持Evergreen，也就是持续的更新。并且我们可以在Headless模式使用Chrome带来的所有的现代Web平台的特性。所以Headless Chrome就成为了PhantomJS的完美升级版替代品。</p>
+<h3 id="强大的Chrome-DevTools-Protocol"><a href="#强大的Chrome-DevTools-Protocol" class="headerlink" title="强大的Chrome DevTools Protocol"></a>强大的Chrome DevTools Protocol</h3><p>要在脚本中和Chrome进行交互，需要用Chrome DevTools Protocol这个协议。所以这里首先介绍一下这个协议。</p>
+<p>简单的说，我们可以在启动Chrome的时候开启一个用于远程调试的端口。然后我们可以在浏览器或者其他客户端中和Chrome建立socket连接，并使用Chrome DevTools Protocol进行通信。</p>
+<p>Chrome DevTools Protocol通信的格式是JSON。比如我们想截屏，就可以发一个消息：</p>
+<pre><code>{
+    id:30,
+    method:&quot;Page.captureScreenshot&quot;,
+    params: {
+        format:&quot;png&quot;,
+        quality:100
+    }
+}
+</code></pre><p>返回的消息：</p>
+<pre><code>{
+    id:30,
+    data:&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA...&quot;    
+}
+</code></pre><p>具体的API可以参考<a href="https://chromedevtools.github.io/devtools-protocol/" target="_blank" rel="noopener">文档</a>，我们从文档里可以看到，Chrome DevTools Protocol包含的范围非常广。简单的说，我们平时在Chrome DevTool里面可以做到的事情，能获取的数据，我们使用Chrome DevTools Protocol都可以做到。因为Chrome DevTool其实就是基于这个协议进行开发的一个B/S架构的工具。当然这个协议也应该是随着Chrome DevTool的开发，被标准化。现在不仅仅是Chrome，其他浏览器也支持部分Chrome DevTools Protocol。</p>
+<p>我们在Chrome的拓展里也可以调用这一套API。所以Chrome拓展的潜力是很大的。可以通过合理使用Chrome DevTools Protocol获得更接近自带DevTool的debug体验。也可以对内存、DOM、渲染等数据进行二次的分析和利用。</p>
+<h3 id="Nodejs服务"><a href="#Nodejs服务" class="headerlink" title="Nodejs服务"></a>Nodejs服务</h3><p>直接使用Chrome DevTools Protocol还是比较麻烦的。社区已经有了封装好的Nodejs包<a href="https://github.com/cyrus-and/chrome-remote-interface" target="_blank" rel="noopener">chrome-remote-interface</a>可以直接使用。我们可以直接像调用JavaScript API那样来和Chrome进行通信。</p>
+<p>下面就演示一下如何在Node中进行Chrome的截屏：</p>
+<pre><code>const CDP = require(&#39;chrome-remote-interface&#39;);
+const Koa = require(&#39;koa&#39;);
+const app = new Koa();
+
+const viewportWidth = 1440;
+const viewportHeight = 900;
+const delay = 500;
+
+app.use(async ctx =&gt; {
+  ctx.body = await capture(ctx.request.query.url);
+});
+
+app.listen(3000);
+
+const capture = function (url) {
+  return new Promise((resolve, reject) =&gt; {
+    CDP.New().then((target) =&gt; {
+      return CDP({ target });
+    }).then(async (client) =&gt; {
+
+      const { Page } = client;
+      await Page.enable();
+      await Page.navigate({ url: url });
+
+      Page.loadEventFired(() =&gt; {
+        setTimeout(async () =&gt; {
+          const { data } = await Page.captureScreenshot();
+          resolve(Buffer.from(data, &#39;base64&#39;));
+          const id = client.target.id;
+          client.close();
+          CDP.Close({ id });
+        }, delay);
+      });
+    }).catch((err) =&gt; {
+      console.error(err);
+    });
+  })
+}
+</code></pre><p>chrome-remote-interface将一个socket通信的来回封装成了一个异步的函数调用，返回一个Promise。在Node7.8+的环境，我们可以用async/await来轻松的进行流程控制。这里是具体的<a href="https://github.com/cyrus-and/chrome-remote-interface/wiki" target="_blank" rel="noopener">Demo</a>和<a href="https://github.com/cyrus-and/chrome-remote-interface#api" target="_blank" rel="noopener">API文档</a>，基本和Chrome DevTools Protocol里的接口是一一对应的。</p>
+<p>这个服务监听3000端口，在请求中拿到url参数，调用<code>capture</code>函数截屏。我们这里默认Chrome的调试端口是127.0.0.1:9222。如果需要调整，可以在初始化CDP实例的时候传入参数。</p>
+<p>我们调用<code>CDP.New()</code>初始化一个新的Tab，等待Page加载完成，打开url，然后等待页面的加载事件触发之后执行回调，在回调里调用截屏API并且获取数据。最后我们关闭这个Tab。整个截图的流程就是这样。</p>
+<h3 id="Tip：截取整个页面"><a href="#Tip：截取整个页面" class="headerlink" title="Tip：截取整个页面"></a>Tip：截取整个页面</h3><p>我遇到的一个很大的问题就是，页面比较长，我希望截取的图片的高度就是页面的高度，也就是说我希望给整个页面截屏。</p>
+<p>一开始我截屏的结果是这样的：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg" alt=""></p>
+<p>这和想象的不一样啊，下面的大半截都没有了 <img src="http://wx1.sinaimg.cn/large/64c45edcgy1fi6if8s30uj203d023q2q.jpg" alt="xiaohuangji"></p>
+<p>所以要如何截取整个页面的呢？我在chrome-remote-interface的wiki里看到了一篇<a href="https://medium.com/@dschnr/using-headless-chrome-as-an-automated-screenshot-tool-4b07dffba79a?1" target="_blank" rel="noopener">文章</a>。然而截屏的时候报错，说<code>Emulation.forceViewport</code>不存在.原来这个API已经在新版的Chrome中被废弃了。</p>
+<p>最终我找到了一篇<a href="https://jonathanmh.com/taking-full-page-screenshots-headless-chrome/" target="_blank" rel="noopener">神奇的博客</a>，完美的解决了我的问题，核心代码是这样的：</p>
+<pre><code>Page.loadEventFired(async() =&gt; {
+    if (fullPage) {
+      const {root: {nodeId: documentNodeId}} = await DOM.getDocument();
+      const {nodeId: bodyNodeId} = await DOM.querySelector({
+        selector: &#39;body&#39;,
+        nodeId: documentNodeId,
+      });
+
+      const {model: {height}} = await DOM.getBoxModel({nodeId: bodyNodeId});
+      await Emulation.setVisibleSize({width: device.width, height: height});
+      await Emulation.setDeviceMetricsOverride({width: device.width, height:height, screenWidth: device.width, screenHeight: height, deviceScaleFactor: 1, fitWindow: false, mobile: false});
+      await Emulation.setPageScaleFactor({pageScaleFactor:1});
+    }
+  });
+
+  setTimeout(async function() {
+    const screenshot = await Page.captureScreenshot({format: &quot;png&quot;, fromSurface: true});
+    const buffer = new Buffer(screenshot.data, &#39;base64&#39;);
+    fs.writeFile(&#39;desktop.png&#39;, buffer, &#39;base64&#39;, function(err) {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(&#39;Screenshot saved&#39;);
+      }
+    });
+      client.close();
+  }, screenshotDelay);
+
+}).on(&#39;error&#39;, err =&gt; {
+  console.error(&#39;Cannot connect to browser:&#39;, err);
+});
+</code></pre><p>原理就是用Emulation这个API，去调整页面的一些属性。其中核心的方法是<code>Emulation.setVisibleSize</code>，文档里对这个方法的说明是：</p>
+<blockquote>
+<p>Resizes the frame/viewport of the page. Note that this does not affect the frame’s container (e.g. browser window). Can be used to produce screenshots of the specified size.</p>
+</blockquote>
+<p>然后我们就可以愉快的给整个页面截屏了，比如这样：</p>
+<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fi6i22r84kj21402hdjux.jpg" alt="full image"></p>
+<h3 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h3><p>最后我们需要部署这两个服务，社区里有自制的Headless Chrome的Docker镜像，比如<a href="https://github.com/yukinying/chrome-headless-browser-docker" target="_blank" rel="noopener">yukinying/chrome-headless-browser-docker</a>。注意如果我们需要调整Chrome的默认window大小，可以修改<a href="https://github.com/yukinying/chrome-headless-browser-docker/blob/master/chrome/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>然后自行build镜像。</p>
+<pre><code>ENTRYPOINT [&quot;/usr/bin/dumb-init&quot;, &quot;--&quot;, \
+            &quot;/usr/bin/google-chrome-unstable&quot;, \
+            &quot;--disable-gpu&quot;, \
+            &quot;--window-size=1440,900&quot;  # 在ENTRYPOINT命令参数中加上window-size
+            &quot;--headless&quot;, \
+            &quot;--remote-debugging-address=0.0.0.0&quot;, \
+            &quot;--remote-debugging-port=9222&quot;, \
+            &quot;--user-data-dir=/data&quot;]
+</code></pre><p>Node服务的镜像就比较简单了：</p>
+<pre><code>FROM node:latest
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+RUN npm install koa chrome-remote-interface
+EXPOSE 3000
+CMD [ &quot;node&quot;, &quot;index.js&quot; ]
+</code></pre><p>生产中应该用pm2这样的Process Manager来保持进程的运行。依赖也应该写在package.json里。</p>
+<p>服务之间的关系如下：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg" alt="service"></p>
+<h3 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h3><p>如果大家想使用Headless Chrome的话，最好还是去浏览一下相关的文档，因为这些内容都属于比较新的东西，变化也比较快。本文主要是简单的介绍一下这方面实现的可行性。下面是相关的链接：</p>
+<ul>
+<li><a href="https://developers.google.com/web/updates/2017/04/headless-chrome" target="_blank" rel="noopener">Getting Started with Headless Chrome</a></li>
+<li><a href="https://chromedevtools.github.io/devtools-protocol/" target="_blank" rel="noopener">Chrome DevTools Protocol Viewer</a></li>
+<li><a href="https://github.com/cyrus-and/chrome-remote-interface" target="_blank" rel="noopener">chrome-remote-interface</a></li>
+<li><a href="https://jonathanmh.com/taking-full-page-screenshots-headless-chrome/" target="_blank" rel="noopener">Taking Full Page Screenshots with Headless Chrome</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/05/fe-microservice/" rel="next" title="前端微服务实践-以木犀通行证为例">
+                <i class="fa fa-chevron-left"></i> 前端微服务实践-以木犀通行证为例
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/14/component-talk-modal/" rel="prev" title="聊聊UI组件设计-Modal">
+                聊聊UI组件设计-Modal <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PhantomJS的问题"><span class="nav-number">2.</span> <span class="nav-text">PhantomJS的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome的Headless模式"><span class="nav-number">3.</span> <span class="nav-text">Chrome的Headless模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强大的Chrome-DevTools-Protocol"><span class="nav-number">4.</span> <span class="nav-text">强大的Chrome DevTools Protocol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nodejs服务"><span class="nav-number">5.</span> <span class="nav-text">Nodejs服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tip：截取整个页面"><span class="nav-number">6.</span> <span class="nav-text">Tip：截取整个页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker镜像"><span class="nav-number">7.</span> <span class="nav-text">Docker镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Links"><span class="nav-number">8.</span> <span class="nav-text">Links</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

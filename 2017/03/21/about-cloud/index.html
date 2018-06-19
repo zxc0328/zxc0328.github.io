@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章主要是写我对团队在云计算方向上现状的一些思考。并没有什么关于云计算的干货，毕竟我在这方面还需要大量的实践才能有足够的发言权。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊云计算">
+<meta property="og:url" content="http://yoursite.com/2017/03/21/about-cloud/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="这篇文章主要是写我对团队在云计算方向上现状的一些思考。并没有什么关于云计算的干货，毕竟我在这方面还需要大量的实践才能有足够的发言权。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.501Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊云计算">
+<meta name="twitter:description" content="这篇文章主要是写我对团队在云计算方向上现状的一些思考。并没有什么关于云计算的干货，毕竟我在这方面还需要大量的实践才能有足够的发言权。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/21/about-cloud/"/>
+
+
+
+
+
+  <title>聊聊云计算 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/21/about-cloud/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊云计算</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-21T15:17:18+08:00">
+                2017-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章主要是写我对团队在云计算方向上现状的一些思考。并没有什么关于云计算的干货，毕竟我在这方面还需要大量的实践才能有足够的发言权。</p>
+<a id="more"></a>
+<h3 id="IaaS"><a href="#IaaS" class="headerlink" title="IaaS"></a>IaaS</h3><p>我们用的最多的就是IaaS（Infrastructure as a Service）了。阿里云中的ECS和RDS就是典型的IaaS，另外阿里云OSS或者亚马逊S3那样的存储服务也是。</p>
+<p>IaaS，简单的理解就是，将计算资源，作为一种基础设施，提供给用户。用户可以像消费水和电一样来按需进行使用计算资源。</p>
+<p>IaaS是基于虚拟化和分布式技术来提供服务的。在云计算之前的时代，公司的网站是部署在一台台实体的服务器上的。一般来说，一家小公司，可能只需要一两台服务器就可以满足业务需求了。有服务器也自然有传统的运维人员，这种工程师精通硬件、网络和安全方面的知识，全权负责机房里服务器的正常运转和性能优化。</p>
+<p>然而维护一台实体服务器的成本是很高的，需要雇佣一个服务器运维人员，需要付出电费和购置服务器的费用，以及架设网络的成本。</p>
+<p>大公司会建立数据中心，其实就是有着大量服务器的厂房。大公司有着足够的人力去维护自有的服务器。</p>
+<p>在那个年代，后端工程师部署服务是直接部署在实体机器上的，在部署时需要和运维人员确定服务器的环境等，经常会有一些沟通上的问题。</p>
+<p>还有一个问题则是，那时的网站是很难动态伸缩的，一个应用往往同时部署在多台服务器上。然而，要使得一个服务能抗下更多的流量，就需要更多的服务器，如果不能在短时间内配置好新服务器，网站在压力之下往往会崩溃。</p>
+<p>云计算对于小公司的好处在于，消除了维护实体服务器需要的各种繁杂的成本。维护实体服务器的责任交给了云服务厂商。小公司只需要购买服务就可以。</p>
+<p>对于大公司来说，云计算可以动态扩容，一键部署，使得应用在压力之下可以弹性伸缩。将计算资源利用率最大化。</p>
+<p>我们使用的ECS其实并不对应一台实体的服务器，但我们在使用的时候可以将ECS当成一台完整的服务器来使用。这就是虚拟化技术的好处。我们可以按需使用计算资源（一台实体服务器往往是8核或者16核CPU这样的配置，我们用不到这么多的CPU）。</p>
+<p>我们也不用担心服务器会被攻击或者数据丢失。ECS提供了自动快照的服务。</p>
+<p>在我看来云计算是对计算资源做的一次抽象，将后端应用和实体的服务器硬件资源隔离了。使得基于硬件的备份和维护这些事情抽象出来，开发人员只用关注应用层面的逻辑就可以了。</p>
+<p>而RDS和OSS这些服务，也是同理。我们不用关心存储具体的物理位置在哪台服务器上，只需要调用这个服务就可以了。</p>
+<p>而RDS、ECS和OSS三个服务的分离，也是一种抽象。ECS只关心业务逻辑，OSS和RDS只关心数据存储。只有无状态的服务才能轻松实现横向的拓展。如果ECS上的应用和数据库一起部署的话，会对应用的可拓展性造成影响。</p>
+<p>具体说到我们团队，ECS和RDS我们使用阿里云的服务。对象存储我们则打算自建。一个是利用手上的物理服务器，降低一些成本，还有一个就是研究一下分布式存储相关的技术，加深团队在云计算方面的技术深度（Ceph这个开源的分布式存储框架已经非常强大了，我们目前打算先尝试Ceph）。</p>
+<h3 id="PaaS"><a href="#PaaS" class="headerlink" title="PaaS"></a>PaaS</h3><p>PaaS（Platform as a Service）方面的服务的代表就是Google的App Engine（以下简称GAE）。在App Engine中你只需要写业务逻辑，不需要关心服务和数据的部署。GAE号称会根据你应用的流量实时拓展服务的部署。</p>
+<p>GAE带来的其实是更高的一层抽象。将基础设施的使用也屏蔽了。其实这个就将当于大家写了一个Flask应用，push到Github，写一个简单的配置文件，然后就可以访问了。你不用关心Nginx的配置，也不用关心部署多个实例以及均衡负载这些问题。It just works。</p>
+<p>另外你还可以在控制台用GUI控制你的应用，以及读取监控数据等等。</p>
+<p>我对此是非常感兴趣的，特别是Docker的出现，使得自动化的部署，环境的隔离以及标准化变成了一件比较简单的事情。</p>
+<p>我构想中的Muxi App Engine（以下简称MAE）是这样的：</p>
+<p>支持Python和Node两种环境，会根据ECS上的实时部署情况，自动将容器实例部署在最合适的ECS上，并且在流量变大时会自动伸缩。在MAE控制台上可以看到常规的Log统计。可以在MAE上用配置中的Git仓库和分支进行一键部署，前端代码也是一样的。</p>
+<p>MAE的目标是将一些应用公共的流程尽量标准化，目前我们的自动化部署还是需要自己写Webhook脚本的。统计的话也是需要手动去配置的。Nginx相关的一些配置也是手动的。</p>
+<p>MAE是一个单独的服务，部署在一台服务器上。MAE对可支配的ECS都有着记录，并且在对应的ECS上都运行着守护进程，和MAE服务通信。</p>
+<p>MAE时代的开发和目前并没有太大的区别，只是每个应用需要有一个MAE的配置文件，里面写了域名、Github仓库、Docker环境等等信息。</p>
+<p>我们在MAE上新建一个应用，然后点击部署，就可以部署了。</p>
+<p>对于我们的大部分，自己托管数据的应用（相比匣子这样需要实时爬取的应用），比如学而、桂声等等，MAE这样的模式可以很好的讲平台层的运维工作简单化、标准化。</p>
+<p>当然MAE如何和微服务结合这个也是一个问题，目前的应用其实是有分拆成服务的空间的，这样的话MAE其实应该是以服务为单位的。</p>
+<h3 id="SaaS"><a href="#SaaS" class="headerlink" title="SaaS"></a>SaaS</h3><p>SaaS（Software as a Service）离普通用户最近的云计算形式。我们用Tower、百度云盘、石墨文档这些，都属于SaaS。</p>
+<p>我们日后推出的服务，比如云简历，或者是其他工具类的应用，都是以软件形式向用户提供了某种基于云计算的服务。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>基于综合的考虑，我认为云计算是目前最有用，也是最触手可及的前沿技术。</p>
+<p>目前后端技术这边，机器学习/人工智能、云计算、大数据，是几个比较火的领域。当然这几个领域目前有融合的趋势。</p>
+<p>对于我们来说，要构筑我们的技术壁垒，云计算是最好的突破口。在知识水平、业务体量等种种的不利因素下，云计算是可以深挖，并且<strong>实践</strong>的一个领域。</p>
+<p>无论是对于我们内部服务的支持，或者是对于个人技术能力，就业市场竞争力的提升来说，这都是一个最优的方向。</p>
+<p>所以在接下来的很长一段时间，我希望大家能一起努力，在云计算上，达到一个不算太寒碜的水准。这需要所有同学的支持，包括前端、客户端和设计组的同学，因为转向云计算会对目前的开发流程产生很大的影响。然后在UI和品牌方面，自然也需要前端和设计师的配合。PM同学也需要理解这个战略。</p>
+<p>就写这么多吧。祝一切顺利。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/26/my2016/" rel="next" title="我的2016">
+                <i class="fa fa-chevron-left"></i> 我的2016
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/26/proxy-for-terminal/" rel="prev" title="终端工具翻墙不完全指南">
+                终端工具翻墙不完全指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#IaaS"><span class="nav-number">1.</span> <span class="nav-text">IaaS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PaaS"><span class="nav-number">2.</span> <span class="nav-text">PaaS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SaaS"><span class="nav-number">3.</span> <span class="nav-text">SaaS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="如何快速并且健壮地实现高度不一定的实体的居中呢？   vertical-align显然是一种办法。这个元素从语义上来看就是用来实现垂直对齐的。要理解vertical-align，首先我们得了解几个概念，inline boxes, line box, 以及baseline。   inline boxes是行内元素构成的行内box，而line box则是由一行内所有的inline boxes构成的bo">
+<meta name="keywords" content="CSS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最佳实践之多个高度不定水平实体垂直居中">
+<meta property="og:url" content="http://yoursite.com/2015/07/23/vertical-align-middle/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="如何快速并且健壮地实现高度不一定的实体的居中呢？   vertical-align显然是一种办法。这个元素从语义上来看就是用来实现垂直对齐的。要理解vertical-align，首先我们得了解几个概念，inline boxes, line box, 以及baseline。   inline boxes是行内元素构成的行内box，而line box则是由一行内所有的inline boxes构成的bo">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/blog_7_24_1.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.520Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="最佳实践之多个高度不定水平实体垂直居中">
+<meta name="twitter:description" content="如何快速并且健壮地实现高度不一定的实体的居中呢？   vertical-align显然是一种办法。这个元素从语义上来看就是用来实现垂直对齐的。要理解vertical-align，首先我们得了解几个概念，inline boxes, line box, 以及baseline。   inline boxes是行内元素构成的行内box，而line box则是由一行内所有的inline boxes构成的bo">
+<meta name="twitter:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/blog_7_24_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/07/23/vertical-align-middle/"/>
+
+
+
+
+
+  <title>最佳实践之多个高度不定水平实体垂直居中 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/07/23/vertical-align-middle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">最佳实践之多个高度不定水平实体垂直居中</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-07-23T22:35:05+08:00">
+                2015-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CSS/" itemprop="url" rel="index">
+                    <span itemprop="name">CSS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如何快速并且健壮地实现高度不一定的实体的居中呢？  </p>
+<p>vertical-align显然是一种办法。这个元素从语义上来看就是用来实现垂直对齐的。要理解vertical-align，首先我们得了解几个概念，inline boxes, line box, 以及baseline。  </p>
+<p>inline boxes是行内元素构成的行内box，而line box则是由一行内所有的inline boxes构成的box，比如：</p>
+<pre><code>&lt;div&gt;
+    &lt;span&gt;我是inline box&lt;/span&gt;
+    我是匿名inline box
+&lt;/div&gt;
+</code></pre><p>除了display为inline或者inline-block的标签会形成inline box，行内文本也会形成匿名的inline box。</p>
+<p>一行所有的inline boxes构成匿名的line box，其中inline box中高度最高的那个的高度便是line box的高度，由此撑起了整行的高度。（这涉及到line-height方面的知识）</p>
+<p>而关于baseline，则是文字在排版时顶部与底部中间的基线，如果是行内文本，具体位置随字体不同而不同，一般都在中线以下的位置。具体的需要参考西文字体学（Typography）(Jobs在大学旁听的课程之一，你值得拥有)  </p>
+<p>而line—height其实就是两条基线之间的距离。</p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/blog_7_24_1.png" alt="baseline"></p>
+<a id="more"></a>
+<p>对于inline-block级元素来说，基线的定义是这样的：</p>
+<pre><code>The baseline of an &#39;inline-block&#39; is the baseline of its last line
+box in the normal flow, unless it has either no in-flow line boxes
+or if its &#39;overflow&#39; property has a computed value other than
+&#39;visible&#39;, in which case the baseline is the bottom margin edge.
+（CSS2.1 W3C）
+</code></pre><p> 一般是正常文档流中的最后一个line box的基线。</p>
+<p>我们面对的场景是这样的，一个高度固定的div，中间有数个高度不固定的div需要被垂直居中。让我们来看看vertical-align:middle的定义：</p>
+<pre><code>Align the vertical midpoint of the box with the baseline of the
+parent box plus half the x-height of the parent.（CSS2.1 W3C）
+</code></pre><p> （元素）的垂直中点与父元素的基线加上x轴高度的一半对齐。</p>
+<p> 听起来有点奇怪，什么是x-height呢，x-height其实就是上图中小写字母x占据的高度，西文字体中小写字母x占据了mean line和baseline直接的这段空间，也就是所谓的字面所在。</p>
+<p> x这个字母恰好是镜面对称的，所以我们可以清楚的看到，vertical-align:middle就是将元素的中点对准x字母的中线，所以就形成了垂直居中的效果。</p>
+<p> 好，现在我们来看实际的情况，我们有一个高度固定的div，然后内部有两个inline-block级的div，需要水平居中，这两个div的高度随机。</p>
+<p> 代码：</p>
+<pre><code>&lt;div style=&quot;height:300px;&quot;&gt;
+    &lt;div style=&quot;display:inline-block&quot;&gt;我是一号div，啊啊啊啊啊啊啊啊啊啊&lt;br&gt;啊啊啊啊啊啊啊啊&lt;/div&gt;
+    &lt;div style=&quot;display:inline-block&quot;&gt;我是二号div&lt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre><div style="height:100px;background-color:blue"><div style="display:inline-block;background-color:red">我是一号div，啊啊啊啊啊啊啊啊啊啊<br>啊啊啊啊啊啊啊啊</div><div style="display:inline-block;background-color:white">我是二号div</div></div>
+
+<p>这是默认情况，两个div的vertical-align被设置为baseline,可以看出两个div的baseline在一条线上。第一个div的baseline是最后一个line box的baseline。</p>
+<p>那么父级元素div，一个块级元素，是否存在baseline呢？答案是否定的，在inline-block元素处于块极元素内部的情况下，vertical-align更多与同级inline-block元素的相互对齐有关，而和父级元素无关。</p>
+<p>可以实验一下，我们把父级div设为inline-block，看看会发生什么事情。</p>
+<pre><code>&lt;div style=&quot;display:inline-block;line-height:100px;background-
+color:blue&quot;&gt;
+    &lt;div style=&quot;display:inline-block;background-color:red&quot;&gt;
+    我是一号div，啊啊啊啊啊啊啊啊啊啊&lt;br&gt;啊啊啊啊啊啊啊啊
+    &lt;/div&gt;
+    &lt;div style=&quot;display:inline-block;background-color:white&quot;&gt;
+    我是二号div
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><div style="display:inline-block;line-height:100px;background-color:blue;font-size:150px"><div style="display:inline-block;background-color:red;font-size:15px">我是一号div，啊啊啊啊啊啊啊啊啊啊<br>啊啊啊啊啊啊啊啊</div><div style="display:inline-block;background-color:white;font-size:15px">我是二号div</div>X</div>
+
+<p>这里我将父级div设为inline-block并且把line-height设为100px，因此其子元素的基线就和父元素的基线对齐了。我特意放了一个特大号的字，X的底部便是baseline了。</p>
+<p>了解到这一点之后，我们便清楚了，父元素是块级元素的情况下，vertical-align只和同级元素有关。vertical-align:middle便是同级元素的中线相互对齐。</p>
+<p>我们只需要一个空的div，它只起占位的作用，高度是100%，宽度是0，于是，其他高度小于父元素的子元素便会与这个占位元素的中线对齐，也就达到了垂直对齐。</p>
+<pre><code>&lt;div style=&quot;height:100px;background-color:blue;font-size:0&quot;&gt;
+    &lt;div style=&quot;height:100%;width:0;display:inline-block;vertical-
+    align:middle&quot;&gt;&lt;/div&gt;
+    &lt;div style=&quot;display:inline-block;background-color:red;font-size:
+    15px;vertical-align:middle&quot;&gt;我是一号div，啊啊啊啊啊啊啊啊啊啊&lt;br&gt;啊啊
+    啊啊啊啊啊啊&lt;/div&gt;
+    &lt;div style=&quot;display:inline-block;background-color:white;font-
+    size:15px;vertical-align:middle&quot;&gt;我是二号div&lt;/div&gt;
+   &lt;/div&gt;
+</code></pre><div style="height:100px;background-color:blue;font-size:0"><div style="height:100%;width:0;display:inline-block;vertical-align:middle"></div><div style="display:inline-block;background-color:red;font-size:15px;vertical-align:middle">我是一号div，啊啊啊啊啊啊啊啊啊啊<br>啊啊啊啊啊啊啊啊</div><div style="display:inline-block;background-color:white;font-size:15px;vertical-align:middle">我是二号div</div></div>
+
+<p>垂直居中的效果就达成了！</p>
+<p>ok，用:before伪元素来实现也是一个很不错的做法，相比空div要更简洁一些。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSS/" rel="tag"># CSS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/23/Web-Animation-Using-Javascript-part-one/" rel="next" title="Web Animation Using Javascript part one">
+                <i class="fa fa-chevron-left"></i> Web Animation Using Javascript part one
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/25/ie-fix/" rel="prev" title="实战之IE兼容常见问题">
+                实战之IE兼容常见问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

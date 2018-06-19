@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Angular," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="###概述Augular中的$q服务提供了Promise的实现，这个服务叫做“q”是因为它是Kris Kowal’s Q的一种植入。   从Augular中$q服务的文档中可以了解到，这个服务有两种用法，一种在某种程度上和ES6的Promise规范相似，而另一种则和Q以及jQuery的Deferred接口类似。">
+<meta name="keywords" content="Angular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular源码分析:$q">
+<meta property="og:url" content="http://yoursite.com/2015/08/24/angulr-q-js/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="###概述Augular中的$q服务提供了Promise的实现，这个服务叫做“q”是因为它是Kris Kowal’s Q的一种植入。   从Augular中$q服务的文档中可以了解到，这个服务有两种用法，一种在某种程度上和ES6的Promise规范相似，而另一种则和Q以及jQuery的Deferred接口类似。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.502Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular源码分析:$q">
+<meta name="twitter:description" content="###概述Augular中的$q服务提供了Promise的实现，这个服务叫做“q”是因为它是Kris Kowal’s Q的一种植入。   从Augular中$q服务的文档中可以了解到，这个服务有两种用法，一种在某种程度上和ES6的Promise规范相似，而另一种则和Q以及jQuery的Deferred接口类似。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/24/angulr-q-js/"/>
+
+
+
+
+
+  <title>Angular源码分析:$q | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/24/angulr-q-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Angular源码分析:$q</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-08-24T15:27:51+08:00">
+                2015-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Angular/" itemprop="url" rel="index">
+                    <span itemprop="name">Angular</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>###概述<br>Augular中的$q服务提供了Promise的实现，这个服务叫做“q”是因为它是<a href="https://github.com/kriskowal/q" target="_blank" rel="noopener">Kris Kowal’s Q</a>的一种植入。  </p>
+<p>从Augular中$q服务的文档中可以了解到，这个服务有两种用法，一种在某种程度上和ES6的Promise规范相似，而另一种则和Q以及jQuery的Deferred接口类似。</p>
+<a id="more"></a>
+<p>因此在Angular中$q的具体代码实现有两种，一种是将$q作为一个构造函数，并且接收一个<code>resolver()</code>函数作为唯一参数。这和ES6的原生实现相似：</p>
+<pre class="prettyprint">
+// for the purpose of this example let's assume that variables `$q` and `okToGreet`
+// are available in the current lexical scope (they could have been injected or passed in).
+
+function asyncGreet(name) {
+  // perform some asynchronous operation, resolve or reject the promise when appropriate.
+  return $q(function(resolve, reject) {
+    setTimeout(function() {
+      if (okToGreet(name)) {
+        resolve('Hello, ' + name + '!');
+      } else {
+        reject('Greeting ' + name + ' is not allowed.');
+      }
+    }, 1000);
+  });
+}
+
+var promise = asyncGreet('Robin Hood');
+promise.then(function(greeting) {
+  alert('Success: ' + greeting);
+}, function(reason) {
+  alert('Failed: ' + reason);
+});
+</pre>
+
+<p>而另一种实现则是更为传统的CommonJS风格的实现，将Promise描述成一个接口，来和一个代表了未来结果的异步请求发生交互。</p>
+<p>代码如下：  </p>
+<pre class="prettyprint">
+// for the purpose of this example let's assume that variables `$q` and `okToGreet`
+// are available in the current lexical scope (they could have been injected or passed in).
+
+function asyncGreet(name) {
+  var deferred = $q.defer();
+
+  setTimeout(function() {
+    deferred.notify('About to greet ' + name + '.');
+
+    if (okToGreet(name)) {
+      deferred.resolve('Hello, ' + name + '!');
+    } else {
+      deferred.reject('Greeting ' + name + ' is not allowed.');
+    }
+  }, 1000);
+
+  return deferred.promise;
+}
+
+var promise = asyncGreet('Robin Hood');
+promise.then(function(greeting) {
+  alert('Success: ' + greeting);
+}, function(reason) {
+  alert('Failed: ' + reason);
+}, function(update) {
+  alert('Got notification: ' + update);
+});
+
+</pre>
+
+
+<p>##源码分析：deferred API<br>因为$q服务中的ES6形式实现实际上是在deferred api的基础上的一种封装实现，所以我们先来看看deferred API的源代码。<br>这部分代码的结构看起来是这样的：</p>
+<pre class="prettyprint">
+//deferred method: return a instance of Deferred object
+var deferred = function() {
+    return new Deferred();
+};
+
+//construct function of Promise object
+function Promise() {
+    this.$$state = { status: 0 };
+}
+
+//then, catch, and finally method of Promise object
+extend(Promise.prototype, {
+    then: function(onFulfilled, onRejected, progressBack) {
+      //...
+    },
+
+    "catch": function(callback) {
+      //...
+    },
+
+    "finally": function(callback, progressBack) {
+      //...
+    }
+});
+
+
+//construct function of Deferred object, the promise object is a method 
+//of Deferred object. And resolve, reject, notify apis are binded here.
+function Deferred() {
+    this.promise = new Promise();
+    //Necessary to support unbound execution :/
+    this.resolve = simpleBind(this, this.resolve);
+    this.reject = simpleBind(this, this.reject);
+    this.notify = simpleBind(this, this.notify);
+}
+
+
+
+extend(Deferred.prototype, {
+    resolve: function(val) {
+        //...
+    },
+
+    $$resolve: function(val) {
+        //...
+    },
+
+    reject: function(reason) {
+        //...
+    },
+
+    $$reject: function(reason) {
+        //...
+    },
+
+    notify: function(progress) {
+           //...
+    }
+  });
+
+</pre>
+
+
+<p>###具体分析：Deferred.promise.then()</p>
+<pre class="prettyprint">
+then: function(onFulfilled, onRejected, progressBack) {
+       //check if at least one para was passed in, otherwise return.
+      if (isUndefined(onFulfilled) && isUndefined(onRejected) && isUndefined(progressBack)) {
+        return this;
+      }
+      //instantiate a new Deferred object as result
+      var result = new Deferred();
+
+       //instantiate $$state.pending
+      this.$$state.pending = this.$$state.pending || [];
+      //push paras of this into $$state.pending array
+      this.$$state.pending.push([result, onFulfilled, onRejected, progressBack]);
+      //if $$state.status changed, add this.$$state to the process 
+      queue
+      if (this.$$state.status > 0) scheduleProcessQueue(this.$$state);
+
+      //return the new Deferred object instance's promise object
+      return result.promise;
+}
+</pre>
+
+<p>then()方法接收三个参数，promise条件满足时执行的函数<code>onFulfilled</code>，被拒绝时的回调函数<code>onRejected</code>，以及一个通知用回调函数<code>progressBack</code>。<br>这里的逻辑是<code>then()</code>方法接收参数之后，实例化一个新<code>Deferred</code>对象，并将参数推入pending数组中。<br>关于then,有趣的一点在于then的链式调用的实现，在分析这点之前，我们把目光移到这个api的大局上来，看看promise的状态变化以及状态转移是如何实现的。</p>
+<p>###具体分析：Deferred.resolve()</p>
+<p>在promise对象内部，收到请求后具体执行状态转移的便是<code>resolve()</code>和<code>reject()</code>函数了，我们还可以向其中传递一个唯一的参数，来作为<code>resolve()</code>的value或是<code>reject()</code>的reason。因为这两个方法原理大致类似（在源码中这两个方法的相关代码有较大的不同，应该和这个两种行为不同的结果有关），所以我们就以<code>resolve()</code>方法为例来说明。</p>
+<pre class="prettyprint">
+resolve: function(val) {
+        //if $$state not equals 0, which means the state had already 
+        changed, return.
+      if (this.promise.$$state.status) return;
+      //reject if val is this.promise its self.
+      if (val === this.promise) {
+        this.$$reject($qMinErr(
+          'qcycle',
+          "Expected promise to be resolved with value other than itself '{0}'",
+          val));
+      } else {
+      //resolve val with inner method $$resolve
+        this.$$resolve(val);
+      }
+
+    },
+
+$$resolve: function(val) {
+      var then, fns;
+      //warp the functions in order to be called only once
+      fns = callOnce(this, this.$$resolve, this.$$reject);
+      try {
+        if ((isObject(val) || isFunction(val))) then = val && val.then;
+        if (isFunction(then)) {
+          this.promise.$$state.status = -1;
+          then.call(val, fns[0], fns[1], this.notify);
+        } else {
+          this.promise.$$state.value = val;
+          this.promise.$$state.status = 1;
+          scheduleProcessQueue(this.promise.$$state);
+        }
+      } catch (e) {
+        fns[1](e);
+        exceptionHandler(e);
+      }
+}
+</pre>
+
+<p><code>resolve()</code>方法接收一个值val，这个值可能是对象/函数，也有可能是普通的数值或是字符串。<code>resolve()</code>方法首先判断<code>Deferred.promise.$$state.status</code>的值是否不为0，如果不为0则说明状态已经转移了，那么就不再继续执行。如果一切正常，在执行<code>resolve()</code>方法时，<code>Deferred.promise.$$state.status</code>的值为初始的0，然后val被传入一个内部函数<code>$$resolve()</code>,来进行真正的处理。<code>$$resolve()</code>函数首先调用<code>callOnce()</code>函数来确保自己只被调用一次，然后判断val的数据类型，如果是对象或者是函数，则将val赋值给then，其中<code>then = val &amp;&amp; val.then;</code>这个语句用来将<code>resolve()</code>中可能传入的promise对象的<code>then()</code>方法赋值给then。下一步，如果then是函数，也就是说传入的val是一个promise对象的话，则将<code>Deferred.promise.$$state.status</code>的值设为-1，之后<code>then.call(val, fns[0], fns[1], this.notify);</code>这是将fns[0], fns[1], this.notify三个函数作为参数传入了这个promise对象的then方法中，其中前两者便是经过了<code>callOnce()</code>函数处理的<code>this.$$resolve</code>和<code>this.$$reject</code>函数，这一步设置了被传入的promise对象的pending list。<br>如果val不是函数，那么接下去的逻辑便很容易理解了，<code>this.promise.$$state.value</code>被赋值为val的值，<code>this.promise.$$state.status</code>的值被设置为1，1这个状态码便代表了promise对象目前处于<strong>fulfilled</strong>状态。<br>接下去调用<code>scheduleProcessQueue()</code>函数，并传入<code>this.promise.$$state</code>对象。这个函数实际是调用了<code>ProcessQueue()</code>函数，不过加入了一些angular内部的检查机制，来保证函数调用和angular内部运行的同步。而<code>ProcessQueue()</code>函数则真正执行<code>then()</code>方法推入到pending list中的回调函数。  </p>
+<p>下面我们简单的来看看ProcessQueue函数:</p>
+<pre class="prettyprint">
+function processQueue(state) {
+    var fn, deferred, pending;
+
+    pending = state.pending;
+    state.processScheduled = false;
+    state.pending = undefined;
+    for (var i = 0, ii = pending.length; i < ii; ++i) {
+      deferred = pending[i][0];
+      fn = pending[i][state.status];
+      try {
+        if (isFunction(fn)) {
+          deferred.resolve(fn(state.value));
+        } else if (state.status === 1) {
+          deferred.resolve(state.value);
+        } else {
+          deferred.reject(state.value);
+        }
+      } catch (e) {
+        deferred.reject(e);
+        exceptionHandler(e);
+      }
+    }
+  }
+</pre>
+
+<p><code>processQueue()</code>函数简单地将当前promise对象的pending list按传入的状态码进行处理。<code>fn = pending[i][state.status];</code>中，status为1，那么就调用pending list的第二项，也就是onFulfilled情况下的回调函数。之后<br><code>deferred.resolve(fn(state.value));</code>中，实际上执行了一次<code>eval(fn(state.value))</code>,回调函数就是在这里被执行的，之后<code>deferred.resolve(val)</code>便将回调函数处理之后的值传给了新创建的deferred对象。</p>
+<p>###实例分析：Deferred.promise.then()的链式调用机制</p>
+<pre class="prettyprint">
+          var Deferred = $q.defer();
+          var promise1 = Deferred.promise;
+          var promise2 = promise1.then(function (data) {
+                 return data  + 1;
+          });
+          promise2.then(function (val) {
+               console.log(val);
+          }); 
+          Deferred.resolve(10);
+</pre>
+
+<p>这段代码的预期结果是promise2的回调函数会输出11。让我们来看看这是怎样实现的。</p>
+<p>首先，promise1的<code>then()</code>方法被执行,回调函数被推入pending list中，一个新的<code>deferred</code>对象被创建,<code>deferred.promise</code>对象被返回，我们将这个新创建的promise对象赋值给promise2。同样的，promise2的<code>then()</code>方法也被执行。所以我们把promise1的pending list称谓list1，promise2的pending list称为list2。</p>
+<p>之后，<code>Deferred.resolve(10);</code>被执行，在这里这是同步的，但一般来说这是异步执行的。此时执行resolve()方法，后数据被传入内部的<code>$$resolve()</code>方法，因为val是数值，因此<code>$$state</code>对象的value被设置为10，而状态码也被设置为相应的1，代表解析成功。  </p>
+<p>之后的任务交给了<code>processQueue()</code>函数，因为list1中的第二个参数是我们通过<code>then()</code>方法传入的回调函数，这个函数执行<code>deferred.resolve(fn(state.value));</code>，回调函数执行，并返回值11，这里的deferred对象便是promise1的<code>then()</code>方法创建的新deferred对象，也就是list1中的deferred对象，是promise2的宿主对象。  </p>
+<p>所以<code>deferred.resolve(fn(state.value));</code>的执行，执行了又一次<code>resolve()</code>函数，只是这次的上下文换成了promise2所在的上下文，那么接下去的流程便和promise1发生的一致了。最后list2中的回调执行，输出值11。</p>
+<p>让我们总结一下，<code>then()</code>方法实际上是负责在运行时挂载回调函数列表，而<code>resolve()</code>函数则负责异步触发函数执行。链式调用是通过返回新promise对象，并配合<code>then()</code>方法的同步加载回调以便获取新上下文来实现的。</p>
+<p>tbc···</p>
+<hr>
+<blockquote>
+<p><a href="http://olim7t.github.io/2013/08/19/angular-promise-implementation.html" target="_blank" rel="noopener">参考-A look at Angular’s promise implementation</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Angular/" rel="tag"># Angular</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/25/ie-fix/" rel="next" title="实战之IE兼容常见问题">
+                <i class="fa fa-chevron-left"></i> 实战之IE兼容常见问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/09/27/web-desgin-issues-with-fe/" rel="prev" title="面向前端模块化的web端设计准则">
+                面向前端模块化的web端设计准则 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

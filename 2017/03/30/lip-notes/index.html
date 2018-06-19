@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《编程语言实现模式》-阅读笔记">
+<meta property="og:url" content="http://yoursite.com/2017/03/30/lip-notes/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.513Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《编程语言实现模式》-阅读笔记">
+<meta name="twitter:description" content="这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/30/lip-notes/"/>
+
+
+
+
+
+  <title>《编程语言实现模式》-阅读笔记 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/30/lip-notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《编程语言实现模式》-阅读笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-30T21:34:59+08:00">
+                2017-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！</p>
+<a id="more"></a>
+<p>Jame Kyle的分享—<a href="https://www.youtube.com/watch?v=Tar4WgAfMr4&amp;t=9s" target="_blank" rel="noopener">《How to write a compiler》</a>虽然很好，但是和有实际运用价值的编译技能还差的远呢。</p>
+<p>看龙书看的欲哭无泪，后来转而看《自制编程语言》，把crowbar的代码和流程大概了解了一下。最大的收获就是了解了yacc和lex。此前我对于Lexer和Parser还是抱有一定的恐惧心理的。</p>
+<p>最终让我认清门路的是戴嘉华的<a href="https://github.com/livoras/blog/issues/14" target="_blank" rel="noopener">这篇博客</a>。后来我去翻了翻编译原理课本，让我彻底搞清楚几个事情：</p>
+<p>第一点，虽然波神说的很对，最关键的是动手去写，但了解必要的理论是很重要的。问题就在于，编译这边理论很多，类似有限自动机和正规表达式的转换等等知识，后端代码生成和优化等等，会加重认知的负担。所以关键就是，对于一个普通的工程师来说，开发文本处理或者DSL相关程序需要掌握的编译原理知识是哪些。</p>
+<p>第二点，需要了解的概念有：</p>
+<ul>
+<li>主流编译器，解释器的流水线</li>
+<li>形式文法（EBNF）</li>
+<li>LL(1)文法，以及EBNF和LL(1)之间的转换</li>
+<li>根据LL(1)文法写递归下降Parser</li>
+<li>了解不同的AST类型，会设计AST</li>
+</ul>
+<h3 id="第二章-amp-amp-第三章"><a href="#第二章-amp-amp-第三章" class="headerlink" title="第二章&amp;&amp;第三章"></a>第二章&amp;&amp;第三章</h3><p>这章主要讲基于LL(1)的Tokenizing和Parsing。</p>
+<p>很妙的一点在于，在写关于形式文法的地方，这本书没有将BNF和乔姆斯基之类的科班教材中讲的，而是讲文法当成是一种DSL，这其实是非常正确的。Parser Generator的输入一般就是某种类似BNF的DSL。本书中的例子是ANTLR（一个parser generator）的DSL。</p>
+<p>这种务实的风格是延续在整个第二章中的，讲LL(1)的First和Follow集的时候，是这样说的：</p>
+<blockquote>
+<p>正规的定义中通常使用FIRST和FOLLOW两个运算来计算向前看集合，而实际使用时，这个问题可以等价于“哪些词法单元可能会出现在这个解析选项的开头”，这种思维方式更容易掌握，FIRST和严格定义就不在这里解释了，因为它比较复杂，而且这里也用不着其原理。如果有兴趣，可以在网上找到很多相关材料。</p>
+</blockquote>
+<p>First集合的数学定义是这样的：</p>
+<p>试想一下，如果初学者接触到的是严谨的数学定义，而不是一个相对直白的解释和代码演示的话，还是会有不少人打退堂鼓的。</p>
+<p>在实际的学习中，还是需要一些如上文中的“等价于”那样的解释。</p>
+<p>LL(1)的parser是最简单的。也是其余递归下降模式的基础框架。实现的方式就是为每一个规则写一个对应的函数，函数里按First集合来编写，规则里的运算符都可以转化为if或者while等到逻辑，如果是终结符就match，如果是非终结符就递归调用对应规则的函数。</p>
+<p>我看了Regularjs中parser的代码以及上文中vdom模板引擎的代码，结合书中的例子，大概搞懂了，接下来可以把书中的例子用js写一遍试试。</p>
+<p>第二章最后讲了LL(k)类型的parser。LL(k)就是任意k个token的lookup。LL(k)的需求，拿mcss来说，就是：</p>
+<blockquote>
+<p>mcss有点特殊，是个LL(n)的解释器，比如在设计中，函数在mcss是 First-class的，可以被返回或传入函数，并保持作用域信息，所以它是一种特殊的值，定义我设计与一般赋值一样。</p>
+<pre><code>$size = ($width, $height) { 
+// ...
+}
+</code></pre><p>这里当你不读取到<code>{</code> 是无法判断 <code>=</code> 后面是函数定义 还是 普通css中的 compound<br>values  . 众所周知参数列表可能无限长，所以必须是LL(n)的Parser才能够解答。 </p>
+</blockquote>
+<p>有些语言语法里有很相似的语言结构，它们只在最后边才有区别。比如C++的函数定义和函数声明的前面都是一样的，直到;或{才能加以区别。</p>
+<p>所以想要能够写DSL解释器的话，LL(k)式的模式也是要懂的。LL(k)的问题就是要要预parse，如果条件满足，再真正parse一遍。这样带来的问题就是运行效率上比较慢。解决的办法是<strong>回溯法</strong>，通过类似动态规划的空间换时间的方法，缓存parse的结果，加速parse的过程。</p>
+<h3 id="第四章"><a href="#第四章" class="headerlink" title="第四章"></a>第四章</h3><p>Vue的AST。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/28/crowbar-note-1/" rel="next" title="crowbar-note-1">
+                <i class="fa fa-chevron-left"></i> crowbar-note-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/22/fe-cloud-building/" rel="prev" title="基于Travis CI和Github的前端云构建">
+                基于Travis CI和Github的前端云构建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第二章-amp-amp-第三章"><span class="nav-number">1.</span> <span class="nav-text">第二章&amp;&amp;第三章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四章"><span class="nav-number">2.</span> <span class="nav-text">第四章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

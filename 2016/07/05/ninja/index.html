@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Ninja是一款用于前后端分离开发的本地开发服务器，也被称为是前端容器。它有以下一些特性：  HTML、CSS的热重载 根据配置文件自动生成路由 根据配置文件自动读取在线/本地的虚拟数据 支持Jinja2语法（以及其他Nodejs模板） 支持路由代理 支持webpack（通过webpack-dev-middleware）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ninja:dev server made easy">
+<meta property="og:url" content="http://yoursite.com/2016/07/05/ninja/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="Ninja是一款用于前后端分离开发的本地开发服务器，也被称为是前端容器。它有以下一些特性：  HTML、CSS的热重载 根据配置文件自动生成路由 根据配置文件自动读取在线/本地的虚拟数据 支持Jinja2语法（以及其他Nodejs模板） 支持路由代理 支持webpack（通过webpack-dev-middleware）">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://7xqk8r.com1.z0.glb.clouddn.com/ninja_start.gif">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ninja:dev server made easy">
+<meta name="twitter:description" content="Ninja是一款用于前后端分离开发的本地开发服务器，也被称为是前端容器。它有以下一些特性：  HTML、CSS的热重载 根据配置文件自动生成路由 根据配置文件自动读取在线/本地的虚拟数据 支持Jinja2语法（以及其他Nodejs模板） 支持路由代理 支持webpack（通过webpack-dev-middleware）">
+<meta name="twitter:image" content="http://7xqk8r.com1.z0.glb.clouddn.com/ninja_start.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/05/ninja/"/>
+
+
+
+
+
+  <title>Ninja:dev server made easy | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/05/ninja/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ninja:dev server made easy</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-05T20:32:43+08:00">
+                2016-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://github.com/Muxi-Studio/ninja" target="_blank" rel="noopener">Ninja</a>是一款用于前后端分离开发的本地开发服务器，也被称为是前端容器。它有以下一些特性：</p>
+<ul>
+<li>HTML、CSS的热重载</li>
+<li>根据配置文件自动生成路由</li>
+<li>根据配置文件自动读取在线/本地的虚拟数据</li>
+<li>支持<code>Jinja2</code>语法（以及其他Nodejs模板）</li>
+<li>支持路由代理</li>
+<li>支持<code>webpack</code>（通过<code>webpack-dev-middleware</code>）</li>
+</ul>
+<a id="more"></a>
+<h3 id="Ninja的前世今生"><a href="#Ninja的前世今生" class="headerlink" title="Ninja的前世今生"></a>Ninja的前世今生</h3><p>在木犀，之前我们的前后端分离开发方案是这样的：在本地运行一个简单的<code>Flask</code>应用，只包含路由，在路由中读取虚拟数据并渲染<code>Jinja2</code>模板，然后运行这个应用，进行开发。前端模板开发完成后和后端直接对接调试。</p>
+<p>这种方案有一些明显的问题，首先是这个<code>Flask</code>应用没法规范化为一个命令或是一个包，这就需要我们每次在构建前端仓库时都手动写路由等逻辑，这显然是不现实的。还有一个问题就是，<code>Flask</code>的Python环境与目前前端工具生态的主流Nodejs格格不入，想要接入<code>webpack</code>等前端工具，我们必须使用Nodejs来构建我们的dev server。</p>
+<p>于是我们需要一款能支持<code>Jinja2</code>语法，同时又能满足前端开发各种需要的dev server。Ninja就在这个节点上横空出世了！</p>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>Ninja的上手非常简单，首先安装Ninja</p>
+<pre><code>npm install -g ninja_cli
+</code></pre><p>下面以Ninja和Webpack一起使用为例，这个例子的源代码在Ninja仓库的<a href="https://github.com/Muxi-Studio/ninja/tree/master/example/ninja_webpack_example" target="_blank" rel="noopener"><code>example文件夹</code></a>下可以找到。</p>
+<p>首先我们需要一个<code>ninja.conf.js</code>配置文件，当然你也可以选择用命令行参数配置。在这个文件里我们要配置一些必要的参数：</p>
+<pre><code>module.exports = {
+    template: &quot;swig&quot;, // 模板引擎名
+    mock: &quot;/mock/mock.json&quot;, // 虚拟数据位置
+    webpack: true, // 启用webpack支持
+    templateDir: &quot;/template&quot;, // 模板文件目录
+}
+</code></pre><p>然后在webpack的配置里要注意<code>entry</code>和<code>output</code>的配置：</p>
+<pre><code>  entry: [
+    path.resolve(__dirname, &#39;./index.js&#39;)
+  ],
+  output: {
+    path: &#39;/&#39;,
+    publicPath: &#39;http://localhost:3000/&#39;,
+    filename: &#39;bundle.js&#39;
+  },
+</code></pre><p>webpack的中间件提供静态文件，我们可以在Ninja的3000端口访问到，所以在模板中的静态文件路径可以写<code>/</code>+文件名。如<code>&lt;script src=&quot;/bundle.js&quot;&gt;&lt;/script&gt;</code>。</p>
+<p>配置好Webpack之后，我们写两个简单的模板</p>
+<pre><code>// base.html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Ninja Test&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;I&#39;m the head&lt;/h2&gt;
+    {% block content %}{% endblock %}
+	<a href="/">index page</a>
+	<a href="/second">second page</a>
+	<script src="/bundle.js"></script>
+
+
+
+// second.html
+{% extends 'base.html' %}
+{% block content %}
+	<p>{{ title }}</p>
+{% endblock %}
+</code></pre><p>然后写一个mock文件<code>/mock/mock.json</code>，配置路由和虚拟数据：</p>
+<pre><code>{
+    &quot;routes&quot;: [
+        {
+            &quot;name&quot;: &quot;home&quot;,
+            &quot;endpoint&quot;: &quot;/&quot;,
+            &quot;template&quot;: &quot;home&quot;,
+            &quot;async&quot;: false // 同步路由
+        },
+        {
+            &quot;name&quot;: &quot;second&quot;,
+            &quot;endpoint&quot;: &quot;/second&quot;,
+            &quot;template&quot;: &quot;home&quot;,
+            &quot;async&quot;: false
+        },
+        {
+            &quot;name&quot;: &quot;api.courses&quot;,
+            &quot;endpoint&quot;: &quot;/api/v1.0/courses&quot;,
+            &quot;async&quot;: true // 异步路由（API）
+        }
+    ],
+    &quot;data&quot;:{
+        &quot;home&quot;:{
+            &quot;title&quot;: &quot;hello&quot;
+        },
+        &quot;second&quot;:{
+            &quot;title&quot;: &quot;second&quot;
+        },
+        &quot;api.courses&quot;:{
+            &quot;title&quot;: &quot;second&quot;
+        }
+    }
+}
+</code></pre><p>然后启动Ninja</p>
+<pre><code>$ ninja
+</code></pre><p>之后Ninja会自动用Chrome打开<code>http://localhost:3000/</code>。并显示我们首页模板。大功告成！</p>
+<p><img src="http://7xqk8r.com1.z0.glb.clouddn.com/ninja_start.gif" alt="ninja_start"></p>
+<h3 id="开发手记"><a href="#开发手记" class="headerlink" title="开发手记"></a>开发手记</h3><p>Ninja的主体就是一个Express server，读取配置文件然后生成路由，填入虚拟数据和模板。Livereload使用了<code>connect-inject</code>做模板的JS注入。用<code>socket.io</code>做浏览器与Ninja的实时通信。至于Webpack的集成，直接使用官方的<code>webpack-dev-middleware</code>和<code>webpack-hot-middleware</code>就可以轻松达成。</p>
+<p>总体来说没有遇到太大的困难，当然也可能是因为使用了大量的三方库。<code>@朱承浩</code>同学建议Ninja的Web server部分可以自己实现，没必要使用<code>Express</code>。我认为JS注入应该也可以自己实现。所以后期可以将这些部分替换为自己的实现。</p>
+<p>Ninja是我第一次尝试些CLI应用，也是第一次尝试写前端工具。在功能上借鉴了<a href="https://github.com/leeluolee/puer" target="_blank" rel="noopener"><code>puer</code></a>（但是没看代码，看不懂Coffee Script），在前后端分离的理念上借鉴了<a href="https://github.com/NEYouFan" target="_blank" rel="noopener"><code>NEI</code></a>。在这个过程中我最大的发现是Node生态圈的繁荣，基本上想要的功能都有相应的NPM包封装好了。这次用了<a href="https://github.com/tj/commander" target="_blank" rel="noopener"><code>commander</code></a>做命令行参数的文档生成，<a href="https://github.com/chalk/chalk" target="_blank" rel="noopener"><code>chalk</code></a>给<code>console.log</code>加颜色，<a href="https://github.com/tj/consolidate.js" target="_blank" rel="noopener"><code>consolidate</code></a>来统一Node模板调用，<a href="https://github.com/sindresorhus/opn" target="_blank" rel="noopener"><code>opn</code></a>用来打开浏览器。随着我Node水平的提升，在今后的开发中，会尽量少用不必要的三方库。</p>
+<h3 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h3><p>Ninja目前的版本号是<code>0.1</code>，等稳定之后会放出<code>1.0</code>版。后续版本会加入subcommand，加入脚手架功能，一键搭建前端目录建构和配置文件。云端Mock数据平台也要做相应的跟进。</p>
+<p>总之，Ninja是木犀前后端分离开发实践一个进步。这仅仅只是一个开始，希望大家一起努力，提高开发的效率和开发者的体验。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/19/2016-feday/" rel="next" title="2016 FEDay见闻录">
+                <i class="fa fa-chevron-left"></i> 2016 FEDay见闻录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/26/annoucing-regular-devtools/" rel="prev" title="发布Regular Developer Tools">
+                发布Regular Developer Tools <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ninja的前世今生"><span class="nav-number">1.</span> <span class="nav-text">Ninja的前世今生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发手记"><span class="nav-number">3.</span> <span class="nav-text">开发手记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#展望"><span class="nav-number">4.</span> <span class="nav-text">展望</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

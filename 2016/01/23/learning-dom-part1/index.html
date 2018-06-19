@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DOM," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="一、什么是DOMDocument Object Model(DOM)是用编程语言对HTML，XML以及SVG文档进行操作的接口。我们经常使用JavaScript来操纵DOM，不过DOM其实的语言无关的。它并不是JavaScript的一部分。">
+<meta name="keywords" content="DOM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DOM API详解（一）">
+<meta property="og:url" content="http://yoursite.com/2016/01/23/learning-dom-part1/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="一、什么是DOMDocument Object Model(DOM)是用编程语言对HTML，XML以及SVG文档进行操作的接口。我们经常使用JavaScript来操纵DOM，不过DOM其实的语言无关的。它并不是JavaScript的一部分。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/DOM2%20modules.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/DOM3%20modules%20v3.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.511Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DOM API详解（一）">
+<meta name="twitter:description" content="一、什么是DOMDocument Object Model(DOM)是用编程语言对HTML，XML以及SVG文档进行操作的接口。我们经常使用JavaScript来操纵DOM，不过DOM其实的语言无关的。它并不是JavaScript的一部分。">
+<meta name="twitter:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/DOM2%20modules.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/01/23/learning-dom-part1/"/>
+
+
+
+
+
+  <title>DOM API详解（一） | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/23/learning-dom-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DOM API详解（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-23T20:49:30+08:00">
+                2016-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、什么是DOM"><a href="#一、什么是DOM" class="headerlink" title="一、什么是DOM"></a>一、什么是DOM</h3><p>Document Object Model(DOM)是用编程语言对HTML，XML以及SVG文档进行操作的接口。我们经常使用JavaScript来操纵DOM，不过DOM其实的语言无关的。它并不是JavaScript的一部分。</p>
+<a id="more"></a>
+<p>虽然如此，DOM在前端开发中经常和JS一起讨论，并且对JS造成了极大的负面影响。这个原因就在于早年间各大浏览器厂商（主要是老版本IE），对DOM的实现并没有按W3C的标准来做，而是自己制定了一套接口，由此给前端开发造成了极大的麻烦。我们需要使用jQuery这样的基础库，使用封装好的跨平台兼容API，才能使代码兼容主要浏览器。</p>
+<p>直到今天，jQuery这样的基础库依然是不可或缺的。好消息是，随着时代的进步，DOM API的兼容性在主流浏览器中已经不是问题。在没有低版本IE的移动端web中，我们就可以不用为这个问题劳神了。</p>
+<p>然而相比于CSS和JS所拥有的明确版本迭代和丰富的文档，DOM无论是在版本的碎片化程度还是文档的数量上来说都很难和前两者相比。</p>
+<p>打开MDN的<a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" target="_blank" rel="noopener">DOM文档首页</a>，我们可以看到密密麻麻的API列表，点开其中的一个，可以看到更多的子API。其中除了DOM Core，有CSS DOM，还有HTMl5相关的DOM，更有Worker这样的浏览器相关的接口。可谓是一个大杂烩，CSS，JS，浏览器各种功能的API都在其中。因此本文就是一个DOM API的分类梳理，带大家看清DOM众多API的组成和层级。</p>
+<h3 id="二、DOM标准"><a href="#二、DOM标准" class="headerlink" title="二、DOM标准"></a>二、DOM标准</h3><p>我们从W3C的<a href="https://www.w3.org/DOM/DOMTR" target="_blank" rel="noopener">DOM Technical Reports</a>来看，Document Object Model (DOM)目前有Level 1，Level 2，Level 3，以及Level4三个标准。每一个Level的标准下又分为多个模块，其中DOM2 Core Specification的发布时间为2000-11-13，而DOM3 Core Specification的发布时间为2004-04-07，最新的DOM4发布于2015-11-19。</p>
+<p>DOM2由许多个标准组成是，如图：</p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/DOM2%20modules.png" alt="DOM2模块"></p>
+<p>然后我们来看看DOM3。DOM3标准构建在DOM2的基础上，因此数量上少于DOM2的模块。DOM3中的XPath Specification等等标准还没有正式成为推荐标准，因此没有加入图表。</p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/DOM3%20modules%20v3.png" alt="DOM3模块"></p>
+<h3 id="三、DOM2与DOM3，以及非核心API"><a href="#三、DOM2与DOM3，以及非核心API" class="headerlink" title="三、DOM2与DOM3，以及非核心API"></a>三、DOM2与DOM3，以及非核心API</h3><p>和CSS标准一样，DOM标准的版本也是各自独立的。我们所说的DOM2，DOM3其实主要指DOM Core Specification的版本。在DOM Core Specification中会写明这个版本的DOM Core和哪些版本的标准一起组成新一代DOM标准。</p>
+<p>因此我们也就可以解释为什么DOM3的组成标准要大大少于DOM2了。DOM2中的<a href="https://www.w3.org/TR/DOM-Level-2-Style/" target="_blank" rel="noopener">Style Specification</a>后来发展为了一个新的<a href="https://drafts.csswg.org/cssom/" target="_blank" rel="noopener">CSSOM Specification</a>，事实上这个标准已经不属于DOM的范畴，而被划入CSS标准。而<a href="http://www.w3.org/TR/DOM-Level-2-Events/" target="_blank" rel="noopener">Events Specification</a>的Level 3最后发展为了新的<a href="https://www.w3.org/TR/uievents/" target="_blank" rel="noopener">UI Events Specification</a>以及<a href="https://www.w3.org/TR/2013/REC-touch-events-20131010/" target="_blank" rel="noopener">Touch Events Specification</a>等等独立的Event Specification，补充了DOM2 Events Specification中缺失的事件。<a href="https://www.w3.org/TR/DOM-Level-2-Traversal-Range/" target="_blank" rel="noopener">Traversal and Range Specification</a>中的Traversal部分发展为了新的<a href="https://www.w3.org/TR/ElementTraversal/" target="_blank" rel="noopener">Element Traversal Specification</a>。</p>
+<p>具体标准之间的关系可以看下表:</p>
+<table>
+<thead>
+<tr>
+<th><strong>DOM2模块</strong></th>
+<th style="text-align:left"><strong>新标准</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.w3.org/TR/DOM-Level-2-Style/" target="_blank" rel="noopener">Style Specification Level 2</a></td>
+<td style="text-align:left"><a href="https://drafts.csswg.org/cssom/" target="_blank" rel="noopener">CSSOM Specification（Not a part of DOM now）</a></td>
+</tr>
+<tr>
+<td><a href="https://www.w3.org/TR/DOM-Level-2-Traversal-Range/" target="_blank" rel="noopener">Traversal and Range Specification Level 2</a></td>
+<td style="text-align:left"><a href="https://www.w3.org/TR/ElementTraversal/" target="_blank" rel="noopener">Element Traversal Specification（Part of DOM4）</a></td>
+</tr>
+<tr>
+<td><a href="http://www.w3.org/TR/DOM-Level-2-Events/" target="_blank" rel="noopener">Events Specification Level 2</a></td>
+<td style="text-align:left"><a href="https://www.w3.org/TR/uievents/" target="_blank" rel="noopener">UI Events Specification</a><br>   <a href="https://www.w3.org/TR/2013/REC-touch-events-20131010/" target="_blank" rel="noopener">Touch Events Specification</a><br>   <a href="https://www.w3.org/TR/2015/REC-pointerevents-20150224/" target="_blank" rel="noopener">Pointer Events Specification</a><br>   <a href="https://www.w3.org/TR/2014/REC-progress-events-20140211/" target="_blank" rel="noopener">Progress Events Specification</a></td>
+</tr>
+</tbody>
+</table>
+<p>然后我们来看看所谓的非核心API。所谓的非核心API就是那些在W3C标准中不属于DOM的API，但是这些API和DOM的核心部分有着或多或少的关系。如CSS相关的<a href="https://drafts.csswg.org/cssom/" target="_blank" rel="noopener">CSSOM Specification</a>，<a href="https://www.w3.org/TR/2013/REC-selectors-api-20130221/" target="_blank" rel="noopener">Selectors API</a>等等。以及与HTML5相关的众多JavaScript API，比如<a href="https://www.w3.org/TR/2015/PR-webstorage-20151126/" target="_blank" rel="noopener">Web Storage</a>，<a href="https://www.w3.org/TR/2015/WD-workers-20150924/" target="_blank" rel="noopener">Web Workers</a>等等</p>
+<p>本文关注的主要是DOM2，DOM3以及部分新模块的API，解读它们的构成，以及在浏览器的兼容情况。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DOM/" rel="tag"># DOM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/28/2015-javascript-tools/" rel="next" title="2015年末必备前端工具集">
+                <i class="fa fa-chevron-left"></i> 2015年末必备前端工具集
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/26/learning-dom-part2/" rel="prev" title="DOM API详解（二）">
+                DOM API详解（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、什么是DOM"><span class="nav-number">1.</span> <span class="nav-text">一、什么是DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、DOM标准"><span class="nav-number">2.</span> <span class="nav-text">二、DOM标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、DOM2与DOM3，以及非核心API"><span class="nav-number">3.</span> <span class="nav-text">三、DOM2与DOM3，以及非核心API</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

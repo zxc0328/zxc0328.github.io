@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="在人机交互中，有一个概念叫做Modality)，中文叫模态。模态，顾名思义，就是模拟。计算机可以模拟人通过各种通道接收的信息，比如视觉、听觉、触觉等等通道。视觉就通过显示器输出，听觉通过音响、触觉通过振动。同理，人也可以模拟计算机接收到的电信号，人可以通过键盘、触摸板等待设备来模拟0/1信号。 模态可以是但通道的，也可以是多通道的（比如玩游戏时有声音、视觉、和振动反馈）。今天我们要将的计算机软件中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊UI组件设计-Modal">
+<meta property="og:url" content="http://yoursite.com/2017/08/14/component-talk-modal/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="在人机交互中，有一个概念叫做Modality)，中文叫模态。模态，顾名思义，就是模拟。计算机可以模拟人通过各种通道接收的信息，比如视觉、听觉、触觉等等通道。视觉就通过显示器输出，听觉通过音响、触觉通过振动。同理，人也可以模拟计算机接收到的电信号，人可以通过键盘、触摸板等待设备来模拟0/1信号。 模态可以是但通道的，也可以是多通道的（比如玩游戏时有声音、视觉、和振动反馈）。今天我们要将的计算机软件中">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊UI组件设计-Modal">
+<meta name="twitter:description" content="在人机交互中，有一个概念叫做Modality)，中文叫模态。模态，顾名思义，就是模拟。计算机可以模拟人通过各种通道接收的信息，比如视觉、听觉、触觉等等通道。视觉就通过显示器输出，听觉通过音响、触觉通过振动。同理，人也可以模拟计算机接收到的电信号，人可以通过键盘、触摸板等待设备来模拟0/1信号。 模态可以是但通道的，也可以是多通道的（比如玩游戏时有声音、视觉、和振动反馈）。今天我们要将的计算机软件中">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/14/component-talk-modal/"/>
+
+
+
+
+
+  <title>聊聊UI组件设计-Modal | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/14/component-talk-modal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊UI组件设计-Modal</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-14T19:23:20+08:00">
+                2017-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在人机交互中，有一个概念叫做<a href="https://en.wikipedia.org/wiki/Modality_(human–computer_interaction" target="_blank" rel="noopener">Modality</a>)，中文叫模态。模态，顾名思义，就是模拟。计算机可以模拟人通过各种通道接收的信息，比如视觉、听觉、触觉等等通道。视觉就通过显示器输出，听觉通过音响、触觉通过振动。同理，人也可以模拟计算机接收到的电信号，人可以通过键盘、触摸板等待设备来模拟0/1信号。</p>
+<p>模态可以是但通道的，也可以是多通道的（比如玩游戏时有声音、视觉、和振动反馈）。今天我们要将的计算机软件中的Modal组件，就是计算机向人建立的单通道信息交互方式。</p>
+<a id="more"></a>
+<h3 id="Modal在交互设计中的作用"><a href="#Modal在交互设计中的作用" class="headerlink" title="Modal在交互设计中的作用"></a>Modal在交互设计中的作用</h3><p>具体到产品的交互设计中（交互设计和人机交互不是一回事，准确的说两者有交叉），Modal这个组件是很常用的，那么Modal在交互上的意义是什么呢？</p>
+<p>Modal的弹出，其实就是计算机和人之间建立了一个信息传递的通道，这个通道是独占的，在关闭这个通道之前，不能进行其他的交互。计算机程序建立这个通道，为的是传递一些信息。但传递信息有很多的方式，为什么要使用独占通道的Modal来传达呢？</p>
+<p>因为Modal传递的信息，是为了让用户<strong>提供关键信息</strong>，这个信息的回复（Modal的输入）可以是是一个true or false的选择，也可以是较为复杂的数据结构。Modal是一个浮层，所以用户在Modal弹出时，不能再点击应用的其他部分。用户必须要做出决定，是输入信息，或者取消（关闭Modal）。因此，Modal会中断用户当前的工作流。</p>
+<h3 id="实现：Modal组件的特点"><a href="#实现：Modal组件的特点" class="headerlink" title="实现：Modal组件的特点"></a>实现：Modal组件的特点</h3><ul>
+<li>全局一般只能显示一个Modal，因为Modal显示时会需要用户做出决定后再消失（点击取消也是一种决定，即为对操作的否定）。</li>
+<li>Modal一般提供确定和取消两个按钮。</li>
+<li>Modal中标题和底部按钮直接的内容，一般是可以自由组合的。一种特殊情况是Modal中组合了input，那这种Modal类型被称为prompt。</li>
+<li>Modal如果涉及异步的操作，则需要有一个confirm loading状态。这个状态下用户不能再次点击confirm。</li>
+</ul>
+<p>这里推荐一篇很好的总结文章<a href="http://www.ui.cn/detail/224467.html" target="_blank" rel="noopener">覆盖层设计(上)-对话框&amp;浮层</a>来自网易UEDC。系统的总结了交互设计中浮层相关的设计。</p>
+<h3 id="不同UI库的Modal设计"><a href="#不同UI库的Modal设计" class="headerlink" title="不同UI库的Modal设计"></a>不同UI库的Modal设计</h3><p>下面讲讲正题，Modal作为一个Web前端组件的设计方式。</p>
+<p>根据Modal在前端代码中的调用方式，可以分为声明式和命令式两种。Modal的声明式使用是指在前端模板中声明Modal。命令式则是在前端代码中调用一个函数，来显式的调用Modal。</p>
+<h4 id="声明式"><a href="#声明式" class="headerlink" title="声明式"></a>声明式</h4><p>Ant Design中的<a href="https://ant.design/components/modal/" target="_blank" rel="noopener">Modal</a>是典型的声明式组件。Modal被声明在模板中，在父组件初始化之时便存在了。</p>
+<pre><code>render() {
+    return (
+      &lt;div&gt;
+        &lt;Modal
+          title=&quot;Basic Modal&quot;
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        &gt;
+          &lt;p&gt;Some contents...&lt;/p&gt;
+          &lt;p&gt;Some contents...&lt;/p&gt;
+          &lt;p&gt;Some contents...&lt;/p&gt;
+        &lt;/Modal&gt;
+      &lt;/div&gt;
+    );
+  }
+</code></pre><p>Modal出现时只是visible这个flag被设置为<code>true</code>。而不是在那个时候初始化Modal组件。要在Modal中组合内嵌内容，只要在模板中的Modal标签中组合内容即可。在用户点击Modal的取消时，只要将visible设为<code>false</code>。所以这里不涉及Modal的销毁问题。Modal的回收是和父组件一起的。</p>
+<h4 id="命令式"><a href="#命令式" class="headerlink" title="命令式"></a>命令式</h4><p>Ant Design中的Modal组件也提供了几个静态的方法，用于在组件中手动初始化一个Modal，并且提供了<code>destroy</code>方法来手动销毁。</p>
+<pre><code> const modal = Modal.success({
+    title: &#39;This is a notification message&#39;,
+    content: &#39;This modal will be destroyed after 1 second&#39;,
+ });
+</code></pre><p>Element UI中的Modal组件的API则是标准的命令式。</p>
+<pre><code>this.$prompt(&#39;请输入邮箱&#39;, &#39;提示&#39;, {
+          confirmButtonText: &#39;确定&#39;,
+          cancelButtonText: &#39;取消&#39;,
+          inputPattern: /[\w!#$%&amp;&#39;*+/=?^_`{|}~-]+(?:\.[\w!#$%&amp;&#39;*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          inputErrorMessage: &#39;邮箱格式不正确&#39;
+        }).then(({ value }) =&gt; {
+          this.$message({
+            type: &#39;success&#39;,
+            message: &#39;你的邮箱是: &#39; + value
+          });
+        }).catch(() =&gt; {
+          this.$message({
+            type: &#39;info&#39;,
+            message: &#39;取消输入&#39;
+          });       
+        });
+</code></pre><p>Element UI的Modal API设计很有特色，首先调用创建Modal的方法后返回的是一个Promise。如果用户点击确定，那Promise就resolve。如果用户点击取消，那Promise就reject。我们可以在创建Modal的API调用之后链式的编写逻辑。</p>
+<h4 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h4><p>Modal的属性中比较重要的就是内嵌的内容。在声明式定义的Modal的内嵌内容可以声明式的写在模板中。命令式的Modal则需要将内嵌内容作为初始化的属性传入。相比之下声明式的要更自然一些。</p>
+<p>至于Modal另一组重要的属性，确认回调和取消回调。命令式的API在这方面更自然一些。特别是Element UI的基于Promise的调用。声明式的API则是在模板中声明属性，在View Controller中声明方法。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/03/headlesschrome/" rel="next" title="Headless Chrome截图服务实战">
+                <i class="fa fa-chevron-left"></i> Headless Chrome截图服务实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/16/i-have-a-theory/" rel="prev" title="现代前端MVVM组件开发的基本理论">
+                现代前端MVVM组件开发的基本理论 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Modal在交互设计中的作用"><span class="nav-number">1.</span> <span class="nav-text">Modal在交互设计中的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现：Modal组件的特点"><span class="nav-number">2.</span> <span class="nav-text">实现：Modal组件的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同UI库的Modal设计"><span class="nav-number">3.</span> <span class="nav-text">不同UI库的Modal设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#声明式"><span class="nav-number">3.1.</span> <span class="nav-text">声明式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命令式"><span class="nav-number">3.2.</span> <span class="nav-text">命令式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义属性"><span class="nav-number">3.3.</span> <span class="nav-text">自定义属性</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

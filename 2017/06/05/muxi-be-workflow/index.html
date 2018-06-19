@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="木犀后端的技术经历了一个不断演进的过程，从最初的LNMP式的简单直接的部署方式，到Docker容器部署，到现在的Kubernetes集群部署。相比当年艰难的调试由于操作系统环境不同而导致的各种部署问题，现在的部署流程可以说是相当简单而且可靠的。这也要求我们有一套标准化的开发部署流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="木犀后端开发工作流（2017年6月版）">
+<meta property="og:url" content="http://yoursite.com/2017/06/05/muxi-be-workflow/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="木犀后端的技术经历了一个不断演进的过程，从最初的LNMP式的简单直接的部署方式，到Docker容器部署，到现在的Kubernetes集群部署。相比当年艰难的调试由于操作系统环境不同而导致的各种部署问题，现在的部署流程可以说是相当简单而且可靠的。这也要求我们有一套标准化的开发部署流程。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcly1fgqdkad2a4j213u02mq37.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="木犀后端开发工作流（2017年6月版）">
+<meta name="twitter:description" content="木犀后端的技术经历了一个不断演进的过程，从最初的LNMP式的简单直接的部署方式，到Docker容器部署，到现在的Kubernetes集群部署。相比当年艰难的调试由于操作系统环境不同而导致的各种部署问题，现在的部署流程可以说是相当简单而且可靠的。这也要求我们有一套标准化的开发部署流程。">
+<meta name="twitter:image" content="http://wx2.sinaimg.cn/large/64c45edcly1fgqdkad2a4j213u02mq37.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/05/muxi-be-workflow/"/>
+
+
+
+
+
+  <title>木犀后端开发工作流（2017年6月版） | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/05/muxi-be-workflow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">木犀后端开发工作流（2017年6月版）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-05T15:01:43+08:00">
+                2017-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>木犀后端的技术经历了一个不断演进的过程，从最初的LNMP式的简单直接的部署方式，到Docker容器部署，到现在的Kubernetes集群部署。相比当年艰难的调试由于操作系统环境不同而导致的各种部署问题，现在的部署流程可以说是相当简单而且可靠的。这也要求我们有一套标准化的开发部署流程。</p>
+<a id="more"></a>
+<h3 id="三个环境"><a href="#三个环境" class="headerlink" title="三个环境"></a>三个环境</h3><p>在互联网公司，一个产品一般都部署了好几个版本，比如开发、测试、预发布等等。不同的版本对应开发周期不同时间点的产品状态。QA一般就是在部署好的这些环境中进行发布前测试的。</p>
+<p>我们对环境的要求没有那么高，只要有本地、测试、线上三个环境就可以了。下面分别讲讲从本地开发，到部署测试版本，到新版本上线过程中一系列的标准流程。</p>
+<h3 id="开发分支与Pull-Request"><a href="#开发分支与Pull-Request" class="headerlink" title="开发分支与Pull Request"></a>开发分支与Pull Request</h3><p>本地开发其实没有太多的限制，一般就直接在本地运行代码进行开发。需要注意的是我们的仓库中一般有主分支和开发分支，这个开发分支可以是按版本号，每次新版本时从主分支checkout出来。或者是一个持续使用的开发分支。所有人都<strong>不能直接</strong>向主分支提交代码。但可以直接向开发分支提交代码。</p>
+<p>如果想讲开发分支中的代码合并到主分支，就要发起一个<strong>Pull Request</strong>。Pull Request在负责人code review（看情况）以及<strong>CI测试通过</strong>之后才能merge。</p>
+<h3 id="单元测试与CI"><a href="#单元测试与CI" class="headerlink" title="单元测试与CI"></a>单元测试与CI</h3><p>对于有明确输入输出的后端API来说，单元测试是必要的软件质量保障。也是协助开发的一个手段。</p>
+<p>大家在本地提交代码之前先自己跑过测试，通过之后再提交。Pull Request时还会跑一遍CI，来确保代码功能的正确。比如这样：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcly1fgqdkad2a4j213u02mq37.jpg" alt="CI pass"></p>
+<p>Github上使用的比较多的是Travis CI。Docker based的项目可以参考<a href="https://github.com/Muxi-X/muxi_site/blob/dev-branch/.travis.yml" target="_blank" rel="noopener">这个CI配置</a>。</p>
+<blockquote>
+<p>这里简单介绍一下CI。CI指持续集成，我们说的CI一般是指云端的CI runner。Travis CI本质上其实就是一个云服务。提供了一个虚拟环境来运行你指定的脚本。Travis支持很多语言环境，但最近Travis支持了Docker，所以环境也就不是问题了。要注意我们写测试时要写清进程exit时的状态码，非0的状态码代表非正常退出。Travis就是根据这个来判断测试或者其他错误是否发生的。这决定了这次CI运行是否成功。</p>
+</blockquote>
+<h3 id="测试环境的具体配置"><a href="#测试环境的具体配置" class="headerlink" title="测试环境的具体配置"></a>测试环境的具体配置</h3><p>在开发基本完成，代码merge到主分支之后，我们就可以尝试部署一个测试版本了。测试环境和线上的环境差别不大。测试环境部署在我们的测试集群（几台专有网络阿里云学生机）。</p>
+<p>大家可以随意选一台机器然后部署。部署的时候，除了数据库之外的一般都用Docker部署。如果有多个容器需要部署，我们一般用Docker-compose来一键build&amp;run。</p>
+<p>数据库一般就使用某台机器上直接安装的数据库。在初次部署时大家要记得在容器中执行初始化数据库和用户角色命令（当然也可以写成脚本）。</p>
+<p>测试环境有几个用处，首先是给前端提供联调的API。然后是给产品经理和设计师提供一个线上版本来进行初步测试。因此我们需要给测试环境配置一个域名。但如果直接在DnsPod等等线上解析，要解析的域名数量会很大，很不方便。所以我们采用修改本地hosts文件的办法。</p>
+<p>比如：</p>
+<pre><code>120.77.8.149 test.share.muxixyz.com
+
+</code></pre><p><strong>注意域名是<code>muxixyz.com</code>的子域名</strong>，因为阿里云会检测DNS解析的域名是否备案。如果随便写一个域名是不行的（当然理论上你用baidu.com或者其他知名的域名也行）。</p>
+<p>这个hosts文件的配置要写在Github文档中。Tower项目里最好也写一个操作指南文档给设计师和PM看。</p>
+<h3 id="上线"><a href="#上线" class="headerlink" title="上线"></a>上线</h3><p><em>MAE发布后本节需要更新</em></p>
+<p>上线一个版本，比如1.2版。首先在主分支打上这个tag。然后在阿里云的镜像仓库里build这个tag的镜像。</p>
+<p>最后由负责部署的同学，SSH到集群更新Deployment配置文件中的image版本号。升级Deployment即可。</p>
+<p>这一步在将来会由开发应用的同学自行在MAE上操作完成。目前暂时还是需要有人在服务器上部署。开发的同学只要交付镜像就可以了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>相比于之前的工作流，目前的工作流不同的地方主要是，需要写单元测试，PR需要CI通过才能merge，大型的应用必须要部署测试环境并用本地DNS解析访问，进行部署时是用Docker镜像而不是在服务器build。这套工作流需要大家用<strong>微服务</strong>的观点去看待将来的开发。随着时间的推移，这套工作流也会不断的变化，大致还是朝Cloud Native的方向发展。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/27/mae/" rel="next" title="云端木犀-MAE初步构想">
+                <i class="fa fa-chevron-left"></i> 云端木犀-MAE初步构想
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/05/fe-microservice/" rel="prev" title="前端微服务实践-以木犀通行证为例">
+                前端微服务实践-以木犀通行证为例 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#三个环境"><span class="nav-number">1.</span> <span class="nav-text">三个环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发分支与Pull-Request"><span class="nav-number">2.</span> <span class="nav-text">开发分支与Pull Request</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单元测试与CI"><span class="nav-number">3.</span> <span class="nav-text">单元测试与CI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试环境的具体配置"><span class="nav-number">4.</span> <span class="nav-text">测试环境的具体配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上线"><span class="nav-number">5.</span> <span class="nav-text">上线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

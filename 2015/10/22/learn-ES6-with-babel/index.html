@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ES6," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="ES6中增加了一些新特性，但从底层的角度来说，只是一些语法糖。但是就我个人来说，如果不了解这些语法糖的本质，是用不安心的。那我们要如何揭开这些语法糖的真实面目呢？Babel to the rescue！ Babel是一款将ES6代码转换为ES5代码的编译器，从而让我们可以无视浏览器的支持，直接享受ES6的新特性。同时，我们也可以通过研究Babel编译出的ES5代码，来揭开ES6的面纱。">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6探秘-Classes">
+<meta property="og:url" content="http://yoursite.com/2015/10/22/learn-ES6-with-babel/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="ES6中增加了一些新特性，但从底层的角度来说，只是一些语法糖。但是就我个人来说，如果不了解这些语法糖的本质，是用不安心的。那我们要如何揭开这些语法糖的真实面目呢？Babel to the rescue！ Babel是一款将ES6代码转换为ES5代码的编译器，从而让我们可以无视浏览器的支持，直接享受ES6的新特性。同时，我们也可以通过研究Babel编译出的ES5代码，来揭开ES6的面纱。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6探秘-Classes">
+<meta name="twitter:description" content="ES6中增加了一些新特性，但从底层的角度来说，只是一些语法糖。但是就我个人来说，如果不了解这些语法糖的本质，是用不安心的。那我们要如何揭开这些语法糖的真实面目呢？Babel to the rescue！ Babel是一款将ES6代码转换为ES5代码的编译器，从而让我们可以无视浏览器的支持，直接享受ES6的新特性。同时，我们也可以通过研究Babel编译出的ES5代码，来揭开ES6的面纱。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/22/learn-ES6-with-babel/"/>
+
+
+
+
+
+  <title>ES6探秘-Classes | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/22/learn-ES6-with-babel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6探秘-Classes</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-10-22T09:23:57+08:00">
+                2015-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ES6中增加了一些新特性，但从底层的角度来说，只是一些语法糖。<br>但是就我个人来说，如果不了解这些语法糖的本质，是用不安心的。那我们要如何揭开这些语法糖的真实面目呢？<br>Babel to the rescue！ Babel是一款将ES6代码转换为ES5代码的编译器，从而让我们可以无视浏览器的支持，直接享受ES6的新特性。同时，我们也可以通过研究Babel编译出的ES5代码，来揭开ES6的面纱。</p>
+<a id="more"></a>
+<p>###ES6 Classes<br>ES6中的Classes是在Javascript现有的原型继承的基础上引入的一种语法糖。Class语法并没有引入一种新的继承模式。它为对象创建和继承提供了更清晰，易用的语法。  </p>
+<p>我们用class关键字来创建一个类，constructor关键字定义构造函数，用extends关键字来实现继承，super来实现调用父类方法。</p>
+<p>好，下面是一个ES6 class语法的完整例子：  </p>
+<pre class="prettyprint">
+//定义父类View
+class View {
+  constructor(options) {
+    this.model = options.model;
+    this.template = options.template;
+  }
+
+  render() {
+    return _.template(this.template, this.model.toObject());
+  }
+}
+//实例化父类View
+var view = new View({
+  template: 'Hello, <%= name="" %="">'
+});
+//定义子类LogView，继承父类View
+class LogView extends View {
+  render() {
+    var compiled = super.render();
+    console.log(compiled);
+  }
+}
+</%=></pre>  
+
+<p>这段简短的代码就用到了上述的几个关键词。class语法的确的简洁明确，借鉴了主流OO语言的语法，更易于理解。  </p>
+<p>然而我在用这段代码时，又有些犹豫。这还是我熟悉的js原型继承吗，这真的是同一种继承模式的一个语法糖吗？  </p>
+<p>真相究竟是如何呢？我们就拿babel编译之后的代码作为切入口，来看看ES6 class语法的本质。</p>
+<p>下面是上述ES6代码用babel编译之后的结果：</p>
+<pre class="prettyprint" style="height:400px;overflow-y:scroll">
+'use strict';
+var _get = function get(_x, _x2, _x3) {
+    var _again = true;
+    _function: while (_again) {
+        var object = _x,
+            property = _x2,
+            receiver = _x3;
+        desc = parent = getter = undefined;
+        _again = false;
+        if (object === null) object = Function.prototype;
+        var desc = Object.getOwnPropertyDescriptor(object, property);
+        if (desc === undefined) {
+            var parent = Object.getPrototypeOf(object);
+            if (parent === null) {
+                return undefined;
+            } else {
+                _x = parent;
+                _x2 = property;
+                _x3 = receiver;
+                _again = true;
+                continue _function;
+            }
+        } else if ('value' in desc) {
+            return desc.value;
+        } else {
+            var getter = desc.get;
+            if (getter === undefined) {
+                return undefined;
+            }
+            return getter.call(receiver);
+        }
+    }
+};
+
+var _createClass = (function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ('value' in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+    };
+})();
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== 'function' && superClass !== null) {
+        throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError('Cannot call a class as a function');
+    }
+}
+
+var View = (function() {
+    function View(options) {
+        _classCallCheck(this, View);
+            this.model = options.model;
+        this.template = options.template;
+    }
+    _createClass(View, [{
+        key: 'render',
+        value: function render() {
+            return _.template(this.template, this.model.toObject());
+        }
+    }]);
+    return View;
+})();
+
+var LogView = (function(_View) {
+    _inherits(LogView, _View);
+    function LogView() {
+        _classCallCheck(this, LogView);
+        _get(Object.getPrototypeOf(LogView.prototype), 'constructor', this).apply(this, arguments);
+    }
+    _createClass(LogView, [{
+        key: 'render',
+        value: function render() {
+            var compiled = _get(Object.getPrototypeOf(LogView.prototype), 'render', this).call(this);
+            console.log(compiled);
+        }
+    }]);
+    return LogView;  
+
+})(View);
+</pre>
+
+<p>这段代码很长，我们只关注里面的函数，可以得到它的结构如下:</p>
+<pre class="prettyprint" style="height:400px;overflow-y:scroll">
+//用于得到原型链上属性的方法的函数
+var _get = function get(_x, _x2, _x3) {
+    //······
+}
+
+//用于创建对象的函数
+var _createClass = (function() {
+     //内部函数，定义对象的属性
+    function defineProperties(target, props) {
+        //······
+    }
+    return function(Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+    };
+})();
+
+//用于实现继承的函数
+function _inherits(subClass, superClass) {
+        //······
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+});
+
+var View = (function() {
+    //······
+    return View;
+})();
+
+var LogView = (function(_View) {
+    //······
+})(View);
+</pre>
+
+
+<p>###View类的实现</p>
+<p>我们从一个View类的创建开始分析</p>
+<pre class="prettyprint">
+class View {
+  constructor(options) {
+    this.model = options.model;
+    this.template = options.template;
+  }
+  render() {
+    return _.template(this.template, this.model.toObject());
+  }
+}
+
+//ES5代码
+var View = (function() {
+    function View(options) {
+        _classCallCheck(this, View);
+            this.model = options.model;
+        this.template = options.template;
+    }
+    _createClass(View, [{
+        key: 'render',
+        value: function render() {
+            return _.template(this.template, this.model.toObject());
+        }
+    }]);
+    return View;
+})();
+
+</pre>
+我们从编译之后的代码中可以看出，View是一个IIFE，里面是一个同名的函数View，这个函数经过  `_createClass()`函数的处理之后，被返回了。所以我们得出的第一点结论就是，**ES6中的class实际就是函数**。当然这点在各种文档中已经明确了，所以让我们继续分析。 
+
+IIFE中的同名的View实际上就是我们在ES5的原型继承中使用的构造函数，所以ES6中的class是对ES5中的构造函数的一种包装。我们发现，在class中设定的属性被放在ES5的构造函数中，而方法则以键值对的形式传入一个`_createClass()`函数中。那么这个`_createClass()`函数又制造了什么魔法呢？  
+
+<pre class="prettyprint">
+var _createClass = (function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ('value' in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+    };
+})();
+</pre> 
+
+<p><code>_createClass</code>也是一个IIFE，有一个内部的函数<code>defineProperties</code>，这个函数遍历属性的描述符，进行描述符的默认设置，最后使用<code>Object.defineProperty()</code>方法来写入对象的属性。IIFE的renturn部分有两个分支，一个是针对一个类的原型链方法，一个是静态方法，我们看到原型链方法被写入构造函数的原型对象里，<strong>而静态方法则被直接写入构造函数里，因此我们不用实例化对象就可以直接调用一个类的静态方法了</strong>。</p>
+<blockquote>
+<p>js中的函数是对象，Function构造函数的prototype指向Object.prototype，因此可以写入属性</p>
+</blockquote>
+<p>###类继承的实现</p>
+<p>OK，到目前我们已经搞清了ES6的class关键字是如何工作的，那么ES6中的继承有是如何实现的呢？下面让我们看看<code>_inherits()</code>函数。</p>
+<pre class="prettyprint">
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== 'function' && superClass !== null) {
+        throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+</pre>
+
+<p><code>_inherits()</code>函数的关键部分便是<code>subClass.prototype = Object.create(···)</code>。通过<code>Object.create()</code>方法来指定新创建对象的原型，由此省去了对父类构造函数的处理，达到了简单的原型继承效果。</p>
+<p>然后我们来看看创建<code>LogView</code>类的代码：</p>
+<pre class="prettyprint">
+//ES6
+class LogView extends View {
+  render() {
+    var compiled = super.render();
+    console.log(compiled);
+  }
+}
+//ES5
+var LogView = (function(_View) {
+    _inherits(LogView, _View);
+    function LogView() {
+        _classCallCheck(this, LogView);
+        _get(Object.getPrototypeOf(LogView.prototype), 'constructor', this).apply(this, arguments);
+    }
+    _createClass(LogView, [{
+        key: 'render',
+        value: function render() {
+            var compiled = _get(Object.getPrototypeOf(LogView.prototype), 'render', this).call(this);
+            console.log(compiled);
+        }
+    }]);
+    return LogView;
+})(View);
+</pre>
+
+<p><code>LogView</code>类和<code>View</code>类的最大不同便是增加了一个<code>_get()</code>函数的调用，我们仔细看这个<code>_get()</code>函数会发现它接收几个参数，子类的原型，”constructor”标识符，还有<code>this</code>。再看下面对<code>super.render()</code>的处理，同样是用<code>_get()</code>函数来处理的。再看<code>_get()</code>函数的源码，就可以发现<code>_get()</code>函数的作用便是遍历对象的原型链，找出传入的标识符对应的属性，把它用<code>apply</code>绑定在当前上下文上执行。</p>
+<p>大家是不是对这种继承模式似曾相识呢？对了，这就是所谓的“构造函数窃取”。当我们需要继承父类的属性时，在子类的构造函数内部调用父类构造函数，在加上<code>Object.create()</code>大法，然后就可以继承父类的所有属性和方法了。</p>
+<p>###结语<br>以上就是笔者对ES6中的class做的一些解读，依据是babel的编译结果。今天刚好看到getify大神的一篇<a href="http://blog.getify.com/arrow-this/" target="_blank" rel="noopener">博客</a>，将的是ES6中的箭头函数其实并不是一个语法糖，而是一种新的不带this的函数。他还进一步说了，错误的过程得到正确的结果，会导致很多后续的问题。</p>
+<p>而本文的结论是建立在class是一种语法糖的基础之上的，根据MDN的文档，我们应该可以确认这个结论是可靠的。而ES6中的特性，如箭头函数，并不都是语法糖，因此在后续的ES6探秘文章中，我们将用其他的途径，来揭示ES6种种神奇魔法的秘密。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/27/web-desgin-issues-with-fe/" rel="next" title="面向前端模块化的web端设计准则">
+                <i class="fa fa-chevron-left"></i> 面向前端模块化的web端设计准则
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/04/http-basic-auth/" rel="prev" title="Http Basic Authorization的使用">
+                Http Basic Authorization的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

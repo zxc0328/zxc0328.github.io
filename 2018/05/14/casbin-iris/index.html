@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 Casbin 接入 Iris Web 框架。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Iris + Casbin 权限控制实战">
+<meta property="og:url" content="http://yoursite.com/2018/05/14/casbin-iris/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 Casbin 接入 Iris Web 框架。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Iris + Casbin 权限控制实战">
+<meta name="twitter:description" content="在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 Casbin 接入 Iris Web 框架。">
+<meta name="twitter:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/14/casbin-iris/"/>
+
+
+
+
+
+  <title>Iris + Casbin 权限控制实战 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/14/casbin-iris/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Iris + Casbin 权限控制实战</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-14T21:17:27+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 <a href="https://github.com/casbin/casbin" target="_blank" rel="noopener">Casbin</a> 接入 Iris Web 框架。</p>
+<a id="more"></a>
+<h3 id="Iris-中间件机制简介"><a href="#Iris-中间件机制简介" class="headerlink" title="Iris 中间件机制简介"></a>Iris 中间件机制简介</h3><p>Iris 这个框架是基于中间件的，和 Nodejs 的 Koa 和 Express 很像。所谓中间件机制，就是一个请求到达之后，会生成一个上下文信息，里面包含了这个请求的一些信息。然后我们依次调用中间件函数，把上下文对象作为参数传入。需要注意是中间件函数的调用是嵌套的，在中间件函数中我们可以调用 <code>ctx.Next()</code> 方法，进入下一个中间件函数。当最后一个中间件函数返回时，之前调用过的中间件会依次返回。这个数据流被形象的称为“洋葱模型”。</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg" alt=""></p>
+<p>一个典型的中间件是这样的：</p>
+<pre><code>func middleware(ctx iris.Context) {
+   // get info from context
+    requestPath := ctx.Path()
+
+   // set info with context
+    ctx.Values().Set(&quot;info&quot;, shareInformation)
+
+    // call next middleware
+    ctx.Next()
+}
+</code></pre><p>我们可以在中间件中读取 ctx 结构，根据上面附带的信息，我们可以做一些针对性的事情。</p>
+<p>一个常用的中间件场景就是访问控制。我们可以根据 ctx 上带的用户信息，来查看用户的权限，如果用户没有要访问的资源的权限，我们就拒绝这次访问。比如这样：</p>
+<pre><code>func auth(ctx iris.Context) {
+   // check if user has permission
+   if !c.Check(ctx.Request()) {
+        ctx.StatusCode(http.StatusForbidden) // Status Forbiden
+        ctx.StopExecution() 
+        return
+    }
+    ctx.Next()
+}
+</code></pre><p>在本文的权限控制的场景下，中间件的作用就是在请求验证失败时，提前返回 403 状态码。</p>
+<h3 id="Casbin-简介"><a href="#Casbin-简介" class="headerlink" title="Casbin 简介"></a>Casbin 简介</h3><p><a href="https://github.com/casbin/casbin" target="_blank" rel="noopener">Casbin</a> 是由北大的一位博士生主导开发的一个基于 Go 语言的权限控制库。支持 ACL，RBAC，ABAC 等常用的访问控制模型。</p>
+<p>Casbin 的核心是<strong>一套基于 PERM metamodel (Policy, Effect, Request, Matchers) 的 DSL</strong>。Casbin 从用这种 DSL 定义的配置文件中读取访问控制模型，作为后续权限验证的基础。</p>
+<p>一个典型的配置文件如下：</p>
+<pre><code># Request definition
+[request_definition]
+r = sub, obj, act
+
+# Policy definition
+[policy_definition]
+p = sub, obj, act
+
+# Policy effect
+[policy_effect]
+e = some(where (p.eft == allow))
+
+# Matchers
+[matchers]
+m = r.sub == p.sub &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act
+</code></pre><p>可以看到这个配置文件主要定义了 Request 和 Policy 的组成结构。Policy effect 和 Matchers 则灵活的多，可以包含一些自定义的表达式。</p>
+<p>比如我们要加入一个名叫 root 的超级管理员，就可以这样写：</p>
+<pre><code>[matchers]
+m = r.sub == p.sub &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act || r.sub == &quot;root&quot;
+</code></pre><p>又比如我们可以用正则匹配来判断权限是否 match：</p>
+<pre><code>[matchers]
+m = r.sub == p.sub &amp;&amp; keyMatch(r.obj, p.obj) &amp;&amp; regexMatch(r.act, p.act)
+</code></pre><p>Casbin 文档中有<a href="https://github.com/casbin/casbin#examples" target="_blank" rel="noopener">一节</a>展示了 Casbin 所支持的权限控制模型的示例配置。我们可以根据那些例子来打造我们自己的权限控制模型。</p>
+<p>有了权限控制模型，我们还需要权限规则。权限规则是若干行数据的集合。每行数据就是一条规则。权限规则的具体格式因权限模型中的定义而异，最简单的 ACL 模型的规则是这样的：</p>
+<pre><code>p, alice, data1, read
+p, bob, data2, write
+</code></pre><p>意思就是 alice 可以读 data1，bob 可以写 data2。</p>
+<h3 id="为-Casbin-适配-Iris-中间件"><a href="#为-Casbin-适配-Iris-中间件" class="headerlink" title="为 Casbin 适配 Iris 中间件"></a>为 Casbin 适配 Iris 中间件</h3><p>既然实现权限控制的最佳位置是中间件，我们就需要为 Casbin 写一个 Iris 中间件。社区里的 <a href="https://github.com/iris-contrib/middleware/tree/master/casbin" target="_blank" rel="noopener">Casbin-iris 插件</a>就是一个不错的例子，我们可以以这个插件为基础进行开发。</p>
+<p>首先我们来看看这个中间件是如何使用的，这个插件有 Warpper 和 Middleware 两种用法。差别在于 Warpper 方法会在所有路由被调用。而 Middleware 让我们可以控制哪些路由启用权限控制。我们选择 Middleware 方式做示例。打开 <a href="https://github.com/iris-contrib/middleware/blob/master/casbin/_examples/middleware/main.go" target="_blank" rel="noopener"><code>casbin/_examples/middleware/main.go</code></a>，其中核心的几行代码是这样的：</p>
+<pre><code>var Enforcer = casbin.NewEnforcer(&quot;casbinmodel.conf&quot;, &quot;casbinpolicy.csv&quot;)
+
+func newApp() *iris.Application {
+    casbinMiddleware := casbinMiddleware.New(Enforcer)
+
+    app := iris.New()
+    app.Use(casbinMiddleware.ServeHTTP)
+
+    app.Get(&quot;/&quot;, hi)
+
+    app.Get(&quot;/dataset1/{p:path}&quot;, hi) // p, alice, /dataset1/*, GET
+
+    app.Post(&quot;/dataset1/resource1&quot;, hi)
+
+    app.Get(&quot;/dataset2/resource2&quot;, hi)
+    app.Post(&quot;/dataset2/folder1/{p:path}&quot;, hi)
+
+    app.Any(&quot;/dataset2/resource1&quot;, hi)
+
+    return app
+}
+</code></pre><p>首先通过 NewEnforcer 方法初始化一个 Casbin Enforcer。NewEnforcer 方法接收两个参数，一个是访问控制模型文件的路径，一个是权限规则文件的路径。</p>
+<p>然后调用 casbinMiddleware.New 方法，传入 Casbin Enforcer，进行一些初始化工作。最后调用 <code>app.Use(casbinMiddleware.ServeHTTP)</code>，应用中间件。</p>
+<p>看起来还挺简单的。但这里存在一个问题，这个中间件是如何拿到鉴权需要的用户信息的呢？这个过程对于开发者是不透明的。我们查看<a href="https://github.com/iris-contrib/middleware/blob/master/casbin/casbin.go" target="_blank" rel="noopener">源码</a>，发现里面有这样的代码：</p>
+<pre><code>// Username gets the username from the basicauth.
+func Username(r *http.Request) string {
+    username, _, _ := r.BasicAuth()
+    return username
+}
+</code></pre><p>原来这个中间件假设请求通过 HTTP Basic Auth 方式进行认证。然后从请求的 headers 中获取认证信息。</p>
+<p>但在实际生产中，我们认证用户身份的方式有很多种，最常见的就是通过 session 得知用户的身份，或者通过 token 这样的凭证来确定用户的身份。这个中间件如果要使用到生产中去，需要进行一些改动。</p>
+<p>以下就是修改过的中间件，为了测试，我在 Username 函数中直接返回了用户名，后续使用时可以在这个函数里进行用户身份的获取。</p>
+<pre><code>package casbin
+
+import (
+    &quot;net/http&quot;
+
+    &quot;github.com/kataras/iris/context&quot;
+
+    &quot;github.com/casbin/casbin&quot;
+)
+
+func New(e *casbin.Enforcer) *Casbin {
+    return &amp;Casbin{enforcer: e}
+}
+
+func (c *Casbin) Wrapper() func(w http.ResponseWriter, r *http.Request, router http.HandlerFunc) {
+    return func(w http.ResponseWriter, r *http.Request, router http.HandlerFunc) {
+        if !c.Check(r) {
+            w.WriteHeader(http.StatusForbidden)
+            w.Write([]byte(&quot;403 Forbidden&quot;))
+            return
+        }
+        router(w, r)
+    }
+}
+
+func (c *Casbin) ServeHTTP(ctx context.Context) {
+    if !c.Check(ctx.Request()) {
+        ctx.StatusCode(http.StatusForbidden) // Status Forbiden
+        ctx.StopExecution()
+        return
+    }
+    ctx.Next()
+}
+
+type Casbin struct {
+    enforcer *casbin.Enforcer
+}
+
+// Check checks the username, request&#39;s method and path and
+// returns true if permission grandted otherwise false.
+func (c *Casbin) Check(r *http.Request) bool {
+    username := Username(r)
+    method := r.Method
+    path := r.URL.Path
+    return c.enforcer.Enforce(username, path, method)
+}
+
+// Username gets the username from the basicauth.
+func Username(r *http.Request) string {
+   // TODO: get username form db using userId in session or token
+    return &quot;alice&quot;
+}
+</code></pre><p>大家可以用<a href="https://github.com/iris-contrib/middleware/tree/master/casbin/_examples/middleware" target="_blank" rel="noopener">这里</a>的代码、<a href="https://github.com/iris-contrib/middleware/blob/master/casbin/_examples/middleware/casbinmodel.conf" target="_blank" rel="noopener">模型</a>和<a href="https://github.com/iris-contrib/middleware/blob/master/casbin/_examples/middleware/casbinpolicy.csv" target="_blank" rel="noopener">规则文件</a>进行测试（将中间件替换为上面的版本）。如果我们 GET /dataset2/resource2 这个路径，就会返回 403。这说明中间件正常工作了。因为 alice 是没有 /dataset2/resource2 这个资源的 GET 权限的。</p>
+<h3 id="选择合适的访问控制模型"><a href="#选择合适的访问控制模型" class="headerlink" title="选择合适的访问控制模型"></a>选择合适的访问控制模型</h3><p>我选择了 RBAC with domains/tenants 这个模型作为木犀云平台的访问控制模型。PaaS 平台中有服务、应用等多种资源，所以需要按领域模型区分。用户中可以存在超级管理员等角色，所以需要角色。需要注意的是 Casbin 的 RBAC 中的角色其实是一种分组。比如我们可以定义一个叫 admin 的用户，这个用户对所有的资源都有权限规则存在，然后我们可以把其他用户和这个用户分为一组，那这些用户也都有了 admin 用户的权限。</p>
+<pre><code>[request_definition]
+r = sub, dom, obj, act
+
+[policy_definition]
+p = sub, dom, obj, act
+
+[role_definition]
+g = _, _, _
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = g(r.sub, p.sub, r.dom) &amp;&amp; r.dom == p.dom &amp;&amp; r.obj == p.obj &amp;&amp; r.act == p.act
+</code></pre><p>这个模型定义中的 g 就是指 group。</p>
+<p>示例规则如下：</p>
+<pre><code>p, admin, domain1, data1, read
+p, admin, domain1, data1, write
+p, admin, domain2, data2, read
+p, admin, domain2, data2, write
+g, alice, admin, domain1
+g, bob, admin, domain2
+</code></pre><p>如上所示，alice 和 bob 分别是 domian1 和 domain2 的管理员。</p>
+<h3 id="Casbin-Policy-持久化"><a href="#Casbin-Policy-持久化" class="headerlink" title="Casbin Policy 持久化"></a>Casbin Policy 持久化</h3><p>Casbin 的 policy 可以保存在一个 csv 文件中。也可以被持久化到数据库中。</p>
+<p>所谓的“持久化到数据库中”的意思，就是在数据库中创建一个表，把行数据都存放到数据库中。</p>
+<p>对于一个 Web 应用，我们想要的当然是后者。所以我们还需要将 Casbin 和数据库连接起来。</p>
+<p>Casbin 支持 gorm 和 xorm 等等常见的 orm。我们以 gorm 为例，Canbin 的 gorm 适配库是 <a href="https://github.com/casbin/gorm-adapter" target="_blank" rel="noopener">gorm-adapter</a>。</p>
+<p>接入 gorm 并不是很复杂的事情，其实就是把 NewEnforcer 中的第二个 policy file 参数换成 gorm-adapter 的一个实例就可以。</p>
+<pre><code>// 自动创建一个数据库，叫 casbin
+// 如果需要制定数据库名，可以这样 a := gormadapter.NewAdapter(&quot;mysql&quot;, &quot;mysql_username:mysql_password@tcp(127.0.0.1:3306)/abc&quot;, true)
+var a = gormadapter.NewAdapter(&quot;mysql&quot;, &quot;root:muxi@tcp(127.0.0.1:3306)/&quot;) 
+
+var Enforcer = casbin.NewEnforcer(&quot;casbinmodel.conf&quot;, a)
+</code></pre><p>然后我们可以调用 API 对规则进行添加和删除等等操作：</p>
+<pre><code>Enforcer.LoadPolicy()
+Enforcer.AddPolicy(&quot;admin&quot;, &quot;app&quot;, &quot;/app/1&quot;, &quot;GET&quot;)
+Enforcer.AddGroupingPolicy(&quot;alice&quot;, &quot;admin&quot;, &quot;app&quot;)
+</code></pre><blockquote>
+<p>这里踩了一个小坑，这个 gorm-adapter 的 <a href="https://github.com/casbin/gorm-adapter" target="_blank" rel="noopener">README</a> 里没有写 AddGroupingPolicy 这个 API。还是翻源码才看到的。</p>
+</blockquote>
+<p>规则文件中的 p 对应 AddPolicy API，g 对应 AddGroupingPolicy API。</p>
+<h3 id="Warp-it-up"><a href="#Warp-it-up" class="headerlink" title="Warp it up"></a>Warp it up</h3><blockquote>
+<p>TODO: 把文中的示例代码整理到一个仓库中</p>
+</blockquote>
+<p>一点感受：Casbin 的文档主要是 README 中的内容。Iris 的文档则主要要看 Example 这一节。有点 Example Driven Development 的感觉。虽然这么说，不过整体来说，这些资料还是可以覆盖到我们的使用场景的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/01/react-source-reading-howto/" rel="next" title="如何阅读大型前端开源项目的源码">
+                <i class="fa fa-chevron-left"></i> 如何阅读大型前端开源项目的源码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Iris-中间件机制简介"><span class="nav-number">1.</span> <span class="nav-text">Iris 中间件机制简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Casbin-简介"><span class="nav-number">2.</span> <span class="nav-text">Casbin 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为-Casbin-适配-Iris-中间件"><span class="nav-number">3.</span> <span class="nav-text">为 Casbin 适配 Iris 中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择合适的访问控制模型"><span class="nav-number">4.</span> <span class="nav-text">选择合适的访问控制模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Casbin-Policy-持久化"><span class="nav-number">5.</span> <span class="nav-text">Casbin Policy 持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warp-it-up"><span class="nav-number">6.</span> <span class="nav-text">Warp it up</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

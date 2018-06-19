@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Design," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="一个了解前端页面实现的设计师做出的设计可以让前端工程师事半功倍，而一个不了解前端实现基本知识的设计师的作品，在实际的操作中会让前端工程师叫苦不迭。所以我写这篇博客是想讲一下一些前端实现的流程和思想，其中有很大一部分是建立在一个前提之下的，那就是设计师的设计稿考虑到了一些模块化，可复用的思想，并且是按这些标准来进行设计的。">
+<meta name="keywords" content="Design">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面向前端模块化的web端设计准则">
+<meta property="og:url" content="http://yoursite.com/2015/09/27/web-desgin-issues-with-fe/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="一个了解前端页面实现的设计师做出的设计可以让前端工程师事半功倍，而一个不了解前端实现基本知识的设计师的作品，在实际的操作中会让前端工程师叫苦不迭。所以我写这篇博客是想讲一下一些前端实现的流程和思想，其中有很大一部分是建立在一个前提之下的，那就是设计师的设计稿考虑到了一些模块化，可复用的思想，并且是按这些标准来进行设计的。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%202.54.58%20PM.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%203.28.16%20PM.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%204.06.04%20PM_spec.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/xueer.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%205.00.34%20PM.png">
+<meta property="og:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/index_uikit.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.521Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面向前端模块化的web端设计准则">
+<meta name="twitter:description" content="一个了解前端页面实现的设计师做出的设计可以让前端工程师事半功倍，而一个不了解前端实现基本知识的设计师的作品，在实际的操作中会让前端工程师叫苦不迭。所以我写这篇博客是想讲一下一些前端实现的流程和思想，其中有很大一部分是建立在一个前提之下的，那就是设计师的设计稿考虑到了一些模块化，可复用的思想，并且是按这些标准来进行设计的。">
+<meta name="twitter:image" content="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%202.54.58%20PM.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/09/27/web-desgin-issues-with-fe/"/>
+
+
+
+
+
+  <title>面向前端模块化的web端设计准则 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/09/27/web-desgin-issues-with-fe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">面向前端模块化的web端设计准则</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-09-27T14:07:40+08:00">
+                2015-09-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个了解前端页面实现的设计师做出的设计可以让前端工程师事半功倍，而一个不了解前端实现基本知识的设计师的作品，在实际的操作中会让前端工程师叫苦不迭。所以我写这篇博客是想讲一下一些前端实现的流程和思想，其中有很大一部分是建立在一个前提之下的，那就是设计师的设计稿考虑到了一些模块化，可复用的思想，并且是按这些标准来进行设计的。</p>
+ <a id="more"></a>
+<p>###1. 前端页面实现的流程<br>一般来说，一个web端产品有好几个页面组成，前端工程师会首先分析页面的结构和模块，这属于页面的架构部分。而在页面的样式部分，则需要提取出页面的主要设计元素（色值，字号，margin，padding等等）。<br>你可能会问，为什么要提取呢，直接做页面，到时候去看一下色值和字号是什么不就行了？<br>问的好，按那样做的确是可以，然而现在的产品比较复杂，css虽然不是一种编程语言，但是less，sass等技术给css添加了一些编程语言才有的特性，比如变量，嵌套，mixin等等。这样我们在使用sass之类的异构语言写css时，就可以将css分门别类，每个模块写一个专门的sass文件，将页面上可以复用的css代码段提取出来，在各个模块之中调用，达到提高效率的目的。<br>我这么说可能还是不够具体，拿学而来说，整个产品中有这样几种色值：<br><img src="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%202.54.58%20PM.png" alt="学而色值"><br><em>p.s.这里只列出了最主要的颜色。</em></p>
+<p>用sass代码写就是这样  </p>
+<p><pre class="prettyprint"><br>$mainColorGreen:#92CF67;<br>$mainColorGray:F7F8FA;<br>$fontColorDark:#666;<br>$fontColorLight:#999;<br></pre><br>这样我们就告别了符号化的16进制颜色代码，从而可以用语义化的变量来调用颜色值，每当我们要使用颜色值的时候，只要这样调用就可以了：  </p>
+<p><pre class="prettyprint"><br>.main{<br>    background-color:$mainColorGray;<br>}<br>.title{<br>    color:$fontColorDark;<br>}<br></pre><br>从而将颜色值统一管理，大大加强了可复用性。</p>
+<p>对于其他的数值类型的样式比如字号，边距，也是同样的做法，前端工程师在写样式时会首先提取这些通用的元素。<br>因此如果设计师懂得前端的流程，并按相应的准则来设计，那么前端工程师就可以提取到大量的信息。事实上，如果有标注这个流程，那么设计师在标注时便可以总结出自己设计稿中的一些可以复用的元素，相比之下，设计师更了解自己的作品，因此在总结时会更加的轻松自如。标注这一部分将在2.4节中介绍。<br>反之，如果设计师不按约定的准则来设计，那么前端工程师便很难提取出相同的元素（因为设计的时候压根就没考虑这个！），造成前端的样式混乱，开发效率大大下降。</p>
+<p>###2. 一些面向前端模块化的设计准则</p>
+<p>####2.1 样式复用<br>这些元素包括，颜色值，字体的字号，边距等    </p>
+<p><strong>颜色值</strong>  </p>
+<p>之前在第一节中便举了颜色复用的例子，这里再拿学而作为例子，比如学而中的课程信息页：<br><img src="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%203.28.16%20PM.png" alt="课程信息页"><br> 搜索框和评论框的边框色是一样的，这就方便了前端工程师的代码复用。而从视觉上来说，搜索框和评论框作为两个组件，在UI上的风格是相近的。<br> 所以基本的原则就是控制整个项目中使用的颜色的数量，在相似的组件上复用色值或者其他的数值，在使用一种新的颜色之前，请想一想，是否可以用现有的颜色而不是引入一种新的颜色。</p>
+<p><strong>字号</strong>  </p>
+<p>字号的原则也是在页面中不要引入过多的不同字号。因为我们在前端中使用相对字号，所以一般我们定一种基础的字号，作为主要的正文的字号。而标题等元素的字号大小则定为基础字号的倍数，一般是一位小数倍，比如1.2、1.5、1.8等。比如在学而中存在32px,24px,17px,16px,14px,12px这些字号，我们将12px定为base字号，那么24px便是12px的两倍，用2rem表示，16px则是1.33rem，不是有理数，因此在设计中应该加以避免（在视觉效果满足要求的前提下，16px可以改为15px，这样就是1.25rem）（或者在最初设计之时就加以规划）。<br>然而这些字号还是太散乱了，在一个组件（模块）中使用三级字体是比较合理的选择，而组件之间的字号值可以重合，从而使整个产品的字号系统大大简化。</p>
+<p><strong>边距</strong>  </p>
+<p>在一个组件中，可能存在很多不同的边距值，这次问题的关键不是不同边距值的数量，而是边距之间的倍数关系。如果边距之间是整数倍的，那么在sass中便可以使用运算符来进行边距的计算，比如:  </p>
+<p><pre class="prettyprint"><br>$marginBase:10px;<br>$paddingBase:20px;<br>.box{<br>    margin:$marginBase $marginBase*2;<br>    padding-top:$paddingBase/2;<br>}<br></pre><br>这就要求我们在设计时对边距进行一些计算，从而在保证视觉效果的前提之下，使边距达到一个倍数的关系。 </p>
+<p>一个反面例子：    </p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%204.06.04%20PM_spec.png" alt="学而首页热门课程组件">  </p>
+<p>这是学而首页的热门课程组件，其中纵向的边距每一个的不同，而且之间没有任何倍数关系，这就给边距的计算带来了麻烦。  </p>
+<p>####2.2 页面模块化<br>之前在第一节中讲过，在开发中，前端工程师会对页面进行模块的划分，然后分别开发。因此设计师在设计时，就要注意这种模块化、组件化的思路。  </p>
+<p>这是学而首页的模块划分：  </p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/xueer.png" alt="学而首页">  </p>
+<p>为什么要进行模块划分呢？首先，拿学而来说，首页有的导航和页脚两个模块在其他页面中都会用到，所以我们将它们分出来来达到一个复用的效果。对于其他模块，实际上我们在其他页面中并不会复用，但我们还是要用一种模块化的思维来看。   </p>
+<p>什么是模块化的思维呢？其实就将一个模块设计成一个相对独立的个体，它继承了整个产品的基础设计风格，简而言之就是一些通用的样式，比如色值，字体，字号，边距。但它是相对独立的，可以独立的完成一个功能，与其他的模块并没有耦合的关系。也就是说，这个模块是可以拔插的，加入这个模块，便获得了相应的功能，而移除这个模块，整个页面在功能上不会受太大的影响，当然视觉效果上会受影响。所以设计师要考虑的就是如何设计相互独立的模块并且布局（比如两个模块在页面上有部分重叠，就是一个不太好的实践）。 </p>
+<p>学而的首页便是一个高度模块化的页面，我们将一些功能模块，如猜你喜欢移除，换成其他的模块，整个页面在视觉上和功能上都不会受影响，只是没有了猜你喜欢这个特定的模块罢了。  </p>
+<p>模块化的页面设计，对于后续的产品升级和维护，也是很有利的。</p>
+<p>####2.3 UI组件系统化<br>UI组件和上一小节中所说的模块有什么不同呢?<br>相比于带有逻辑、能完成独立功能的模块，UI组件不带有逻辑，是用于完成UI交互功能的某个小组件。所以UI组件相比与模块来说细粒度要更小一些。各个模块可以重复使用站点的UI组件，来达到一种视觉风格的统一。</p>
+<p><img src="http://7oxh2b.com1.z0.glb.clouddn.com/Screen%20Shot%202015-09-27%20at%205.00.34%20PM.png" alt="UI"><br><em>学而的UI组件</em>   </p>
+<p>关于UI组件，我相信就不用我班门弄斧了，设计师们在设计一个产品时所设计的UI组件自然是系统化的。  </p>
+<p>一套系统的UI组件，可以在代码中用独立的文件进行引用，因此这是加强页面组件化的一大利器。对此我的建议就是在做页面的同时维护一张UI组件清单，这样可以直观的组织已有的UI组件，同时在开发时，也可以交给前端进行UI组件的快速整理和开发。  </p>
+<p>####2.4 关于标注<br>关于标注，做的好可以给前端工程师带来巨大的效率提升，但如果不懂得前端开发的一些常识，标注也可以变得毫无用处。</p>
+<p>关于页面色值，字号，边距的标注比较复杂，可以单独写一篇博文来讲，这里就不详述了。 </p>
+<p>而另一个意义重大的标注便是UI组件的清单，比如：<br><img src="http://7oxh2b.com1.z0.glb.clouddn.com/index_uikit.png" alt="UI">  </p>
+<p>这个清单对于设计师整理自己的UI组件和前端工程师快速开发都是很有利的。</p>
+<p>###3. 结语<br>如果设计师能了解了这些前端开发的常识，并且把这些准则在设计中运用起来，那么我相信前端工程师和设计师之前的合作可以更加的流畅。前端工程师是设计稿的最终实践者，所以如果工程师和设计师之间能去除了一些认知障碍，达成共识，开发效率一定可以得到很大程度的提升。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Design/" rel="tag"># Design</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/24/angulr-q-js/" rel="next" title="Angular源码分析:$q">
+                <i class="fa fa-chevron-left"></i> Angular源码分析:$q
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/22/learn-ES6-with-babel/" rel="prev" title="ES6探秘-Classes">
+                ES6探秘-Classes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

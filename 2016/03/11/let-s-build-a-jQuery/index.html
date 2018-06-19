@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="jQuery JavaScript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这个系列博客的灵感来源于这篇博客和一次失败的造轮子经历。出于对jQuery进行源码分析和让旧日作品发挥余热的目的，我开始写这一系列博客。主要内容就是从头开始打造一个jQuery-like的基础库，并且配上相应的源码，也就是我们的Litejs。 我们要做的工作有以下这些：  选择器和元素封装 DOM操作 Ajax请求 事件系统 触摸事件  分别对应这系列文章的四个部分。 好，让我们开启这段神奇的重复">
+<meta name="keywords" content="jQuery JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Let&#39;s build a jQuery!-Part 1(early release)">
+<meta property="og:url" content="http://yoursite.com/2016/03/11/let-s-build-a-jQuery/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="这个系列博客的灵感来源于这篇博客和一次失败的造轮子经历。出于对jQuery进行源码分析和让旧日作品发挥余热的目的，我开始写这一系列博客。主要内容就是从头开始打造一个jQuery-like的基础库，并且配上相应的源码，也就是我们的Litejs。 我们要做的工作有以下这些：  选择器和元素封装 DOM操作 Ajax请求 事件系统 触摸事件  分别对应这系列文章的四个部分。 好，让我们开启这段神奇的重复">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Let&#39;s build a jQuery!-Part 1(early release)">
+<meta name="twitter:description" content="这个系列博客的灵感来源于这篇博客和一次失败的造轮子经历。出于对jQuery进行源码分析和让旧日作品发挥余热的目的，我开始写这一系列博客。主要内容就是从头开始打造一个jQuery-like的基础库，并且配上相应的源码，也就是我们的Litejs。 我们要做的工作有以下这些：  选择器和元素封装 DOM操作 Ajax请求 事件系统 触摸事件  分别对应这系列文章的四个部分。 好，让我们开启这段神奇的重复">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/11/let-s-build-a-jQuery/"/>
+
+
+
+
+
+  <title>Let's build a jQuery!-Part 1(early release) | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/11/let-s-build-a-jQuery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Let's build a jQuery!-Part 1(early release)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-11T17:24:00+08:00">
+                2016-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这个系列博客的灵感来源于<a href="https://limpet.net/mbrubeck/2014/08/08/toy-layout-engine-1.html" target="_blank" rel="noopener">这篇博客</a>和一次失败的<a href="https://github.com/zxc0328/litejs" target="_blank" rel="noopener">造轮子</a>经历。出于对jQuery进行源码分析和让旧日作品发挥余热的目的，我开始写这一系列博客。主要内容就是从头开始打造一个jQuery-like的基础库，并且配上相应的源码，也就是我们的Litejs。</p>
+<p>我们要做的工作有以下这些：</p>
+<ul>
+<li>选择器和元素封装</li>
+<li>DOM操作</li>
+<li>Ajax请求</li>
+<li>事件系统</li>
+<li>触摸事件</li>
+</ul>
+<p>分别对应这系列文章的四个部分。</p>
+<p>好，让我们开启这段神奇的重复造轮子之旅吧！</p>
+<a id="more"></a>
+<h3 id="开发环境的搭建"><a href="#开发环境的搭建" class="headerlink" title="开发环境的搭建"></a>开发环境的搭建</h3><p>我们使用ES6的模块语法编写模块，并使用<a href="http://rollupjs.org/" target="_blank" rel="noopener">rollup.js</a>打包，rollup是基于ES6模块的JS打包工具。我对于rollup的思考可以参考。除此之外我们还是用Babel和Flow。Flow是Facebook出品的JavaScript静态类型检查工具，我们用Babel来去除Flow的类型标记，以及编译其他的ES6特性代码。</p>
+<p>// todo 测试环境搭建</p>
+<p><code>git checkout 1-1</code></p>
+<h3 id="jQuery的组织架构"><a href="#jQuery的组织架构" class="headerlink" title="jQuery的组织架构"></a>jQuery的组织架构</h3><p>简单的说，jQueryAPI由<code>jQuery</code>构造函数以及<code>jQuery</code>函数上的一系列静态API组成。<code>jQuery</code>构造函数就是我们平常使用的<code>$</code>函数，这个函数接收选择器字符串作为参数，返回jQuery对象实例。jQuery对象封装了原生的DOM对象，为其添加了一系列的属性和方法，以及链式调用的能力。</p>
+<p>与此同时，因为JavaScript的函数也是对象，因此我们可以在函数上添加属性和方法。函数是对象，因此也可以访问对象原型的方法。<code>jQuery</code>函数上的静态方法，包括了回调、AJAX、事件、动画、工具函数等jQuery API。另一些API，比如DOM相关的API，则是绑定在<code>jQuery</code>构造函数实例化出来的对象上。</p>
+<h4 id="lite构造函数"><a href="#lite构造函数" class="headerlink" title="lite构造函数"></a><code>lite</code>构造函数</h4><p>下面就让我们开始编写我们的自制<code>jQuery</code>—<code>litejs</code>。让我们来编写我们的第一个函数，<code>lite</code>构造函数。</p>
+<pre><code>// The lite constructor function
+var lite = function( selector, context ) {
+  return new lite.prototype.init( selector, context );
+};
+</code></pre><p>这个函数很简单，调用了<code>lite.fn.init</code>函数，传入了选择器和上下文，并返回实例化的对象。让我们来看看真正干活的<code>lite.prototype.init</code>函数。</p>
+<h4 id="lite-prototype-init"><a href="#lite-prototype-init" class="headerlink" title="lite.prototype.init"></a><code>lite.prototype.init</code></h4><p>我们之前说过，<code>lite</code>构造函数也是个对象，我们把一些静态方法都放在这个对象的原型上。其中就有<code>init</code>方法。我们先不急着看这个方法做了什么，我们在这里要做一个特殊的处理：</p>
+<pre><code>lite.prototype.init.prototype = lite.prototype;
+</code></pre><p>很简单，因为<code>lite.prototype.init</code>方法返回的实例无法访问到<code>lite</code>函数的原型链，所以我们设置这个对象构造函数的原型是<code>lite.prototype</code>。</p>
+<h4 id="lite-extend"><a href="#lite-extend" class="headerlink" title="lite.extend()"></a><code>lite.extend()</code></h4><p><code>lite.extend()</code>其实就是我们常说的<code>mixin</code>函数</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jQuery-JavaScript/" rel="tag"># jQuery JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/11/front-end-interview/" rel="next" title="前端面试题总结（持续更新）">
+                <i class="fa fa-chevron-left"></i> 前端面试题总结（持续更新）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/19/2016-feday/" rel="prev" title="2016 FEDay见闻录">
+                2016 FEDay见闻录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#开发环境的搭建"><span class="nav-number">1.</span> <span class="nav-text">开发环境的搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery的组织架构"><span class="nav-number">2.</span> <span class="nav-text">jQuery的组织架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lite构造函数"><span class="nav-number">2.1.</span> <span class="nav-text">lite构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lite-prototype-init"><span class="nav-number">2.2.</span> <span class="nav-text">lite.prototype.init</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lite-extend"><span class="nav-number">2.3.</span> <span class="nav-text">lite.extend()</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

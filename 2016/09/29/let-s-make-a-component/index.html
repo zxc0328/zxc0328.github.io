@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="你是一个新手前端工程师，今天你接到了一个需求，写一个banner。banner嘛，大家都知道，就是一个用来展示图片的东西，不同的图片可以滚动切换。 你心想着这很简单啊，于是刷刷刷写了一个。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个组件的诞生(上)">
+<meta property="og:url" content="http://yoursite.com/2016/09/29/let-s-make-a-component/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="你是一个新手前端工程师，今天你接到了一个需求，写一个banner。banner嘛，大家都知道，就是一个用来展示图片的东西，不同的图片可以滚动切换。 你心想着这很简单啊，于是刷刷刷写了一个。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.troll.me/images/monocle-guy/jolly-god-old-chap-thumb.jpg">
+<meta property="og:image" content="http://www.troll.me/images/y-u-no/css-floats-y-u-no-clear-yourself-thumb.jpg">
+<meta property="og:image" content="https://www.ricardomartins.com.br/wp-content/uploads/2015/05/Magic_meme.gif">
+<meta property="og:image" content="https://occc3ev3l.qnssl.com/zindex/pp.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个组件的诞生(上)">
+<meta name="twitter:description" content="你是一个新手前端工程师，今天你接到了一个需求，写一个banner。banner嘛，大家都知道，就是一个用来展示图片的东西，不同的图片可以滚动切换。 你心想着这很简单啊，于是刷刷刷写了一个。">
+<meta name="twitter:image" content="http://www.troll.me/images/monocle-guy/jolly-god-old-chap-thumb.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/09/29/let-s-make-a-component/"/>
+
+
+
+
+
+  <title>一个组件的诞生(上) | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/29/let-s-make-a-component/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一个组件的诞生(上)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-29T10:24:27+08:00">
+                2016-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>你是一个新手前端工程师，今天你接到了一个需求，写一个banner。banner嘛，大家都知道，就是一个用来展示图片的东西，不同的图片可以滚动切换。</p>
+<p>你心想着这很简单啊，于是刷刷刷写了一个。</p>
+<a id="more"></a>
+<p><strong>JS</strong></p>
+<pre><code>var banner = {
+    init: function() {
+        this.addEvent();
+    },
+    addEvent: function() {
+        var buttonLeft = document.querySelector(&quot;.button-left&quot;);
+        var buttonRight = document.querySelector(&quot;.button-right&quot;);
+        buttonLeft.addEventListener(&quot;click&quot;, function() {
+            this.switchClassName(1)
+        })
+        buttonRight.addEventListener(&quot;click&quot;, function() {
+            this.switchClassName(-1)
+        })
+
+    },
+    switchClassName: function(direction) {
+        // 切换Class类名
+    }
+}
+
+banner.init();
+</code></pre><p><strong>HTML</strong></p>
+<pre><code>&lt;div class=&quot;banner&quot;&gt;
+    &lt;li&gt;
+        &lt;img src=&quot;1.jpg&quot;&gt;&lt;/img&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;img src=&quot;2.jpg&quot;&gt;&lt;/img&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;img src=&quot;3.jpg&quot;&gt;&lt;/img&gt;
+    &lt;/li&gt;
+    &lt;div class=&quot;button-left&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;button-right&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+</code></pre><p><img src="http://www.troll.me/images/monocle-guy/jolly-god-old-chap-thumb.jpg" alt="old chap"></p>
+<p>正当你觉得自己可以刷知乎的时候，主管把你叫到一边，告诉你：</p>
+<ul>
+<li>如果你这个页面上需要有两个banner，怎么办呢？复制粘贴吗?</li>
+<li>如果在需要在某个时间点从页面上移除banner，怎么办呢？手动remove节点吗，销毁对象吗？</li>
+<li>如果banner中图片的URL是从服务端API请求到的动态的数据，难道要用一个个用修改图片的src的方法来显示这些数据吗？</li>
+</ul>
+<p>听到这里，你的内心是崩溃的。</p>
+<p><img src="http://www.troll.me/images/y-u-no/css-floats-y-u-no-clear-yourself-thumb.jpg" alt="y no "></p>
+<h3 id="面向对象大法"><a href="#面向对象大法" class="headerlink" title="面向对象大法"></a>面向对象大法</h3><p>这时，你想起了大学时学过的面向对象。你把你的组件改成了这样：</p>
+<p><strong>JS</strong></p>
+<pre><code>
+var Banner = function(options) {
+}
+
+Banner.prototype.init = function() {
+    this.addEvent();
+}
+
+Banner.prototype.addEvent = function() {
+    var buttonLeft = document.querySelector(&quot;.button-left&quot;);
+    var buttonRight = document.querySelector(&quot;.button-right&quot;);
+    buttonLeft.addEventListener(&quot;click&quot;, function() {
+        this.switchClassName(1);
+    })
+    buttonRight.addEventListener(&quot;click&quot;, function() {
+        this.switchClassName(-1);
+    })
+}
+
+Banner.prototype.switchClassName = function(direction) {
+    // 切换Class类名
+}
+
+Banner.prototype.destroy = function() {
+    //todo:解绑事件
+}
+
+//初始化
+var banner1 = new Banner();
+var banner2 = new Banner();
+
+//销毁
+banner1.destroy();
+banner2.destroy();
+</code></pre><p>棒，这样就可以轻松的使用多个banner，并通过调用<code>init</code>和<code>destroy</code>等生命周期方法来初始化和销毁组件了。</p>
+<blockquote>
+<p>生命周期<br>这是组件开发中的一个术语。如果把组件比作一个生物，我们设计的API，比如<code>init</code>和<code>destroy</code>就相当于这个生物的出生和死亡。一个组件从<code>init</code>被调用时被初始化，渲染到页面上，然后和用户发生交互，这时调用的方法也属于生命周期的一部分。用户界面随着用户的交互而发生变化，所以组件也不是一成不变的。生命周期方法其实就是在组件的某个阶段会被调用的方法。</p>
+</blockquote>
+<h3 id="模板和渲染"><a href="#模板和渲染" class="headerlink" title="模板和渲染"></a>模板和渲染</h3><p>还有一个问题没有解决，那就是如何轻松的将数据填充到DOM节点中呢？</p>
+<h4 id="字符串拼接大法"><a href="#字符串拼接大法" class="headerlink" title="字符串拼接大法"></a>字符串拼接大法</h4><p>你首先想出了一个比较笨的办法：</p>
+<pre><code>var url = &quot;/images/1.png&quot;
+var template = funtion(url) {
+    return &quot;&lt;img src=&#39;&quot; + url + &quot;&#39;/&gt;&quot;;
+}
+
+template(url); // &quot;&lt;img src=&#39;/images/1.png&#39;/&gt;&quot;
+</code></pre><p>这就是传说中的字符串拼接大法。一种非常原始的“模板”。简单的说就是把HTML中不变的部分原样写成字符串，中间的变化的部分，我们叫模板的变量，会被作为参数输入到模板函数中。然后这些变量和字符串拼接起来，就生成了目标HTML字符串。</p>
+<p>上例中的<code>template</code>函数做的事情，我们叫做“编译”模板。当然这个函数非常简单，只是拼接了一下字符串。一个成熟的模板引擎的编译函数做的事情，要更接近于传统意义上的“编译”。</p>
+<h4 id="DOM-based模板"><a href="#DOM-based模板" class="headerlink" title="DOM based模板"></a>DOM based模板</h4><p>字符串拼接大法的问题，相信大家都看到了，就是写起来非常的麻烦，各种单引号和双引号。如果要换行还必须用<code>+</code>号拼接。</p>
+<p>于是我们就想到了，如果我们把模板作为普通的HTML，那就会方便很多。我们只要像写HTML那样把模板写在HTML文件中，比如:</p>
+<p><strong>HTML</strong></p>
+<pre><code>
+&lt;body&gt;
+    &lt;div id=&quot;template&quot;&gt;
+        &lt;img src=&quot;{{ url1 }}&quot;&gt;
+        &lt;img src=&quot;{{ url2 }}&quot;&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+</code></pre><p>我们要向获取模板的内容，只需要这样：</p>
+<p><code>var templateString = document.querySelector(&quot;#template&quot;).innerHTML</code></p>
+<p>返回的就是这个模板的字符串了。</p>
+<p>假设我们写了一个模板引擎，它的作用就是将<code></code>花括号内的表达式，在模板的context下面解析，并返回值。</p>
+<blockquote>
+<p>context，就是指一个特定的作用域。里面有当前作用域下面的变量（标识符）和对应的值之间的映射。模板的context就是指一个有模板中相关变量的作用域。</p>
+</blockquote>
+<p>这个模板引擎是这样使用的:</p>
+<pre><code>import &#39;complie&#39; from &#39;templateEngine&#39;
+
+var templateString = document.querySelector(&quot;#template&quot;).innerHTML
+var data = {
+    url1: &quot;/images/1/png&quot;,
+    url2: &quot;/images/1/png&quot;
+}
+var HTMLString = compile(templateString, data)
+
+</code></pre><p>当<code>compile</code>函数遇到变量时，就会从<code>data</code>中去找。<code>data</code>在这个例子就是context。</p>
+<blockquote>
+<p>插一句，被大家吐槽的<code>eval</code>函数可以用来做在特定context下求值的事情，这正是这种模板引擎所需要做的。所以你可以用<code>eval</code>来实现一个简单的模板引擎。</p>
+</blockquote>
+<p>那这段模板</p>
+<pre><code>&lt;div id=&quot;template&quot;&gt;
+    &lt;img src=&quot;{{ url1 }}&quot;/&gt;
+    &lt;img src=&quot;{{ url2 }}&quot;/&gt;
+&lt;/div&gt;
+</code></pre><p>会被解析为</p>
+<pre><code>&lt;div id=&quot;template&quot;&gt;
+    &lt;img src=&quot;/images/1.png&quot;/&gt;
+    &lt;img src=&quot;/images/2.png&quot;/&gt;
+&lt;/div&gt;
+
+</code></pre><p>因为这个花括号中可以是任意合法的JavaScript表达式，所以你也可以这样玩</p>
+<p><strong>JS</strong></p>
+<pre><code>//其他省略
+var data = {
+    displayFlag: false,
+    url1: &quot;/images/1/png&quot;,
+    url2: &quot;/images/1/png&quot;
+}
+
+</code></pre><p>那这段模板</p>
+<pre><code>&lt;div id=&quot;template&quot; style=&quot;{{ displayFlag ? 'display:block':'display:none'}}&quot;&gt;
+    &lt;img src=&quot;{{ url1 }}&quot;/&gt;
+    &lt;img src=&quot;{{ url2 }}&quot;/&gt;
+&lt;/div&gt;
+</code></pre><p>会被解析为</p>
+<pre><code>&lt;div id=&quot;template&quot; style=&quot;display:none&quot;&gt;
+    &lt;img src=&quot;/images/1.png&quot;/&gt;
+    &lt;img src=&quot;/images/2.png&quot;/&gt;
+&lt;/div&gt;
+
+</code></pre><p>很神奇，不是吗?</p>
+<p><img src="https://www.ricardomartins.com.br/wp-content/uploads/2015/05/Magic_meme.gif" alt="magic"></p>
+<h4 id="render生命周期方法"><a href="#render生命周期方法" class="headerlink" title="render生命周期方法"></a><code>render</code>生命周期方法</h4><p>因为现在我们的组件不再使用静态的HTML字符串了，我们需要一个函数来输出HTML字符串。所以我们需要在组件上增加一个叫<code>render</code>的生命周期函数。</p>
+<pre><code>Banner.prototype.render = function() {
+    this.el.innerHTML = compile(this.el.innerHTML, this.data);
+}
+
+</code></pre><p>这里的<code>el</code>是这个组件的一个配置项，代表这个组件的根节点。组件的模板来自根节点的内容。模板编译之后输出的HTML字符串又会替换根节点中的模板，从而渲染这个组件。</p>
+<blockquote>
+<p>当然，模板所在的节点和渲染组件的节点可以不是同一个，这个是和具体的组件框架实现相关的。只要模板可以以字符串的形式被引入，就可以达到目的了。是否放在HTML的DOM节点中并不是问题的关键。我们可以写单独的模板文件并用webpack等打包工具引入。</p>
+</blockquote>
+<h3 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置"></a>初始化配置</h3><p>一个组件中，比如模板根节点，组件某个节点的事件和handler的Map，事件的handler，以及组件的<code>data</code>这样的数据，应该在组件实例化的时候，作为配置被传入构造函数中。</p>
+<p>所以，让我们改造一下Banner构造函数和<code>init</code>方法：</p>
+<pre><code>
+var Banner = function(options) {
+    this.data = options.data || {};
+    this.el = options.el || document.querySelector(&quot;body&quot;);
+    this.events = options.events;
+}
+
+Banner.prototype.init = function(options) {
+    this.render();//渲染模板
+    this.addEvent(this.events);//根据events这个Map来绑定事件
+}
+
+</code></pre><p>此时，如果你这样再初始化一个组件：</p>
+<pre><code>var banner = new Banner({
+    el: document.querySelector(&quot;template&quot;),
+    data: {
+        url1: &quot;/somewhere/1.jpg&quot;,
+        url2: &quot;/somewhere/2.jpg&quot;
+    },
+    events: {
+        &quot;.left-button.click&quot;: this.onSwitch.bind(this, 1),
+        &quot;.right-button.click&quot;: this.onSwitch.bind(this, -1)
+    },
+    methods: {
+        onSwitch: function(event, direction) {
+            // 切换banner逻辑        
+        }
+    }
+})
+
+</code></pre><blockquote>
+<p>这里我们新增了events和methods两个对象，这其实就是将之前写死在组件内部逻辑里的事件绑定和回调函数拿出来，在初始化时传入，由组件内部根据这个配置自动绑定。</p>
+</blockquote>
+<p>并调用<code>init</code>方法：</p>
+<p><code>banner.init()</code></p>
+<p>这时你的页面上就出现了一个banner！大功告成！</p>
+<p><img src="https://occc3ev3l.qnssl.com/zindex/pp.png" alt="pp"></p>
+<h3 id="API设计和抽象"><a href="#API设计和抽象" class="headerlink" title="API设计和抽象"></a>API设计和抽象</h3><p>到这里，我们的组件之旅就达到了一个阶段。我们对比一下就可以发现，传统的Backbone和jQuery UI的组件就是类似这种模式的。</p>
+<p>具体的说，首先你的组件是一个构造函数，你通过传入不同的配置来实例化不同的组件。不知道大家有没有发现，我们的组件以及<strong>不仅仅是一个Banner</strong>了，而是一个<strong>通用</strong>的组件。你通过传入不同的模板、数据、事件和回调来实例化不同的组件。可以是一个Banner，也可以是一个评论框等等。</p>
+<p>传统前端组件有着相似的生命周期API设计。比如初始化、渲染、销毁等。这个和前端组件的特点有关，就算是React或者Vue这样最新的技术，它的生命周期API也不外乎这几种，再加上一些和自己这个库运行流程相关的特有的API而已。</p>
+<p>模板是一种对DOM的封装。模板把我们从手动操纵DOM中解放出来。我们在传统的HTML基础上加入表达式和分支逻辑，让模板可以根据输入的数据渲染出相应的HTML字符串。这实际上就是将HTML作为底层的细节封装起来。模板作为一种<strong>中间形态</strong>存在，是<strong>一种抽象</strong>。抽象，是计算机最<strong>本质</strong>的一种属性。我们在平时的API设计和编码时应该牢记这一点，培养自己的抽象思维。</p>
+<p><a href="http://zxc0328.github.io/2016/09/30/let-s-build-a-component-2/" target="_blank" rel="noopener">下一篇</a>会讲到如何将我们的组件改造成数据驱动的模式，并将这个组件和Vue进行对比。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/15/read-code/" rel="next" title="《编码》导读">
+                <i class="fa fa-chevron-left"></i> 《编码》导读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/30/let-s-build-a-component-2/" rel="prev" title="一个组件的诞生(下)">
+                一个组件的诞生(下) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#面向对象大法"><span class="nav-number">1.</span> <span class="nav-text">面向对象大法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板和渲染"><span class="nav-number">2.</span> <span class="nav-text">模板和渲染</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串拼接大法"><span class="nav-number">2.1.</span> <span class="nav-text">字符串拼接大法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DOM-based模板"><span class="nav-number">2.2.</span> <span class="nav-text">DOM based模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#render生命周期方法"><span class="nav-number">2.3.</span> <span class="nav-text">render生命周期方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化配置"><span class="nav-number">3.</span> <span class="nav-text">初始化配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API设计和抽象"><span class="nav-number">4.</span> <span class="nav-text">API设计和抽象</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

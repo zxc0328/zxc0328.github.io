@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="此文在写作中。这篇文章意在整理自己目前对MVVM组件开发的理解。在写作过程中我发现，我自以为已经形成了对组件开发的一套理论，但其实这套理论还有很多不完善的地方。最近又翻到了波神分享-漫谈Web前端的『组件化』的PPT，深感要形成理论，还是需要数年的积累才行。所以这篇文章就作为我阶段性的成果，不具有太大的参考价值。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="现代前端MVVM组件开发的基本理论">
+<meta property="og:url" content="http://yoursite.com/2017/08/16/i-have-a-theory/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="此文在写作中。这篇文章意在整理自己目前对MVVM组件开发的理解。在写作过程中我发现，我自以为已经形成了对组件开发的一套理论，但其实这套理论还有很多不完善的地方。最近又翻到了波神分享-漫谈Web前端的『组件化』的PPT，深感要形成理论，还是需要数年的积累才行。所以这篇文章就作为我阶段性的成果，不具有太大的参考价值。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fj9wd4ul2mj21kw17n4ch.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fjfvsl1r13j20es08074q.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.508Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="现代前端MVVM组件开发的基本理论">
+<meta name="twitter:description" content="此文在写作中。这篇文章意在整理自己目前对MVVM组件开发的理解。在写作过程中我发现，我自以为已经形成了对组件开发的一套理论，但其实这套理论还有很多不完善的地方。最近又翻到了波神分享-漫谈Web前端的『组件化』的PPT，深感要形成理论，还是需要数年的积累才行。所以这篇文章就作为我阶段性的成果，不具有太大的参考价值。">
+<meta name="twitter:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fj9wd4ul2mj21kw17n4ch.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/16/i-have-a-theory/"/>
+
+
+
+
+
+  <title>现代前端MVVM组件开发的基本理论 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/i-have-a-theory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">现代前端MVVM组件开发的基本理论</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-16T09:54:53+08:00">
+                2017-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>此文在写作中。这篇文章意在整理自己目前对MVVM组件开发的理解。在写作过程中我发现，我自以为已经形成了对组件开发的一套理论，但其实这套理论还有很多不完善的地方。最近又翻到了波神分享-<em>漫谈Web前端的『组件化』</em>的<a href="http://leeluolee.github.io/fequan-netease/#/" target="_blank" rel="noopener">PPT</a>，深感要形成理论，还是需要数年的积累才行。所以这篇文章就作为我阶段性的成果，不具有太大的参考价值。</p>
+</blockquote>
+<a id="more"></a>
+<p>如果要给前端开发下一个定义，那就是在浏览器环境下面向对象的GUI客户端程序开发。</p>
+<p>既然是基于面向对象的，那就要有类和对象。在Web前端开发中，最基本的类就是组件的基类（比如Vue和React的构造函数），所有的组件都是基类的一个实例。基类有属性和方法，同时还有一些生命周期钩子函数（其实就是基类上定义的一些方法，会在基类初始化的特定时刻被调用，并且允许实例重载这个方法）。</p>
+<p>既然是GUI客户端程序开发，那Web开发中自然有着MVC之类的分层。MVC、MVP、MVVM都是经典的GUI客户端程序的设计模式<a href="https://github.com/livoras/blog/issues/11" target="_blank" rel="noopener">[1]</a>。目前Web开发中最流行的架构就是MVVM，MVVM已经成为了Web前端开发的一个事实标准。</p>
+<p>谈到事实标准，客户端的开发，比如Android、iOS和Windows，都需要使用系统自带的原生UI组件为基础，配合相关的库，进行开发。</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fj9wd4ul2mj21kw17n4ch.jpg" alt="iOS丰富的组件"><br><em>iOS丰富的原生组件</em></p>
+<p>在GUI开发领域，<strong>组件</strong>是一种独立的、可复用的交互元素的封装。</p>
+<p>Web开发最大的特点就是，因为历史原因，Web前端当初是作为展示文档的一种渠道来设计的，所以Web前端只有非常少数的几个原生组件，比如表单组件，可以使用。其他的组件都是需要开发者自行封装的。历史上出现过基于jQuery和Backbone等等框架/库的组件。这些组件在当时起到了很重要的作用。在Web标准大幅发展的今天，Web平台（浏览器）有没有提供标准的组件API呢？</p>
+<p>答案是肯定的。目前Web前端组件的官方标准就是<strong>Web Components</strong>。Web Components标准由Custom Elements、HTML Templates、Shadow DOM和HTML Imports四部分组成。Web Components解决了<strong>组件的封装、组合以及复用</strong>问题。</p>
+<p>但在组件的逻辑编写上，随着Web应用越来越复杂，jQuery为代表的命令式编程范式已经不能满足开发的需要。Knockout、ember、angular等MVVM框架出现后，使得声明式的编程范式成为可能。这些框架也渐渐成为了前端开发中的主流。</p>
+<p>Web Components解决了组件的封装和复用问题，但Web Components的逻辑依然是命令式的。而且Web Components目前的浏览器兼容性还不太好，不能直接用于生产。</p>
+<p>当前主流的Web前端框架/库Vue、React和Angular在某种程度上都提供了<strong>组件封装</strong>和<strong>声明式编程范式</strong>两个重要特性。这些框架都有自己的组件封装标准，都遵循数据驱动的范式。值得注意的是Web Components标准在某种程度上对这些框架的组件封装和组合方式有一定的影响，特别是Vuejs，在很多地方参考了Web Components，并实现了Web Components中的slot特性。在未来Web Components标准真正落地时，这些框架都可以和Web Components实现无缝的整合。</p>
+<p>因此我们可以说，实现了声明式编程范式和组件封装、复用和组合的现代MVVM组件框架，就是目前Web前端开发的<strong>事实标准</strong>。并且这个标准在未来很长一段时间内都会持续保持稳定。</p>
+<p>Web前端没有一套官方的原生UI组件（这里指的是官方提供的组件实现，比如日期选择组件、ListView组件等待，不是指Web Components这样的底层标准），以后也不会有，因为Web是一个开放的平台，不像其他的客户端程序的操作系统由一家公司所控制。但目前在我们的开发中，已经可以总结出一套成熟的组件。比如<a href="https://ant.design/docs/react/introduce" target="_blank" rel="noopener">Ant Design</a>中的众多组件。这些组件都是基于MVVM前端框架开发的。</p>
+<p>前端这么多年的发展，到现在已经进入了一个比较成熟的时期了。有了成熟的模块标准和包管理系统，也有了通用的组件模型。所以假设Web也有一个官方的组件标准，那融合了Web Components和声明式编程的MVVM组件已经非常接近了。一个技术想要被称为工业级，只有形成统一的标准。Web前端的组件，虽然不会有统一的标准，但如果在MVVM组件作为事实的标准的前提下去开发，会减少很多不必要的麻烦。</p>
+<p>写这篇博客，也是因为想总结一下目前这个时期的Web开发中的一些事实标准。相比于客户端，前端的门槛其实要更高一些，因为我们要使用堪称刀耕火种的方式去应对日益复杂的业务场景。但在当下，对于刚刚进入前端领域的同学来说，可以把一些范式作为前端的标准来学习，形成对现代前端开发的理解。在现在这个时间点进入前端行业的同学，已经没有必要再了解jQuery时代的开发范式了。</p>
+<p>本文的题目是<em>现代前端MVVM组件开发的基本理论</em>，下面就分别介绍MVVM组件开发中几个关键的理论。</p>
+<h2 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h2><p>Web Components并没有规定开发者应该如何去给一个组件的逻辑分层。一个组件里可能包含数据、表现（UI）和业务逻辑。在编写组件时，这些部分都需要被严格的解耦，并且规定各个部分之间的通信方式。</p>
+<p>MVVM下，组件由如下部分构成：</p>
+<blockquote>
+<p>组件 = 视图 + 数据 + 业务逻辑</p>
+</blockquote>
+<p>MVVM分为View、Model和ViewModel三个部分。分别对应视图、数据和业务逻辑三部分。拿Vue举例，Vue的模板和样式属于View层。Vue的组件实例属于ViewModel，Vue的Model层，在没有引入全局Model层的情况下，就是Vue的data属性中的内容。如果开发者引入了全局的Model层，比如Redux或者MobX，那Model就是一个和Vue组件脱离的对象。</p>
+<p>MVVM中，各个部分的关系是这样的：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fjfvsl1r13j20es08074q.jpg" alt="mvvm"></p>
+<h2 id="组件的生命周期"><a href="#组件的生命周期" class="headerlink" title="组件的生命周期"></a>组件的生命周期</h2><p>客户端的组件会有生命周期函数，比如iOS的ViewController就有<code>viewDidLoad</code>、<code>viewWillDisappear</code>等等声明周期钩子。前端组件和客户端的的组件一样，都有着生命周期。一个前端组件在应用中，会首先初始化（创建一个新的组件实例），接着加载数据并首次渲染，然后进入一个响应数据变化并重新渲染的循环，最后如果这个组件要从应用中移除，那么组件就会被销毁。</p>
+<p>组件在各个生命周期阶段会调用一些钩子函数，开发者如果想在组件特定的时刻执行一些逻辑，就可以在组件中实现这些钩子函数。</p>
+<p>接下去总结一下MVVM通常都会有的生命周期。<br>首先，组件进入<strong>初始化阶段</strong>，在这个阶段主要就是创建组件实例，并调用init钩子函数。</p>
+<p>然后进入<strong>初始化数据并首次渲染阶段</strong>，这个阶段，如果是Push类型的框架（关于Push和Pull在后文会提到），比如Vue，就需要对数据进行处理（对data进行递归遍历，修改getter和setter，然后调用Render Function进行依赖搜集），然后首次渲染（Vriual DOM patch）。如果是Pull类型的框架，Angular和Regular需要遍历View的AST，然后生成Watcher列表，然后进行首次的脏检查，随后View就被渲染到页面。React就启动一次渲染流程，包括调用Render Function和一次patch。最终达到的效果就是组件首次渲染到页面中。一般在此时也会有一个钩子函数被调用，开发者可以在此时执行一些需要确保UI已经渲染作为前提的逻辑。</p>
+<p>接着进入<strong>响应数据变化并渲染阶段</strong>，这个阶段中，组件已经首次渲染了，接下来如果数据发生变化，那组件就会重新渲染，保持组件的UI和组件的状态保持同步。</p>
+<p>如果组件的销毁方法被调用，组件就进入<strong>销毁阶段</strong>。</p>
+<p>之所以要先说明这几个阶段，是因为理解组件的生命周期对于理解后文讲的数据侦测、渲染、模板等有着密不可分的关系。</p>
+<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>Composition over inheritence<a href="">[x]</a>。</p>
+<p>在UI的开发中我们常常会复用一些代码。</p>
+<h4 id="内嵌组件"><a href="#内嵌组件" class="headerlink" title="内嵌组件"></a>内嵌组件</h4><h4 id="Mixin"><a href="#Mixin" class="headerlink" title="Mixin"></a>Mixin</h4><h2 id="数据驱动"><a href="#数据驱动" class="headerlink" title="数据驱动"></a>数据驱动</h2><p>这里有必要解释一下这套MVVM中，各模块之间数据的流动。View不能直接通知Model更新，而是通知ViewModel用户的交互，由ViewModel来修改Model中的数据。Model的数据变化之后，会直接触发View的更新。</p>
+<p>此处应该有图。</p>
+<p>最关键的一点就是，<strong>ViewModel不应该直接对View进行操作，而是应该通过修改Model中的数据，让Model驱动View进行更新</strong>。所以我们不提倡在ViewModel中进行DOM操作，因为DOM操作其实就是直接更新View层。并不是DOM操作有多低效。主要是因为既然我们采用了MVVM的范式，就应该去遵守这个范式，才能发挥出这个范式的威力。</p>
+<h2 id="数据变化侦测机制：Pull-vs-Push"><a href="#数据变化侦测机制：Pull-vs-Push" class="headerlink" title="数据变化侦测机制：Pull vs Push"></a>数据变化侦测机制：Pull vs Push</h2><p>这部分的内容我个人认为是非常精辟的。用Pull和Push两种方式准确的分类了现在主流的几个前端框架使用的数据变化侦测机制。</p>
+<blockquote>
+<p>这部分的内容我第一次是听波神和我讲的，后来看了尤雨溪dotJS的演讲，也有类似的内容。</p>
+</blockquote>
+<h4 id="Pull类：脏检查"><a href="#Pull类：脏检查" class="headerlink" title="Pull类：脏检查"></a>Pull类：脏检查</h4><p>Angular和Regular的数据变化侦测机制属于是数据层的脏检查，React则是View层脏检查。</p>
+<h4 id="Push类：依赖搜集"><a href="#Push类：依赖搜集" class="headerlink" title="Push类：依赖搜集"></a>Push类：依赖搜集</h4><p>Vue的Model记录了各个数据和不同部分View的对应关系。在ViewModel修改Model之后，Model会自动通知需要更新的View进行更新。</p>
+<h4 id="Pull和Push的理解"><a href="#Pull和Push的理解" class="headerlink" title="Pull和Push的理解"></a>Pull和Push的理解</h4><p>至于Pull和Push的形象理解，Pull可以理解为从需要更新的整个组件树中<strong>拉取</strong>所有的状态，和旧状态进行比对，然后去更新。Push可以理解为，框架已经知道了变化的数据，然后将更新的信号<strong>推送</strong>给需要更新的组件。</p>
+<p>也不用太纠结Pull和Push的字面意思，总之数据变化侦测机制的区别就在于脏检查机制不知道哪些数据变了，所以需要进行数据的对比。而依赖搜集机制在数据变化那一刻就知道哪些数据变化了，也知道哪些组件依赖这些数据。</p>
+<h3 id="模板技术"><a href="#模板技术" class="headerlink" title="模板技术"></a>模板技术</h3><p>波神对模板技术有一篇很全面的总结<a href="http://leeluolee.github.io/2014/10/10/template-engine/" target="_blank" rel="noopener">[x]</a>。模板的表达能力来看，可以分为基于DSL（包括HTML）的，或者基于JavaScript的。Regular的模板是自己的DSL。Vue和React最终都是使用Render Function来生成View的AST的。也就是说Vue和React可以让开发者直接编写View结构的AST。Vue在Render Function之外提供了基于HTML的模板。这个模板的表达能力和传统的DOM based的模板是一样的。可以说是Render Function能力的一个子集。Vue让开发者自行选择使用何种技术。React的JSX因为是直接写在Render Function中的，所以很难称为是模板，只能说是一种语法糖。React只允许开发者直接编写Render Function。</p>
+<h3 id="渲染"><a href="#渲染" class="headerlink" title="渲染"></a>渲染</h3><p>在Web开发中，UI一般是用DOM或者Canvas这样的底层机制来实现的。组件的View层，实际上就是一个树结构，里面的节点是对View中元素的抽象表示。一个节点可能代表一个DOM节点，也可能代表一个组件的根节点。如果组件的View是由自定义的DSL表示的，那可能还会有其他带有语义的元素，比如if和list等等流程控制节点。</p>
+<p>现在最流行的抽象方式是将View的结构表示为Virtual DOM树。Virtual DOM是对DOM节点的轻量级抽象表示。Render Function中可能会有一些逻辑，Virtual DOM将组件的状态传入Render Function后得到的一个树结构。所以我们就得到了那个著名的等式：</p>
+<p><code>UI = f(state)</code></p>
+<p>这里的UI就可以类比为Virtual DOM，函数f就是Render Function。</p>
+<h3 id="组件通信方式"><a href="#组件通信方式" class="headerlink" title="组件通信方式"></a>组件通信方式</h3><h4 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h4><p>父组件到子组件 props<br>子组件到父组件，emit event或者父组件传callback到子组件。</p>
+<h4 id="非相邻组件通信"><a href="#非相邻组件通信" class="headerlink" title="非相邻组件通信"></a>非相邻组件通信</h4><p>使用一个event bus。</p>
+<h2 id="数据层解决方案"><a href="#数据层解决方案" class="headerlink" title="数据层解决方案"></a>数据层解决方案</h2><h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>// todo </p>
+<h2 id="提问时间"><a href="#提问时间" class="headerlink" title="提问时间"></a>提问时间</h2><p>在这篇文章中，我主要是讲了现代前端MVVM组件开发中一些重要的话题，并且对于每个话题我都对当前几个主流框架在这些方面的实现做了分类。我认为，这些可以说是目前前端开发的一个事实标准了。有了这方面的系统的知识，我们就可以回答下面的问题。我个人觉得，问一些对比类型的问题，更可以看出一个人是否有思考过自己使用的技术方案。对于市场上各个技术方案的对比和总结，就是得出一个技术体系的方法。</p>
+<p>Q：Web Components解决了什么问题？和现代的前端框架相比有什么不同？</p>
+<p>A:</p>
+<p>Q：如何实现一个基于脏检查的数据绑定方案？</p>
+<p>A：<a href="https://zhuanlan.zhihu.com/p/24990192" target="_blank" rel="noopener">双向绑定的简单实现——基于“脏检测”
+</a></p>
+<p>Q：如何实现一个Virtul DOM算法？</p>
+<p>A：<a href="https://github.com/livoras/blog/issues/13" target="_blank" rel="noopener">深度剖析：如何实现一个 Virtual DOM 算法</a></p>
+<p>Q：如何实现一个基于依赖搜集的数据绑定方案？</p>
+<p>A： <a href="https://zhuanlan.zhihu.com/p/24475845" target="_blank" rel="noopener">250行实现一个简单的MVVM</a>和<a href="https://zhuanlan.zhihu.com/p/25003235" target="_blank" rel="noopener">数据动态绑定的简单实现——基于ES5对象的getter/setter机制</a></p>
+<p>Q：Vue的模板有哪些局限？如何解决？</p>
+<p>A：HTML模板的表达能力不足，可以手写Render Function<a href="">[x]</a>。</p>
+<p>Q：React-Redux这样的connector具体实现了什么？</p>
+<p>A：订阅store变化，注册回调，回调中调用mapState函数。</p>
+<p>Q：如何实现两个不相邻组件的通信？</p>
+<p>A：</p>
+<p>Q：JSX是模板技术吗？它和传统模板技术的区别是什么？</p>
+<p>A：</p>
+<p>Q：Vue和React的区别在什么地方？</p>
+<p>A：</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/14/component-talk-modal/" rel="next" title="聊聊UI组件设计-Modal">
+                <i class="fa fa-chevron-left"></i> 聊聊UI组件设计-Modal
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/16/fe-model-service/" rel="prev" title="简单的前端网络层Service封装">
+                简单的前端网络层Service封装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM"><span class="nav-number">1.</span> <span class="nav-text">MVVM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件的生命周期"><span class="nav-number">2.</span> <span class="nav-text">组件的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合"><span class="nav-number">3.</span> <span class="nav-text">组合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内嵌组件"><span class="nav-number">3.0.1.</span> <span class="nav-text">内嵌组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mixin"><span class="nav-number">3.0.2.</span> <span class="nav-text">Mixin</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据驱动"><span class="nav-number">4.</span> <span class="nav-text">数据驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据变化侦测机制：Pull-vs-Push"><span class="nav-number">5.</span> <span class="nav-text">数据变化侦测机制：Pull vs Push</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pull类：脏检查"><span class="nav-number">5.0.1.</span> <span class="nav-text">Pull类：脏检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Push类：依赖搜集"><span class="nav-number">5.0.2.</span> <span class="nav-text">Push类：依赖搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pull和Push的理解"><span class="nav-number">5.0.3.</span> <span class="nav-text">Pull和Push的理解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板技术"><span class="nav-number">5.1.</span> <span class="nav-text">模板技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染"><span class="nav-number">5.2.</span> <span class="nav-text">渲染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件通信方式"><span class="nav-number">5.3.</span> <span class="nav-text">组件通信方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#父子组件通信"><span class="nav-number">5.3.1.</span> <span class="nav-text">父子组件通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非相邻组件通信"><span class="nav-number">5.3.2.</span> <span class="nav-text">非相邻组件通信</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据层解决方案"><span class="nav-number">6.</span> <span class="nav-text">数据层解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路由"><span class="nav-number">7.</span> <span class="nav-text">路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提问时间"><span class="nav-number">8.</span> <span class="nav-text">提问时间</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

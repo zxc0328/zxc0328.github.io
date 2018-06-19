@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DOM," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="###四、API详解-DOM CORE DOM标准的层级DOM标准实际由很多的子模块组成，包括Core module，XML module，Events module，User interface Events module，Mouse Events module，Text Events module，Keyboard Events module，Mutation Events module，Mu">
+<meta name="keywords" content="DOM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DOM API详解（二）">
+<meta property="og:url" content="http://yoursite.com/2016/01/26/learning-dom-part2/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="###四、API详解-DOM CORE DOM标准的层级DOM标准实际由很多的子模块组成，包括Core module，XML module，Events module，User interface Events module，Mouse Events module，Text Events module，Keyboard Events module，Mutation Events module，Mu">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/images/dom-architecture.png">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.511Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DOM API详解（二）">
+<meta name="twitter:description" content="###四、API详解-DOM CORE DOM标准的层级DOM标准实际由很多的子模块组成，包括Core module，XML module，Events module，User interface Events module，Mouse Events module，Text Events module，Keyboard Events module，Mutation Events module，Mu">
+<meta name="twitter:image" content="https://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/images/dom-architecture.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/01/26/learning-dom-part2/"/>
+
+
+
+
+
+  <title>DOM API详解（二） | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/26/learning-dom-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DOM API详解（二）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-26T15:58:34+08:00">
+                2016-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>###四、API详解-DOM CORE</p>
+<h4 id="DOM标准的层级"><a href="#DOM标准的层级" class="headerlink" title="DOM标准的层级"></a>DOM标准的层级</h4><p>DOM标准实际由很多的子模块组成，包括Core module，XML module，Events module，User interface Events module，Mouse Events module，Text Events module，Keyboard Events module，Mutation Events module，Mutation name Events module，HTML Events module，Load and Save module，Asynchronous load module，Validation module，和XPath module。</p>
+<a id="more"></a>
+<p>具体的层级结构如下图所示：<br><img src="https://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/images/dom-architecture.png" alt="dom-architecture"><br><em>image credit: w3.org</em></p>
+<h4 id="DOM-Core-导语"><a href="#DOM-Core-导语" class="headerlink" title="DOM Core-导语"></a>DOM Core-导语</h4><p>在我们把目光转向DOM Core模块之前，我想先讲讲如何阅读DOM的W3C Specification。首先我们可以阅读官方的导语-<a href="https://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/introduction.html" target="_blank" rel="noopener">What is the Document Object Model?</a>。</p>
+<p>这一节中介绍了DOM的相关概念。比如关于DOM的结构，我们通常认为是一颗树，但实际上用森林来形容更为贴切，因为虽然以<code>Document</code>为根节点的文档树最多只能有一颗，但我们还有一颗可选的<code>doctype</code>节点树，以及<code>comments</code>节点等等。</p>
+<p>更重要的是，导语中还介绍了接下来文档中的一些惯例。比如因为DOM是独立于编程语言的，所以在文档中使用了IDL（Interactive Data Language）来描述接口。然后我们需要注意的一点就是，DOM可以用于HTML和XML，因此在前端同学看来，DOM中会有一些不太熟悉的概念，比如<code>Namespace</code>和<code>DOM URIs</code>，这些正是为了兼容XML而加入到DOM中的特性。不用过分在意。</p>
+<p>下面是一个简化的IDL示例：</p>
+<pre><code>interface Element : Node {
+  readonly attribute DOMString       tagName;
+  void               removeAttribute(in DOMString name)
+                                        raises(DOMException);
+  Attr               getAttributeNode(in DOMString name);
+  NodeList           getElementsByTagName(in DOMString name);
+};
+</code></pre><p><em>IDL中主要描述了一个接口的继承关系，以及接口的方法和属性，及相应的参数和返回值</em></p>
+<p>下面我们首先来看DOM Core模块。从“Core”这个名词就可以看出这个模块在整个DOM标准中处于中心地位。DOM Core模块主要定义了DOM最关键的一组接口和对象。其中最顶层的一个接口就是<code>Node</code>。直接继承<code>Node</code>的接口有<code>Element</code>、<code>DocumentType</code>、<br><code>Attr</code>、<code>ProcessingInstruction</code>、<code>Comment</code>、<br><code>Text</code>、<code>CDATASection</code>和<code>Notation</code>。</p>
+<h4 id="Node接口"><a href="#Node接口" class="headerlink" title="Node接口"></a>Node接口</h4><p><code>Node</code>接口是整个DOM中最顶层的接口，DOM中的每一个节点都是一个<code>Node</code>。从<code>Node</code>接口分化出其他的更具体的接口。</p>
+<p><code>Node</code>接口的属性：</p>
+<table>
+<thead>
+<tr>
+<th><strong>属性名</strong></th>
+<th style="text-align:left"><strong>返回值</strong></th>
+<th style="text-align:left"><strong>备注</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodeName</td>
+<td style="text-align:left">DOMString</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>nodeValue</td>
+<td style="text-align:left">DOMString</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>nodeType</td>
+<td style="text-align:left">unsigned short</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>parentNode</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>childNodes</td>
+<td style="text-align:left">NodeList</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>firstChild</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>lastChild</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>previousSibling</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>nextSibling</td>
+<td style="text-align:left">Node</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>attributes</td>
+<td style="text-align:left">NamedNodeMap</td>
+<td style="text-align:left">只读</td>
+</tr>
+<tr>
+<td>ownerDocument</td>
+<td style="text-align:left">Document</td>
+<td style="text-align:left">只读</td>
+</tr>
+</tbody>
+</table>
+<p>值得注意的是，虽然这些属性都定义在Node接口上，但是不是所有的底层接口实现都有对应的值。如<code>Text</code>和<code>Comment</code>节点都没有子元素，因此它们的<code>childNodes</code>为<code>null</code>。同理，<code>Element</code>接口的<code>nodeValue</code>值就为<code>null</code>。</p>
+<p><code>nodeType</code>属性的值被定义为一组常量：</p>
+<pre><code>// NodeType
+  const unsigned short      ELEMENT_NODE                   = 1;
+  const unsigned short      ATTRIBUTE_NODE                 = 2;
+  const unsigned short      TEXT_NODE                      = 3;
+  const unsigned short      CDATA_SECTION_NODE             = 4;
+  const unsigned short      ENTITY_REFERENCE_NODE          = 5;
+  const unsigned short      ENTITY_NODE                    = 6;
+  const unsigned short      PROCESSING_INSTRUCTION_NODE    = 7;
+  const unsigned short      COMMENT_NODE                   = 8;
+  const unsigned short      DOCUMENT_NODE                  = 9;
+  const unsigned short      DOCUMENT_TYPE_NODE             = 10;
+  const unsigned short      DOCUMENT_FRAGMENT_NODE         = 11;
+  const unsigned short      NOTATION_NODE                  = 12;
+</code></pre><p>这就是我们平时用来检测节点类型时使用的数值了。</p>
+<p>下面从<code>Node</code>接口的方法中选几个主流的API进行简单的介绍，对于W3C中为标准但在WHATWG中被废弃的，这里不进行介绍（在主流的浏览器中也没有相应的实现）。对于一些在继承Node的接口中有更具体实现的API，这里也不进行介绍（如<code>hasAttributes</code>在Element接口中有更具体的实现）。</p>
+<ul>
+<li><p><code>compareDocumentPosition</code></p>
+<p>这是DOM3中引入的一个很有意思的API。这个API将两个Node的位置进行比较，然后返回<code>DocumentPosition</code>这组常量中的一种。这组常量是：</p>
+<pre><code>// 节点被另一个节点包含。被包含的节点是父节点的后继
+DOCUMENT_POSITION_CONTAINED_BY
+// 节点包含另一个节点。父节点是子节点的前驱
+  DOCUMENT_POSITION_CONTAINS
+DOCUMENT_POSITION_DISCONNECTED
+// 后继关系
+DOCUMENT_POSITION_FOLLOWING
+DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+// 前驱关系
+DOCUMENT_POSITION_PRECEDING
+
+</code></pre></li>
+<li><p><code>appendChild</code>&amp;&amp;<code>removeChild</code>  </p>
+<p>这两个API是比较常用的，<code>appendChild</code>在DOM子元素列表的最后插入元素，如果这个元素已经存在DOM树中，就先移除这个元素再插入。<code>removeChild</code>则从DOM子元素列表中移除元素。</p>
+</li>
+<li><p><code>insertBefore</code>  </p>
+<p>这个API有两个参数，一个是<code>newChild</code>，一个是<code>refChild</code>。<code>newChild</code>既是要插入的节点，而<code>refChild</code>则是一个已经在<code>Node</code>所在DOM树中的参考子节点。<code>newChild</code>会插入到<code>refChild</code>之前，如果<code>refChild</code>是<code>null</code>，那么<code>newChild</code>会插入到<code>Node</code>子节点列表的末尾。</p>
+<p>这个API的记忆很简单，命名是<code>insertBefore</code>，必然是有一个参考节点的，不然插到谁的前面去呢？</p>
+</li>
+<li><p><code>isEqualNode</code></p>
+<p>这个API的作用是判断两个DOM是否相等。这里的相等并不是指指向同一个对象，而是指属性和值方面是否相同。</p>
+<p>对于两个节点来说比较的算法如下：</p>
+<ul>
+<li>两个节点是否是相同的类型</li>
+<li><code>nodeName, localName, namespaceURI, prefix, nodeValue</code>这些属性是否相同</li>
+<li>节点的属性集合（在DOM中的数据类型是<code>NamedNodeMaps</code>）是否相同，这里集合中属性的顺序可以是随意的</li>
+<li>子节点集合（<code>NodeLists</code>类型）是否相同，这里会考虑节点的index，如果不一样则不相同。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Element接口"><a href="#Element接口" class="headerlink" title="Element接口"></a>Element接口</h4><h4 id="Document接口"><a href="#Document接口" class="headerlink" title="Document接口"></a>Document接口</h4><h4 id="Attr接口"><a href="#Attr接口" class="headerlink" title="Attr接口"></a>Attr接口</h4><h4 id="Text，Comment和CharacterData接口"><a href="#Text，Comment和CharacterData接口" class="headerlink" title="Text，Comment和CharacterData接口"></a>Text，Comment和CharacterData接口</h4><h4 id="DOM中的基础数据类型"><a href="#DOM中的基础数据类型" class="headerlink" title="DOM中的基础数据类型"></a>DOM中的基础数据类型</h4><ul>
+<li><code>DOMString</code>  </li>
+<li><code>DOMTimeStamp</code></li>
+<li><code>DOMUserData</code></li>
+<li><code>DOMObject</code></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DOM/" rel="tag"># DOM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/23/learning-dom-part1/" rel="next" title="DOM API详解（一）">
+                <i class="fa fa-chevron-left"></i> DOM API详解（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/11/front-end-interview/" rel="prev" title="前端面试题总结（持续更新）">
+                前端面试题总结（持续更新） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#DOM标准的层级"><span class="nav-number">1.</span> <span class="nav-text">DOM标准的层级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DOM-Core-导语"><span class="nav-number">2.</span> <span class="nav-text">DOM Core-导语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Node接口"><span class="nav-number">3.</span> <span class="nav-text">Node接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Element接口"><span class="nav-number">4.</span> <span class="nav-text">Element接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Document接口"><span class="nav-number">5.</span> <span class="nav-text">Document接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Attr接口"><span class="nav-number">6.</span> <span class="nav-text">Attr接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Text，Comment和CharacterData接口"><span class="nav-number">7.</span> <span class="nav-text">Text，Comment和CharacterData接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DOM中的基础数据类型"><span class="nav-number">8.</span> <span class="nav-text">DOM中的基础数据类型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

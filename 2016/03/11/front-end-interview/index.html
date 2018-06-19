@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Interview Front-end," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="接下来要参与大大小小的暑期实习笔试和面试。在这篇博客里我将总结一些常见的面试题。其中有一部分是我去年暑假找实习的时候总结的。现在看来，不免有些幼稚。慢慢完善吧！">
+<meta name="keywords" content="Interview Front-end">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端面试题总结（持续更新）">
+<meta property="og:url" content="http://yoursite.com/2016/03/11/front-end-interview/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="接下来要参与大大小小的暑期实习笔试和面试。在这篇博客里我将总结一些常见的面试题。其中有一部分是我去年暑假找实习的时候总结的。现在看来，不免有些幼稚。慢慢完善吧！">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.506Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端面试题总结（持续更新）">
+<meta name="twitter:description" content="接下来要参与大大小小的暑期实习笔试和面试。在这篇博客里我将总结一些常见的面试题。其中有一部分是我去年暑假找实习的时候总结的。现在看来，不免有些幼稚。慢慢完善吧！">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/11/front-end-interview/"/>
+
+
+
+
+
+  <title>前端面试题总结（持续更新） | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/11/front-end-interview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端面试题总结（持续更新）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-11T16:51:36+08:00">
+                2016-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>接下来要参与大大小小的暑期实习笔试和面试。在这篇博客里我将总结一些常见的面试题。其中有一部分是我去年暑假找实习的时候总结的。现在看来，不免有些幼稚。慢慢完善吧！</p>
+<a id="more"></a>
+<h2 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h2><p>Q：<strong>JS中的闭包</strong></p>
+<p>A：闭包从本身在函数式编程中的概念来说，说的是在定义函数时的两部分-函数体和函数的<code>context</code>，也就是函数定义时的上下文。里面保存着作用域中的变量，函数的定义和赋值。</p>
+<p>而我们平时说的闭包，其实是创建对于这个上下文的引用，从而在外部作用域中通过这个引用来访问这个上下文。</p>
+<p>所以从概念上来说，你声明了一个函数，就声明了一个闭包。</p>
+<p>然后从实际的使用来说，当你通过某种代码对在外部作用域中保存了对当前闭包的引用时，我们说你就“创建”了一个闭包，其实是“创建”了一个<strong>闭包的引用</strong>。我们通常用IIFE来达到这一效果，以至于有人认为IIFE就是“闭包”，这其实是不正确的认识。</p>
+<p>这就是闭包的实质，至于如何去使用闭包，那就五花八门了。你可以用来保存被外部作用域访问的临时变量，也可以用来封装函数，也可以用来做访问权限控制（类似Java中的私有变量）。</p>
+<hr>
+<p>Q：<strong>JS模块化</strong></p>
+<p>A：</p>
+<ul>
+<li>为什么我们需要JS模块化</li>
+<li>JS模块化的发展过程（从function，IIFE到Commonjs）</li>
+<li>JS模块化的几种方案介绍（Commonjs，AMD，ES6 Module）</li>
+</ul>
+<hr>
+<p>Q：<strong>JS中使用new关键字构造对象实例的过程</strong><br>A：</p>
+<pre><code>MyObject.construct = function() {
+    var o = {}, Constructor = MyObject;
+    o.__proto__ = Constructor.prototype;
+    // FF 支持用户引用内部属性 [[Prototype]]
+
+    Constructor.apply(o, arguments);
+    return o;
+};
+</code></pre><hr>
+<p>Q：<strong>JS性能优化</strong><br>A： to be done</p>
+<h2 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h2><p>Q：<strong>CSS position的不同取值以及差异？</strong>  </p>
+<p>A：取值：static（默认），relative，absolute，fixed。差异，relative：相对于其自身进行定位，不脱离文档流。absolute：相对于父元素链上的第一个已定位元素，如果不存在则相对于body。脱离文档流。fixed，相对于浏览器窗口进行定位，脱离文档流。static：正常的文档流定位。</p>
+<hr>
+<p>Q：<strong>CSS 盒模型</strong></p>
+<p>A：</p>
+<ul>
+<li>W3C 默认<code>content-box</code>，ie5-、ie6 Quirks mode <code>border-box</code></li>
+<li><code>content-box</code>：csswidth = content width</li>
+<li><code>border-box</code>: csswidth = content width + padding +border</li>
+</ul>
+<hr>
+<p>Q：<strong>CSS选择器</strong></p>
+<p>A：元素，类，id，属性，伪类，伪元素。···</p>
+<hr>
+<p>Q：<strong>CSS hack</strong></p>
+<p>A：选择器hack（-webkit-,-moz-）,属性hack，IE条件注释</p>
+<h2 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h2><p>Q：<strong>web语义化</strong></p>
+<p>A：<br>html5新标签：<code>&lt;header&gt;&lt;footer&gt;&lt;nav&gt;&lt;aside&gt;</code><br>Microformat：标准化的css类名，方便搜索引擎对页面内容进行索引。</p>
+<hr>
+<p>Q：<strong>Doctype</strong></p>
+<p>A：通过检查doctype决定使用兼容模式还是标准模式对文档进行渲染。html中为&lt;!doctype html&gt;</p>
+<h2 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h2><h2 id="前端性能"><a href="#前端性能" class="headerlink" title="前端性能"></a>前端性能</h2><p>Q：<strong>页面加载速度优化？</strong>  </p>
+<p>A：</p>
+<ul>
+<li>从http请求上来说，减少http请求数（合并css，js，sprite图，或者使用阿里的一个请求多个文件技术），但是合并请求不利于浏览器缓存。适当的请求数可以充分利用并发连接（瀑布图）并利用好缓存。减小文件的大小（压缩css，js，图片）。CDN加速等。</li>
+<li>从浏览器渲染的角度来说，把js放在<code>&lt;/body&gt;</code>之前，在DOM加载完成后加载js。CSS动画用<code>transform</code>而不是js和绝对定位。</li>
+<li>服务器端，充分利用缓存。使用hash更新文件。Gzip压缩。</li>
+<li>性能检测工具。WebPagetest。Chrome DevTools。</li>
+</ul>
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><p>Q：<strong>HTTP GET POST的不同？</strong>  </p>
+<p>A：</p>
+<ul>
+<li>GET是把参数加到URL中，在URL中可以看到。POST将表单内容放置在HTTP request body中。</li>
+<li>在RESTful的api设计中，GET一般用于获取/查询资源信息，而POST一般用于更新资源信息。</li>
+</ul>
+<hr>
+<p>Q：<strong>HTTP状态码</strong></p>
+<p>A：200 ok，304 not modified，404 not found，403 forbidden，500 internal server error， 503 Service Unavailable等。</p>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><p>Q：<strong>Web安全</strong></p>
+<p>A：XSS，CSRF，SQL注入等。具体可以看一些前端安全相关的书，初步了解。有实战最佳。</p>
+<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><p>Q：<strong>描述在浏览器中输入url到网页加载完成的过程</strong></p>
+<p>A：  </p>
+<ul>
+<li>浏览器查看缓存，如果有为过期的资源则直接返回该资源。</li>
+<li>若缓存没有所需的资源，浏览器解析url，组装一个http请求。</li>
+<li>浏览器获取主机ip地址，查询链从浏览器缓存，本机缓存，路由器缓存，到dns服务器缓存，进入dns查询链</li>
+<li>获得主机的ip地址后，与目标ip建立tcp连接，发送http请求</li>
+<li>tcp/ip 7层模型</li>
+<li>服务器端处理，web服务器，web端处理程序，返回http response</li>
+<li>浏览器接收http reponse 并根据状态码不同做出不同的处理</li>
+<li>根据资源类型决定处理方式，如果是html文档，则构建DOM树，下载资源，构造CSS om树，执行js脚本。</li>
+<li>DOM树：<br>Tokenizing：根据HTML规范将字符流解析为标记<br>Lexing：词法分析将标记转换为对象并定义属性和规则<br>DOM construction：根据HTML标记关系将对象组成DOM树</li>
+<li>CSS OM（object model）树：<br>Tokenizing：字符流转换为标记流<br>Node：根据标记创建节点<br>CSSOM：节点创建CSSOM树</li>
+<li>根据DOM树和CSS om树构建渲染树 render object<br>从DOM树的根节点遍历所有可见节点，不可见节点包括：1）script,meta这样本身不可见的标签。<br>2)被css隐藏的节点，如display: none<br>对每一个可见节点，找到恰当的CSSOM规则并应用<br>发布可视节点的内容和计算样式</li>
+<li>js解析<br>浏览器创建Document对象并解析HTML，将解析到的元素和文本节点添加到文档中，此时document.readystate为loading<br>此时HTML解析器遇到同步script时，将他们添加到文档中，然后执行行内或外部脚本。这些脚本会同步执行，并且在脚本下载和执行时解析器会暂停。<br>浏览器在Document对象上触发DOMContentLoaded事件<br>此时文档完全解析完成，浏览器可能还在等待如图片等内容加载，等这些内容完成载入并且所有异步脚本完成载入和执行，document.readState变为complete,window触发load事件</li>
+<li>页面显示<br>（关于这个问题的浏览器渲染方面，看webkit技术内幕比较好，我觉得这本书也算是高阶前端必看的一本）</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>Q：平时如何学习前端？</p>
+<p>A：<br>答案因人而异</p>
+<ul>
+<li>技术书籍。英文为主，中文为辅。</li>
+<li>信息流-微博，推特等上面的技术博客和文章。</li>
+<li>学框架使用-看官方文档。</li>
+<li>学框架原理-看源码，仿照轮子。</li>
+<li>专题分析，写博客总结或者写demo总结。</li>
+<li>技术会议。</li>
+</ul>
+<hr>
+<p>Q：Web无障碍？<br>A：to be done</p>
+<h2 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h2><p>Q：<strong>你让工人为你工作7天，给工人的回报是一根金条。金条平分成相连的7段<br>，你必须在每天结束时给他们一段金条，如果只许你两次把金条弄断，你如何给你<br>的工人付费？</strong></p>
+<p>A：把金条切成4份,2份和1份<br>    第一天给工人一份金条<br>    第二天给他两份的金条，把第一天的一份金条收回<br>    第三天又把一份的金条给他<br>    第四天把四份的金条给他，把一份和两份的金条收回<br>    第五天又把一份的金条给他<br>    第六天又给他两份的金条，收回一份的金条<br>    第七天最后把一份的金条给他  </p>
+<p>Q：<strong>一群人开舞会，每人头上都戴着一顶帽子。帽子只有黑白两种，黑的至少<br>有一顶。每个人都能看到其他人帽子的颜色，却看不到自己的。主持人先让大家看<br>看别人头上戴的是什么帽子，然后关灯，如果有人认为自己戴的是黑帽子，就打自<br>己一个耳光。第一次关灯，没有声音。于是再开灯，大家再看一遍，关灯时仍然鸦<br>雀无声。一直到第三次关灯，才有劈劈啪啪打耳光的声音响起。问有多少人戴着黑<br>帽子？</strong> </p>
+<p>或者这种变体： </p>
+<p><strong>一个村子里，有50户人家，每家都养了一条狗。现在，发现村子里面出现了n只疯狗，村里规定，谁要是发现了自己的狗是疯狗，就要将自己的狗枪毙。<br>但问题是，村子里面的人只能看出别人家的狗是不是疯狗，而不能看出自己的狗是不是疯的，如果看出别人家的狗是疯狗，也不能告诉别人。<br>于是大家开始观察，第一天晚上，没有枪声，第二天晚上，没有枪声，第三天晚上，枪声响起（具体几枪不清楚），问村子里有几只疯狗？<br>(1)必须确定是疯狗才能杀<br>(2)杀狗用猎枪,开枪杀狗人人都听的见,没聋子<br>(3)只能观察其他人家的狗是否得了疯狗病,不能观察自己的狗是否有疯狗病<br>(4)只能杀自己家的狗,别人家的狗你就是知道有疯狗病也不能杀<br>(5)任何观察到了其他人家的狗有疯狗病都不能告诉任何人<br>(6)每人每天去观察一遍其他人家的狗是否疯狗<br>现在现象是:第一天没有枪声,第二天没有枪声,第三天响起一片枪声</strong></p>
+<p>A：假如只有一个人戴黑帽子，那他看到所有人都戴白帽，在第一次关灯时就<br>应自打耳光，所以应该不止一个人戴黑帽子；如果有两顶黑帽子，第一次两人都只<br>看到对方头上的黑帽子，不敢确定自己的颜色，但到第二次关灯，这两人应该明白<br>，如果自己戴着白帽，那对方早在上一次就应打耳光了，因此自己戴的也是黑帽子<br>，于是也会有耳光声响起；可事实是第三次才响起了耳光声，说明全场不止两顶黑<br>帽，依此类推，应该是关了几次灯，有几顶黑帽。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Interview-Front-end/" rel="tag"># Interview Front-end</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/26/learning-dom-part2/" rel="next" title="DOM API详解（二）">
+                <i class="fa fa-chevron-left"></i> DOM API详解（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/11/let-s-build-a-jQuery/" rel="prev" title="Let's build a jQuery!-Part 1(early release)">
+                Let's build a jQuery!-Part 1(early release) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaScript"><span class="nav-number">1.</span> <span class="nav-text">JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS"><span class="nav-number">2.</span> <span class="nav-text">CSS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML"><span class="nav-number">3.</span> <span class="nav-text">HTML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构与算法"><span class="nav-number">4.</span> <span class="nav-text">数据结构与算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前端性能"><span class="nav-number">5.</span> <span class="nav-text">前端性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">6.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全"><span class="nav-number">7.</span> <span class="nav-text">安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器"><span class="nav-number">8.</span> <span class="nav-text">浏览器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">9.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#智力题"><span class="nav-number">10.</span> <span class="nav-text">智力题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

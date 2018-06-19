@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="我们编写前端组件时，常常需要拉取数据。最原始的办法就是在组件中调用网络库去请求数据。但这样有一些问题：发送请求的一些代码需要重复的编写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单的前端网络层Service封装">
+<meta property="og:url" content="http://yoursite.com/2017/08/16/fe-model-service/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="我们编写前端组件时，常常需要拉取数据。最原始的办法就是在组件中调用网络库去请求数据。但这样有一些问题：发送请求的一些代码需要重复的编写。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.505Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简单的前端网络层Service封装">
+<meta name="twitter:description" content="我们编写前端组件时，常常需要拉取数据。最原始的办法就是在组件中调用网络库去请求数据。但这样有一些问题：发送请求的一些代码需要重复的编写。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/16/fe-model-service/"/>
+
+
+
+
+
+  <title>简单的前端网络层Service封装 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/fe-model-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">简单的前端网络层Service封装</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-16T14:01:31+08:00">
+                2017-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们编写前端组件时，常常需要拉取数据。最原始的办法就是在组件中调用网络库去请求数据。但这样有一些问题：发送请求的一些代码需要<strong>重复的编写</strong>。</p>
+<a id="more"></a>
+<p>比如fetch的<code>json()</code>方法，拿到返回数据之后进行错误处理的代码。一个典型的使用场景是这样的：</p>
+<pre><code>fetch(&#39;/api/v2.0&#39; + this.Url + &#39;/?page=&#39; + this.page_num)
+  .then(res =&gt; {
+    return res.json()
+  })
+  .then(res =&gt; {
+    if (res.code === 200) {
+      this.items = res.blogs
+      this.pages_count = res.pages_count
+      this.page_num = res.page
+      this.blog_num = res.blog_num
+    }else {
+      util.message(&quot;Error:&quot;, res.message)
+    }
+  })
+} 
+
+</code></pre><p>而且在发送请求这个操作中，带有请求的URL等等和组件业务逻辑无关系不大的数据，我们希望可以集中管理这些请求的路由，并且集中处理错误。</p>
+<p>下面就介绍一种最简单的前端网络层封装，我将其称为Service。</p>
+<h3 id="简单的Fetch封装"><a href="#简单的Fetch封装" class="headerlink" title="简单的Fetch封装"></a>简单的Fetch封装</h3><p>为了避免在每次调用fetch时都要设置各种header和参数，我们可以对fetch做一个简单的封装：</p>
+<pre><code>function Fetch(url, opt = {}) { 
+
+ // 设置请求方法
+ opt.method = opt.method || &#39;GET&#39;;
+
+ // 处理要发送的数据
+ if (opt.data) {
+    if (/GET/i.test(opt.method)) {
+      url = `${url}&amp;${obj2query(opt.data)}`;
+    } else {
+      opt.headers = {
+        &#39;Accept&#39;: &#39;application/json&#39;,
+        &#39;Content-Type&#39;: &#39;application/json&#39;,
+      };
+      opt.body = JSON.stringify(opt.data);
+    }
+  }
+
+  return fetch(url, opt)
+    .then(response =&gt; {  
+      return response.json();
+    })
+}
+</code></pre><p>使用示例：</p>
+<pre><code>Fetch(&#39;/api/dash/message/list&#39;, {
+   method: &#39;GET&#39;,
+   data
+})
+</code></pre><p>上面演示的封装只处理了json格式的body和URL参数。在平时的开发中，我们会遇到更复杂的情况，比如需要特殊的header，或者是需要上传文件等等。我们可以通过给<code>Fetch</code>函数传入不同的<code>opt.type</code>来达到差异化的处理。有同学会说，在这个函数里根据不同的type写死业务逻辑，是不是不够解耦？其实不是，<code>Fetch</code>在这里已经是一个业务逻辑的封装了。</p>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>API请求的错误处理是一个很重要的话题，我们希望在服务端返回错误代码时，前端应用可以优雅的提示这个错误，而不是让应用直接报错。换句话说，我们希望catch这个错误，并且进行处理。</p>
+<p>这个错误处理的逻辑如果写在每个<code>Fetch</code>请求返回的Promise后面，无疑是不现实的。因为这样会造成大量代码的重复。所以进行错误处理的最佳场所就是刚才我们封装的<code>Fetch</code>函数了。</p>
+<p>我们在拿到<code>response</code>之后先进行判断，然后再返回结果：</p>
+<pre><code>// Fetch的json返回时，对状态码进行判断，做不同的处理。
+// 比如在服务端错误时使用alert或者notification组件进行全局提示。
+return response.json().then((json) =&gt; { 
+  switch (json.code) {
+    case 200:
+      return json.result;
+    case 502:
+      util.message(json.message, &#39;err&#39;);
+      throw json.message;
+  }
+}）
+</code></pre><h3 id="Service层封装"><a href="#Service层封装" class="headerlink" title="Service层封装"></a>Service层封装</h3><p><code>Fetch</code>其实还是一个比较底层的封装，Service才是前端组件之间调用的逻辑。这个Service类似传统MVC架构中的Model。提供接口并返回数据。一个Service是一组相关业务逻辑接口的集合。</p>
+<p>比如一个新闻应用，那首页的feed流是一个Service。单篇文章相关的接口可以放到一个Service。用户相关的接口可以放到一个Serivce。</p>
+<pre><code>let service = {
+  getNews(nid) {
+        return fetch(`/api/news/`, {
+            method: &#39;GET&#39;,
+            data: {
+                id: nid,
+            }
+        });
+  },
+
+  getNewsList() {
+        return fetch(`/api/news/all/`, {
+            method: &#39;GET&#39;
+        });
+  },
+
+  getComment( nid ) {
+        return fetch(`/api/news/${nid}/comment/`, {
+            method: &#39;GET&#39;
+        })
+    },
+
+  sendComment( data ) {
+      return fetch(`/api/news/${data.nid}/comment/`, {
+          method: &#39;POST&#39;,
+          data: data
+      })
+  },
+}
+</code></pre><p>在组件代码中调用Service（如果应用引入了单独的Model层，那就可以在Model层中调用Service）：</p>
+<pre><code>import NewsService from &#39;../services/news&#39;
+
+module.export = {
+  mounted() {
+    NewsService.getNews(this.id)
+      .then( (result) =&gt; {
+        this.news = result;
+      })
+  }
+}
+
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/16/i-have-a-theory/" rel="next" title="现代前端MVVM组件开发的基本理论">
+                <i class="fa fa-chevron-left"></i> 现代前端MVVM组件开发的基本理论
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/19/table-component-slot-passing/" rel="prev" title="Table组件中slot内容的跨级传递">
+                Table组件中slot内容的跨级传递 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的Fetch封装"><span class="nav-number">1.</span> <span class="nav-text">简单的Fetch封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理"><span class="nav-number">2.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service层封装"><span class="nav-number">3.</span> <span class="nav-text">Service层封装</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

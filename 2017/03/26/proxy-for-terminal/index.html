@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="写这篇文章的动机是之前Github曾经短暂的被墙过，这样的话，如果终端没有翻墙，那就没法推代码了。之后几天国内访问Github也一直很慢，于是尝试了给终端翻墙。网上的文章很多，但没有特别满意的，因此决定自己写一篇。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="终端工具翻墙不完全指南">
+<meta property="og:url" content="http://yoursite.com/2017/03/26/proxy-for-terminal/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="写这篇文章的动机是之前Github曾经短暂的被墙过，这样的话，如果终端没有翻墙，那就没法推代码了。之后几天国内访问Github也一直很慢，于是尝试了给终端翻墙。网上的文章很多，但没有特别满意的，因此决定自己写一篇。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="终端工具翻墙不完全指南">
+<meta name="twitter:description" content="写这篇文章的动机是之前Github曾经短暂的被墙过，这样的话，如果终端没有翻墙，那就没法推代码了。之后几天国内访问Github也一直很慢，于是尝试了给终端翻墙。网上的文章很多，但没有特别满意的，因此决定自己写一篇。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/26/proxy-for-terminal/"/>
+
+
+
+
+
+  <title>终端工具翻墙不完全指南 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/26/proxy-for-terminal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">终端工具翻墙不完全指南</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-26T22:10:22+08:00">
+                2017-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>写这篇文章的动机是之前Github曾经短暂的被墙过，这样的话，如果终端没有翻墙，那就没法推代码了。之后几天国内访问Github也一直很慢，于是尝试了给终端翻墙。网上的文章很多，但没有特别满意的，因此决定自己写一篇。</p>
+<a id="more"></a>
+<p>说是不完全指南，因为我这篇文章针对的是macOS下使用Shadowsocks翻墙的用户来说的。当然其他其他的系统，如果是使用Shadowsocks，道理应该差不多。</p>
+<p><strong>预备工作</strong>：安装Shadowsocks客户端，配置好服务器。搞清楚Shadowsocks在本地运行的端口，一般是1080或者1086。</p>
+<h3 id="Homebrew翻墙"><a href="#Homebrew翻墙" class="headerlink" title="Homebrew翻墙"></a>Homebrew翻墙</h3><p>macOS下装软件要用Homebrew，但Homebrew的源在国外，国内用是很慢的。首先我们要让Homebrew翻墙，才能顺利的往下进行其他工作。</p>
+<p>Homebrew下载用的是curl。因此我们只要配置curl使用代理就可以了。</p>
+<p>curl的代理在<code>~/.curlrc</code></p>
+<p>我们在这里加一行：</p>
+<p><code>socks5 = “127.0.0.1:1080”</code> </p>
+<p>1080是之前说的Shadowsocks的本地端口，下文就不再说明了。</p>
+<h3 id="安装Polipo"><a href="#安装Polipo" class="headerlink" title="安装Polipo"></a>安装Polipo</h3><p><code>brew install polipo</code></p>
+<p>装好后记得把之前加上的curl的代理删掉。</p>
+<p>然后配置polipo，修改<code>/usr/local/opt/polipo/homebrew.mxcl.polipo.plist</code>设置<code>parentProxy</code>:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+  &lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;homebrew.mxcl.polipo&lt;/string&gt;
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/usr/local/opt/polipo/bin/polipo&lt;/string&gt;
+        &lt;string&gt;socksParentProxy=localhost:1080&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;!-- Set `ulimit -n 20480`. The default OS X limit is 256, that&#39;s
+         not enough for Polipo (displays &#39;too many files open&#39; errors).
+         It seems like you have no reason to lower this limit
+         (and unlikely will want to raise it). --&gt;
+    &lt;key&gt;SoftResourceLimits&lt;/key&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NumberOfFiles&lt;/key&gt;
+      &lt;integer&gt;20480&lt;/integer&gt;
+    &lt;/dict&gt;
+  &lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre><p>增加了<code>&lt;string&gt;socksParentProxy=localhost:1080&lt;/string&gt;</code></p>
+<p>然后配置polipo开机自启动：</p>
+<pre><code>launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.polipo.plist
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.polipo.plist
+</code></pre><p>这样polipo就设置完成了，polipo的http代理默认在<code>localhost:8123</code>。</p>
+<h3 id="NPM翻墙"><a href="#NPM翻墙" class="headerlink" title="NPM翻墙"></a>NPM翻墙</h3><pre><code>npm config set proxy http://127.0.01:8123
+npm config set https-proxy http://127.0.0.1:8123
+</code></pre><h3 id="Git翻墙"><a href="#Git翻墙" class="headerlink" title="Git翻墙"></a>Git翻墙</h3><pre><code>git config --global http.proxy http://localhost:8123
+git config --global https.proxy http://localhost:8123
+</code></pre><p>可以用<code>git config --list</code>查看是否设置成功。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>上面讲了NPM和Git的代理。其他工具的话，道理是一样的，如果直接支持socks5代理，那是最好。一般都支持Http代理，比如Genymotion。遇到工具网络请求很慢的情况，设置具体工具的代理就可以了。我之前以为在终端设置<code>export http_proxy=http://localhost:8123</code>就可以。结果并不是这样，并不是所有的工具都走这个终端的代理。</p>
+<p>终端也有了代理，从此我们就可以愉快的进行开发了。妈妈再也不用担心我的cnpm出什么问题了，推代码到Github的心情也更轻松了，连更新博客都勤快了很多呢！</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><a href="http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/" target="_blank" rel="noopener">为终端设置Shadowsocks代理</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/21/about-cloud/" rel="next" title="聊聊云计算">
+                <i class="fa fa-chevron-left"></i> 聊聊云计算
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/27/product-share-overview/" rel="prev" title="产品思维碎碎念">
+                产品思维碎碎念 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Homebrew翻墙"><span class="nav-number">1.</span> <span class="nav-text">Homebrew翻墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Polipo"><span class="nav-number">2.</span> <span class="nav-text">安装Polipo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NPM翻墙"><span class="nav-number">3.</span> <span class="nav-text">NPM翻墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git翻墙"><span class="nav-number">4.</span> <span class="nav-text">Git翻墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tooling," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文链接: Must See JavaScript Dev Tools That Put Other Dev Tools to Shame 原文作者 : Eric Elliott 译文出自 : 掘金翻译计划   “Javascript没法胜任大型应用，因为它甚至不能确定一个变量的类型，而且很难重构”~一大堆困惑的人 当我初识Javascript的时候，只有一种浏览器需要关心：NetScape。">
+<meta name="keywords" content="Tooling">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2015年末必备前端工具集">
+<meta property="og:url" content="http://yoursite.com/2015/12/28/2015-javascript-tools/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="原文链接: Must See JavaScript Dev Tools That Put Other Dev Tools to Shame 原文作者 : Eric Elliott 译文出自 : 掘金翻译计划   “Javascript没法胜任大型应用，因为它甚至不能确定一个变量的类型，而且很难重构”~一大堆困惑的人 当我初识Javascript的时候，只有一种浏览器需要关心：NetScape。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*lAp8ZAk5uNFTuxjhx4GTdw.gif">
+<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*BTRxlHu8WuCF4Iep4R44lA.gif">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2015年末必备前端工具集">
+<meta name="twitter:description" content="原文链接: Must See JavaScript Dev Tools That Put Other Dev Tools to Shame 原文作者 : Eric Elliott 译文出自 : 掘金翻译计划   “Javascript没法胜任大型应用，因为它甚至不能确定一个变量的类型，而且很难重构”~一大堆困惑的人 当我初识Javascript的时候，只有一种浏览器需要关心：NetScape。">
+<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/1600/1*lAp8ZAk5uNFTuxjhx4GTdw.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/12/28/2015-javascript-tools/"/>
+
+
+
+
+
+  <title>2015年末必备前端工具集 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/2015-javascript-tools/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2015年末必备前端工具集</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T22:03:42+08:00">
+                2015-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<ul>
+<li>原文链接: <a href="https://medium.com/javascript-scene/must-see-javascript-dev-tools-that-put-other-dev-tools-to-shame-aca6d3e3d925#.wm0lbpiko" target="_blank" rel="noopener">Must See JavaScript Dev Tools That Put Other Dev Tools to Shame</a></li>
+<li>原文作者 : <a href="https://medium.com/@_ericelliott" target="_blank" rel="noopener">Eric Elliott</a></li>
+<li>译文出自 : <a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a></li>
+</ul>
+</blockquote>
+<p>“Javascript没法胜任大型应用，因为它甚至不能确定一个变量的类型，而且很难重构”~一大堆困惑的人</p>
+<p>当我初识Javascript的时候，只有一种浏览器需要关心：NetScape。它在微软开始捆绑销售IE和操作系统之前完全统治了世界。在那些日子里，Javascript的开发者工具很弱这种观点的确是对的。</p>
+<p>不过这个观点已经被推翻很久了，今天，Javascript已经拥有了在我见过的所有语言中最好的开发工具生态系统。<br><a id="more"></a></p>
+<p>请注意，我没有说“最好的IDE”。如果你正在寻找一款统一了不同开发工具使用体验的集成式IDE，请试试为C#打造的微软Visual Studio，和Unity一起使用风味更佳。虽然我本人并没有使用过，但是听我信任的人说这很靠谱。</p>
+<p>我用过C++和虚幻引擎。当我第一次试用的时候，我意识到web平台的开发工具仍然有很长的路要走。</p>
+<p>不过我们已经走过了很长一段路，现在我们在JS中使用的工具让IDE神奇的自动补全看起来就像是 小孩的玩具。尤为是JavaScript的运行时工具，在我见过的所有其他语言中都没有对手。</p>
+<blockquote>
+<p>“Javascript拥有在我见过的所有语言中最好的开发工具生态系统。”</p>
+</blockquote>
+<h4 id="什么是开发者工具？"><a href="#什么是开发者工具？" class="headerlink" title="什么是开发者工具？"></a>什么是开发者工具？</h4><p>开发者工具是一套让开发者更轻松的软件集合。传统上，我们主要将IDE，linter，编译器，调试器，和性能分析器认为是开发者工具。</p>
+<p>不过JavaScript是一种动态语言，伴随它的动态特性而来的是对运行时开发者工具的需求。JavaScript对此的需求程度很高。</p>
+<p>为了实现我写这篇文章的初衷，我将包括对运行时工具的介绍，甚至包括一些能提升运行时开发者工具可视化和调试体验的库。开发工具与库之间的界线将开始模糊。与之而来的将是令人震惊的结果。</p>
+<h4 id="开发者工具一览表"><a href="#开发者工具一览表" class="headerlink" title="开发者工具一览表"></a>开发者工具一览表</h4><ul>
+<li><a href="https://atom.io/" target="_blank" rel="noopener">Atom</a> &amp; <a href="https://atom.io/packages/atom-ternjs" target="_blank" rel="noopener">atom-ternjs</a></li>
+<li><a href="https://developer.chrome.com/devtools" target="_blank" rel="noopener">Chrome Dev Tools</a></li>
+<li><a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank" rel="noopener">PageSpeed Insights</a></li>
+<li><a href="https://www.mozilla.org/en-US/firefox/developer/" target="_blank" rel="noopener">FireFox Developer Edition</a></li>
+<li><a href="http://www.browsersync.io/" target="_blank" rel="noopener">BrowserSync</a></li>
+<li><a href="https://github.com/traceglMPL/tracegl" target="_blank" rel="noopener">TraceGL</a></li>
+<li><a href="http://s-a.github.io/iron-node/" target="_blank" rel="noopener">ironNode</a></li>
+<li><a href="http://eslint.org/" target="_blank" rel="noopener">ESLint</a></li>
+<li><a href="https://github.com/ericelliott/rtype" target="_blank" rel="noopener">rtype</a> (规范) &amp; <a href="https://github.com/ericelliott/rfx" target="_blank" rel="noopener">rfx</a> (库) <strong>提示:</strong> 这些是未完成的开发预览版</li>
+<li><a href="http://babeljs.io" target="_blank" rel="noopener">Babel</a></li>
+<li><a href="http://greenkeeper.io/" target="_blank" rel="noopener">Greenkeeper.io</a> &amp; <a href="https://github.com/peerigon/updtr" target="_blank" rel="noopener">updtr</a></li>
+<li><a href="https://facebook.github.io/react/" target="_blank" rel="noopener">React</a></li>
+<li><a href="https://webpack.github.io/" target="_blank" rel="noopener">Webpack</a> + <a href="https://github.com/webpack/docs/wiki/list-of-plugins" target="_blank" rel="noopener">Hot module replacement</a></li>
+<li><a href="http://redux.js.org/" target="_blank" rel="noopener">Redux</a> + <a href="https://github.com/gaearon/redux-devtools" target="_blank" rel="noopener">Redux DevTools</a></li>
+</ul>
+<h4 id="关于这些工具"><a href="#关于这些工具" class="headerlink" title="关于这些工具"></a>关于这些工具</h4><p>你的开发者生涯将围绕着这两个东西展开：<strong>编辑器</strong>，和你的<strong>运行环境</strong>（比如，浏览器，平台，和你代码的目标设备）</p>
+<p><strong>编辑器：</strong>我是用着像Borland IDE，微软Visual Studio，Eclipse和WebStorm这样的大型，重量级，高度集成的IDE开始我的职业生涯的。我认为这些IDE中最好的是<strong>WebStorm</strong> 和 <strong>Visual Studio</strong>。</p>
+<p>但是我对这些IDE体积的膨胀感到厌倦，所以在最近几年里，我的代码都是在更精简的编辑器中写成的。主要是Sublime Text，不过我最近切换到了<a href="https://atom.io/" target="_blank" rel="noopener"><strong>Atom</strong><sup>[1]</sup></a>。你一定会需要<a href="https://atom.io/packages/atom-ternjs" target="_blank" rel="noopener">atom-ternjs<sup>[2]</sup></a>来启用JavaScript智能感知特性。你可能也会对Visual Studio Code感兴趣。这是一个简约版Visual Studio，专为喜欢像Sublime Text和Atom这样的小型可拓展编辑器的人打造。</p>
+<p>我也使用vim在终端里进行快速编辑。</p>
+<p><strong>调试器：</strong>在我开始web编程之旅时，我想念那些集成的调试器。不过Chrome和FireFox团队将运行时调试提升到了一个全新的水准。今天似乎每个人都听说过Chrome DevTools，并且知道如何逐步调试代码。不过你知道它有对性能及内存进行记录和审查（profiling and auditing）的高级特性吗？你用过flame charts或者the dominators view吗？</p>
+<p>说到性能审查，你需要了解<a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank" rel="noopener">PageSpeed Insights<sup>[3]</sup></a>:</p>
+<iframe width="854" height="480" src="https://www.youtube.com/embed/bDUDuQy3R7Y?list=PLOU2XLYxmsILKwwASNS0xgfcmakbK_8JZ" frameborder="0" allowfullscreen></iframe>
+
+
+<p>在这些好东西之上，Chrome DevTools也有一些酷炫的特性，比如像CSS实时编辑，以及可以帮助你编辑动画的超酷特性。去了解Chrome DevTools吧，你不会后悔的。</p>
+<iframe width="700" height="393" src="https://www.youtube.com/embed/hJdqtBeAUNI" frameborder="0" allowfullscreen></iframe>
+
+
+<p>为了不被超过，FireFox有一个专为开发者打造的浏览器<a href="https://www.mozilla.org/en-US/firefox/developer/" target="_blank" rel="noopener">FireFox Developer Edition<sup>[4]</sup></a>:</p>
+<iframe width="700" height="393" src="https://www.youtube.com/embed/g9k4IrtaPMs?list=PLo3w8EB99pqLRJBWRCoyGTIrkctoUgB9W" frameborder="0" allowfullscreen></iframe>
+
+
+<p><strong>BrowserSync:</strong> <a href="http://www.browsersync.io/" target="_blank" rel="noopener">BrowserSync<sup>[5]</sup></a>可以一次同时控制几个浏览器，这是检测你的响应式布局的一种好办法。换句话说，你可以使用BrowserSync CLI来在桌面，平板和手机上打开你的app。</p>
+<p>你可以设定文件监视（watch files），然后当文件改动时，几个同步的浏览器会自动刷新。滚动，点击，以及表单互动这些动作都将会被同步到所有设备，所有你可以简单的测试你的app的工作流，确保事情在任何设备上都看起来都对劲。</p>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/heNWfzc7ufQ" frameborder="0" allowfullscreen></iframe>
+
+
+<p><strong>TraceGL:</strong> <a href="https://github.com/traceglMPL/tracegl" target="_blank" rel="noopener">TraceGL<sup>[6]</sup></a> 是一个运行时调试工具，它让你可以观察软件中实时发生的所有函数调用，而不是逐步手动调试你的代码，一次一步。这个是一个超级强大和有用的功能。</p>
+<iframe width="700" height="393" src="https://www.youtube.com/embed/TW6uMJtbVrk" frameborder="0" allowfullscreen></iframe>
+
+
+<p><strong>ironNode:</strong> <a href="http://s-a.github.io/iron-node/" target="_blank" rel="noopener">ironNode<sup>[7]</sup></a> 是一个用于调试Node的桌面app。由Electron，一个桌面跨平台运行时驱动。Electron也驱动了Atom编辑器。就像node-inspector，ironNode允许你使用类似Chrome DevTools的特性来追踪你的代码。</p>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/pxq6zdfJeNI" frameborder="0" allowfullscreen></iframe>
+
+
+<p>将ironNode和Babel一起使用，我使用如下的<em><code>debug.js</code></em> 脚本：</p>
+<pre>require('babel-core/register');  
+require('./index');
+</pre>
+
+
+<p>加载调试器：</p>
+<pre>iron-node source/debug.js
+</pre>
+
+
+<p>这就像魔法一样，不是吗？</p>
+<p><strong>Linting:</strong> <a href="http://eslint.org/" target="_blank" rel="noopener">ESLint<sup>[8]</sup></a> 是目前为止我用过的各种语言的linter中最好的。我喜欢ESLint甚于JSHint，ESLint比JSHint好太多了。如果你不确定使用什么，别担心，使用ESLint。为什么它这么酷呢？</p>
+<ul>
+<li>可配置性高 - 每一个选项都可以被开启或关闭。这些选项甚至可以接收参数。</li>
+<li>创造你自己的规则。你有你想要在你的团队中强制执行的代码规范吗？在linter中可能已经有了这样的规则，不过如果没有，你可以写你自己的规则。</li>
+<li>支持插件 - 使用了某些特殊语法？ES6+或者未来版本JavaScript的实验性特性？没问题。使用了React的JSX语法打造简洁的UI组件？没问题。使用了你自己的实验性JavaScript语法拓展？没问题。</li>
+</ul>
+<p><strong>类型支持：</strong> JavaScript具有松散的类型，这意味着你不必注解所有的类型。过去数年我在C++和Java这样的语言中注解所有东西。当我开始使用JavaScript之后，我感到如释重负。类型注解在你的源文件中制造了杂音。函数通常在没有类型注解时更易用。</p>
+<p>和大众认知相反，<strong>JavaScript是有类型的</strong>，但是JavaScript在<strong>值</strong>层面区别类型而不是变量层面。变量类型可以被类型推断识别并预测出来（这就是Atom TernJS插件的作用）。</p>
+<p>这就是说，类型注解和签名（signature）声明是为了一个目的：它们对于开发者来说是不错的文档。它们也使JavaScript引擎以及编译器作者的一些重要性能优化成为可能。作为一个构建app的JavaScript程序员，你不应该担心性能问题。把这些留给引擎和制定规范的团队吧。</p>
+<p>不过关于类型注解我最喜欢的一点是运行时类型反射。使用类型反射可以开启运行时开发者工具。想知道这样的工具是什么样的，请阅读<a href="http://www.sitepoint.com/future-programming-webassembly-life-after-javascript/" target="_blank" rel="noopener">“The Future of Programming: WebAssembly and Life After JavaScript”<sup>[9]</sup></a>。</p>
+<p>数年来，我使用JSDoc来注解类型，编写文档以及类型推断。不过我对其麻烦的限制感到厌倦。这感觉就像你使用一种不同的语言编写代码，之后将它挤压成JavaScript（这是真的）。</p>
+<p>我也对TypeScript的结构化类型方案感到印象深刻。</p>
+<p>不过TypeScript存在一些问题：</p>
+<ul>
+<li>TypeScript不是标准的JavaScript - 选择TypeScript意味着选择TypeScript编译器以及工具生态 - 这通常导致你无法选择为JavaScript标准设计的方案。</li>
+<li>TypeScript很大程度上基于class。这与JavaScript的原型和对象组合特性八字不合。</li>
+<li>目前为止，TypeScript不提供运行时解决方案… - 他们正在使用实验性的新JavaScript <strong>Reflect</strong> API构建。不过接下来你可能会依靠这些实验性极高的规范特性，这些特性也许会成为最终标准，也许不会。</li>
+</ul>
+<p>因为这些，我启动了（目前还未完成）<a href="https://github.com/ericelliott/rtype" target="_blank" rel="noopener">rtype<sup>[10]</sup></a>和<a href="https://github.com/ericelliott/rfx" target="_blank" rel="noopener">rfx<sup>[11]</sup></a>项目。<strong>rtype</strong> 是一个函数和接口反射规范，对于了解JavaScript的读者来说，这一规范形成了不言自明的文档。<strong>rfx</strong> 是一个用于封装已经存在的JS函数及对象然后添加类型元数据的库。同时，它也可以加入自动运行时类型检查。我正在积极的与人们合作以改进rtype和rfx。也欢迎你们的贡献。</p>
+<p>你要记得rtype和rfx还非常年轻，并且在短期之内几乎必定会有革命性的变化。</p>
+<p><strong>Babel:</strong> <a href="http://babeljs.io/" target="_blank" rel="noopener">Babel<sup>[12]</sup></a> 是一个让你立即在JavaScript代码中使用还不被支持的ES6+, JSX以及其他特性的编译器。它的原理是将你的代码翻译成等价的ES5代码。一旦你开始使用它，我敢说你将很快对新语法上瘾，因为ES6为这门语言提供了一些真正有价值的语法拓展，像解构赋值（destructuring assignment），默认参数值，剩余和展开参数（rest parameters and spread），简洁对象字面量（concise object literals），以及更多… 阅读<a href="https://medium.com/javascript-scene/how-to-use-es6-for-isomorphic-javascript-apps-2a9c3abe5ea2" target="_blank" rel="noopener">“How to Use ES6 for Universal JavaScript Apps”<sup>[13]</sup></a>来了解细节。</p>
+<p><strong>Greenkeeper.io:</strong> <a href="http://greenkeeper.io/" target="_blank" rel="noopener">Greenkeeper<sup>[14]</sup></a> 监控你的项目依赖并且自动向你的项目提交一个pull request。你要确保你已经设定了CI解决方案来自动测试pull requests。如果测试通过，只要点击“merge”，就完工了。如果测试失败，你可以手动跟进并且找出哪里需要修复，或者直接关闭PR。</p>
+<p>如果你偏爱手动的方法，看看<a href="https://github.com/peerigon/updtr" target="_blank" rel="noopener"><strong>updtr</strong><sup>[15]</sup></a>。在你第一次开启Greenkeeper之前，我推荐先在你的项目上运行updtr。</p>
+<p><strong>Webpack:</strong> <a href="https://webpack.github.io/" target="_blank" rel="noopener">Webpack<sup>[16]</sup></a> 将模块和依赖打包成浏览器可用的静态资源。它支持大量有趣的特性，比如模块热替换，这让你正在为浏览器编写的代码在文件更改时自动更新，而不用刷新页面。模块热替换是迈向真正持续实时开发反馈循环的第一步。如果你还没有使用webpack，你应该使用它。为了更快入门，看看<a href="https://github.com/cloverfield-tools/universal-react-boilerplate" target="_blank" rel="noopener"><strong>Universal React Boilerplate</strong><sup>[17]</sup></a>这个项目里的webpack配置。</p>
+<p><strong>React:</strong> 这一个有一点跑题，因为<a href="https://facebook.github.io/react/" target="_blank" rel="noopener">React<sup>[18]</sup></a> 严格意义上来说不是一个开发者工具。它和一个UI库有着更多的共同点。请把React想象成现代的jQuery：一种更简单的处理DOM的办法。但React比这更强大。事实上，你可以把React对准一大堆DOM之外的平台，包括原生移动UI APIs(iOS &amp; Android)，WebGL, canvas以及更多。Netflix将React的目标平台设为了他们自己的Gibbon TV设备渲染API。</p>
+<p>所以为什么我将React列在开发者工具之中？因为React的抽象层被一些不错的开发者工具使用，来驱动代表未来趋势的惊人工具。特性有热加载（更新你的实时运行代码而不刷新页面），时间旅行（time travel），以及更多… 继续阅读！</p>
+<p><strong>Redux + Redux DevTools:</strong> Redux是由React/Flux架构和函数式编程的纯函数概念启发而来的一个应用状态管理库。另一个在开发者工具列表中的库？是的，以下是原因：</p>
+<iframe width="700" height="393" src="https://www.youtube.com/embed/xsSnOQynTHs" frameborder="0" allowfullscreen></iframe>
+
+
+<p>Redux以及Redux DevTools使得在你的实时运行代码之上进行真正的下一代调试互动成为可能。这让你可以轻松洞察在你的app中已经发生的行为：</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*lAp8ZAk5uNFTuxjhx4GTdw.gif" alt=""></p>
+<p>它甚至允许你使用时间旅行调试这个特性在时间中来回穿梭。这是它在滚动视图中看起来的样子：</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*BTRxlHu8WuCF4Iep4R44lA.gif" alt=""></p>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>JavaScript有着我所见过的所有语言中最丰富的开发者工具集。你可以看到，这更像是一个拼凑的过程而不是一个统一的IDE环境。不过我们处于JavaScript开发的寒武纪大爆炸时期，在未来，我们也许会看到现成的统一集成开发者工具。与此同时，我们将一瞥编程未来走向的究竟。</p>
+<p>随着JavaScript向统一的应用状态（unified application state）和不变性（immutability）（正是这个特性使得Redux DevTools的时间旅行调试成为了可能）的更深处推进，我预测我们将看到更多的实时编程特性上线。</p>
+<p>我也相信我们构建的应用和我们用以构建它的开发环境之间的界线会随着时间消逝而渐渐模糊。举个例子，Unreal游戏引擎将蓝图编辑集成进了引擎自身，这允许开发者和设计师从运行的游戏中构建复杂的行为。我思考了很久，我们将开始看到这些特性出现在web和以及原生移动应用中。</p>
+<p>JavaScript的linting，运行时监视（runtime monitoring）和时间旅行调试特性在我所知道的任何语言中都没有对手。但我们还可以做更多，比如将同等于Unreal 4引擎中的蓝图系统这样的工具带给我们。我迫不及待的想看接下来会发生什么。</p>
+<iframe width="700" height="393" src="https://www.youtube.com/embed/9hwhH7upYFE" frameborder="0" allowfullscreen></iframe>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tooling/" rel="tag"># Tooling</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/05/reset-css/" rel="next" title="Thoughts on Reset.css">
+                <i class="fa fa-chevron-left"></i> Thoughts on Reset.css
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/23/learning-dom-part1/" rel="prev" title="DOM API详解（一）">
+                DOM API详解（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是开发者工具？"><span class="nav-number">1.</span> <span class="nav-text">什么是开发者工具？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发者工具一览表"><span class="nav-number">2.</span> <span class="nav-text">开发者工具一览表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于这些工具"><span class="nav-number">3.</span> <span class="nav-text">关于这些工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

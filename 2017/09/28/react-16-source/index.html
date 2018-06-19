@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意  React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：  允许在render函数中返回节点数组和字符串。  render() {   // 再也不用在外面套一个父节点了   return [     // 别忘了加上key">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React 16 Fiber源码速览">
+<meta property="og:url" content="http://yoursite.com/2017/09/28/react-16-source/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意  React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：  允许在render函数中返回节点数组和字符串。  render() {   // 再也不用在外面套一个父节点了   return [     // 别忘了加上key">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fjzoreufb4j20xm0kcjwa.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fjzoretq6dj210q0bu776.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fk0jck2eo4j20gk09a76l.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fkc8x8n8x2j20fa0co428.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fk1ka90rh0j20s109xacl.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fk1kj1kekxj20s10ezq6q.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fk1m7cifluj20sh0pk10v.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fk1m7bwt6vj20fd05pdgr.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fk1m7by675j20ch06tjsg.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkbtqzlproj21eq210nik.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkbz4oej2tj21do3c91kx.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fkc077e5vgj20g2244gun.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkc0p3sx5fj21e93z97wh.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fkc7kiv42qj20kh03vq3a.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fk1m7by675j20ch06tjsg.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fkd4vrvbycj20ox0ian05.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkc84mx1vij20fa0gq7af.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fk6jdy25scj20wq1kvqdw.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fkq4dx9ljkj20ox0jyn2j.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkurhf1dgwj20p60sy44v.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fks860npkqj20p41foalg.jpg">
+<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fkurhf2r9jj20ou3c9x1u.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fkorwi0836j20oz2f71b8.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fknn7fnubmj20eb08wjt7.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fkota00kyhj20o402ydg3.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.517Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React 16 Fiber源码速览">
+<meta name="twitter:description" content="本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意  React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：  允许在render函数中返回节点数组和字符串。  render() {   // 再也不用在外面套一个父节点了   return [     // 别忘了加上key">
+<meta name="twitter:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fjzoreufb4j20xm0kcjwa.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/28/react-16-source/"/>
+
+
+
+
+
+  <title>React 16 Fiber源码速览 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/28/react-16-source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React 16 Fiber源码速览</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-28T22:50:36+08:00">
+                2017-09-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文的写作有一部分没有完成，打算针对React 16.3再对本文进行修改，请大家留意</p>
+</blockquote>
+<p>React 16在近期发布了。除了将备受争议的BSD+Patents协议改为MIT协议之外，React 16还带来了许多新特性，比如：</p>
+<ul>
+<li>允许在render函数中返回节点数组和字符串。</li>
+</ul>
+<pre><code>render() {
+  // 再也不用在外面套一个父节点了
+  return [
+    // 别忘了加上key
+    &lt;li key=&quot;A&quot;&gt;First item&lt;/li&gt;,
+    &lt;li key=&quot;B&quot;&gt;Second item&lt;/li&gt;,
+    &lt;li key=&quot;C&quot;&gt;Third item&lt;/li&gt;,
+  ];
+}
+</code></pre><ul>
+<li>提供更好的错误处理。</li>
+<li>支持自定义DOM属性。</li>
+</ul>
+<a id="more"></a>
+<p>但最关键的一点还是：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fjzoreufb4j20xm0kcjwa.jpg" alt="twitter"></p>
+<p>没错，React 16是一次<strong>重写</strong>，在保持API不变的情况下，将核心架构改为了代号为Fiber的异步渲染架构。新架构带来了的变化有：</p>
+<ul>
+<li>体积减小</li>
+</ul>
+<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fjzoretq6dj210q0bu776.jpg" alt="file size"></p>
+<ul>
+<li><p><a href="https://medium.com/@aickin/whats-new-with-server-side-rendering-in-react-16-9b0d78585d67" target="_blank" rel="noopener">服务端渲染速度大幅提升</a></p>
+</li>
+<li><p>更responsive的界面</p>
+</li>
+</ul>
+<h3 id="一次预谋已久的重写"><a href="#一次预谋已久的重写" class="headerlink" title="一次预谋已久的重写"></a>一次预谋已久的重写</h3><p>Fiber这个架构并不是突然冒出来的。Facebook的工程师在设计React之初就设想未来的UI渲染会是异步的。从<code>setState()</code>的设计和React内部的事务机制可以看出这点。</p>
+<p>在去年，React的开发者<a href="https://github.com/acdlite" target="_blank" rel="noopener">Andrew Clark</a>在社区中放出了Fiber架构的一个<a href="https://github.com/acdlite/react-fiber-architecture" target="_blank" rel="noopener">文档</a>。描述了Fiber架构的基本信息。同时表示Facebook的工程师正在实现这个新架构。今年3月的React Conf 2017上，Lin Clark做了<a href="https://www.youtube.com/watch?v=ZCuYPiUIONs" target="_blank" rel="noopener">A Cartoon Intro to Fiber</a>这个分享，介绍了Fiber架构的工作原理。今年9月，Fiber架构随着React 16正式发布。Fiber架构的代码放在原来的React仓库之中，并且可以通过运行时的判断来切换新老架构，方便测试和部署。因此Fiber的开发是一个渐进的过程。<a href="http://isfiberreadyyet.com" target="_blank" rel="noopener">这个网站</a>实时展示了Fiber通过的测试用例，随着所有用例的通过，Fiber也正式发布了。有趣的是，在React 16发布之前，Fiber架构的React就已经运行在Facebook的产品中了。FB的工程师表示看到新架构在线上产品运行起来，是很激动人心的。具体的情况可以看这篇博客：<a href="https://code.facebook.com/posts/1716776591680069/react-16-a-look-inside-an-api-compatible-rewrite-of-our-frontend-ui-library/" target="_blank" rel="noopener">React 16: A look inside an API-compatible rewrite of our frontend UI library</a>。</p>
+<h3 id="Fiber概念简介"><a href="#Fiber概念简介" class="headerlink" title="Fiber概念简介"></a>Fiber概念简介</h3><p>本文的题目是React 16 Fiber源码速览，所以关注的主要是Fiber相关的代码。在分析源码之前，首先介绍一些基本概念。</p>
+<blockquote>
+<p>推荐看上文中提到的<a href="https://www.youtube.com/watch?v=ZCuYPiUIONs" target="_blank" rel="noopener">A Cartoon Intro to Fiber</a>。这个分享比较系统和形象解释了Fiber架构的工程流程，并且使用了React源码中的术语。有助于理解Fiber的概念和源码。下文中的配图也来自这个分享。</p>
+</blockquote>
+<h4 id="reconciler-VS-renderer"><a href="#reconciler-VS-renderer" class="headerlink" title="reconciler VS renderer"></a>reconciler VS renderer</h4><p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fk0jck2eo4j20gk09a76l.jpg" alt="Reconciler VS Renderer"></p>
+<p>Reconciler就是我们所说的Virtul DOM，用于计算新老View的差异。React 16之前的reconciler叫Stack reconciler。Fiber是React的新reconciler。Renderer则是和平台相关的代码，负责将View的变化渲染到不同的平台上，DOM、Canvas、Native、VR、WebGL等等平台都有自己的renderer。我们可以看出reconciler是React的核心代码，是各个平台共用的。因此这次React的reconciler更新到Fiber架构是一次重量级的核心架构的更换。</p>
+<p>由reconciler和renderer两个概念引出的是phase的概念。Phase指的是React组件渲染时的阶段。第一阶段是reconciliation，这一阶段做的是Fiber的update，然后产出的是effect list（可以想象成将老的View更新到新的状态所需要做的DOM操作的列表）。这一个阶段是没有副作用的，因此这个过程可以被打断，然后恢复执行。第二阶段是commit阶段。Reconciliation产生的effect list只有在commit之后才会生效，也就是真正应用到DOM中。这一阶段往往不会执行太长时间，因此是同步的，这样也避免了组件内视图层结构和DOM不一致。</p>
+<h4 id="Fiber是什么"><a href="#Fiber是什么" class="headerlink" title="Fiber是什么"></a>Fiber是什么</h4><p>React源码中的注释说：</p>
+<blockquote>
+<p>A Fiber is work on a Component that needs to be done or was done. There can be more than one per component.</p>
+</blockquote>
+<p>简单的说，一个Fiber就是一个POJO对象，代表了组件上需要做的工作。一个React Element可以对应一个或多个Fiber节点。</p>
+<p>在render函数中创建的React Element树在第一次渲染的时候会创建一颗结构一模一样的Fiber节点树。不同的React Element类型对应不同的Fiber节点类型。一个React Element的工作就由它对应的Fiber节点来负责。我们如果在console中打印React 16的组件实例，会发现有一个<code>_reactInternalFiber</code>属性指向它对应的Fiber实例。</p>
+<p>虽然React的代码中其实没有明确的Virtul DOM概念，但Fiber和我们概念中的Virtul DOM树是等价的。</p>
+<p>Fiber带来了一个给React的渲染带来了重要的变化。React内部有事务的概念。之前React渲染相关的事务是连续的，一旦开始就会run to completion。现在React的事务则是由一系列Fiber的更新组成的，因此React可以在多个帧中断断续续的更新Fiber，最后commit变化。</p>
+<p>那为什么说一个React Element可以对应不止一个Fiber呢？因为Fiber在update的时候，会从原来的Fiber（我们称为current）clone出一个新的Fiber（我们称为alternate）。两个Fiber diff出的变化（side effect）记录在alternate上。所以一个组件在更新时最多会有两个Fiber与其对应，在更新结束后alternate会取代之前的current的成为新的current节点。</p>
+<h4 id="Fiber节点的数据结构"><a href="#Fiber节点的数据结构" class="headerlink" title="Fiber节点的数据结构"></a>Fiber节点的数据结构</h4><p>下面介绍Fiber类型的重要属性：</p>
+<pre><code>{
+    tag: TypeOfWork, // fiber的类型，下一节会介绍
+    alternate: Fiber|null, // 在fiber更新时克隆出的镜像fiber，对fiber的修改会标记在这个fiber上
+
+    return: Fiber|null, // 指向fiber树中的父节点
+
+    child: Fiber|null, // 指向第一个子节点
+    sibling: Fiber|null, // 指向兄弟节点
+
+    effectTag: TypeOfSideEffect, // side effect类型，下文会介绍
+    nextEffect: Fiber | null, // 单链表结构，方便遍历fiber树上有副作用的节点
+    pendingWorkPriority: PriorityLevel, // 标记子树上待更新任务的优先级
+
+}
+</code></pre><p>在实际的渲染过程中，Fiber节点构成了一颗树。这棵树在数据结构上是通过单链表的形式构成的，Fiber节点上的<code>chlid</code>和<code>sibling</code>属性分别指向了这个节点的第一个子节点和相邻的兄弟节点。这样就可以遍历整个Fiber树了。</p>
+<p>Fiber树的图示如下：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fkc8x8n8x2j20fa0co428.jpg" alt="fiber tree"></p>
+<h4 id="TypeOfWork"><a href="#TypeOfWork" class="headerlink" title="TypeOfWork"></a>TypeOfWork</h4><p>这是源码中的typeOfWork，代表React中不同类型的fiber节点。</p>
+<pre><code>{
+  IndeterminateComponent: 0, // Before we know whether it is functional or class
+  FunctionalComponent: 1,
+  ClassComponent: 2,
+  HostRoot: 3, // Root of a host tree. Could be nested inside another node.
+  HostPortal: 4, // A subtree. Could be an entry point to a different renderer.
+  HostComponent: 5,
+  HostText: 6,
+  CoroutineComponent: 7,
+  CoroutineHandlerPhase: 8,
+  YieldComponent: 9,
+  Fragment: 10,
+}s
+</code></pre><p>对几个常用的类型作一下解释：</p>
+<p><strong>ClassComponent</strong></p>
+<p>就是应用层面的React组件。ClassComponent是一个继承自React.Component的类的实例。</p>
+<p><strong>HostRoot</strong></p>
+<p>ReactDOM.render()时的根节点。</p>
+<p><strong>HostComponent</strong></p>
+<p>React中最常见的抽象节点，是ClassComponent的组成部分。具体的实现取决于React运行的平台。在浏览器环境下就代表DOM节点，可以理解为所谓的虚拟DOM节点。HostComponent中的Host就代码这种组件的具体操作逻辑是由Host环境注入的。</p>
+<h4 id="TypeOfSideEffect"><a href="#TypeOfSideEffect" class="headerlink" title="TypeOfSideEffect"></a>TypeOfSideEffect</h4><blockquote>
+<p>说一下这是以二进制位表示的。可以多个叠加。</p>
+</blockquote>
+<pre><code>{
+  NoEffect: 0,          
+  PerformedWork: 1,   
+  Placement: 2, // 插入         
+  Update: 4, // 更新           
+  PlacementAndUpdate: 6, 
+  Deletion: 8, // 删除   
+  ContentReset: 16,  
+  Callback: 32,      
+  Err: 64,         
+  Ref: 128,          
+};
+</code></pre><h4 id="Priority"><a href="#Priority" class="headerlink" title="Priority"></a>Priority</h4><p>Priority指的是Fiber中一个work的优先级。这是React源码中的对Priority类型的定义：</p>
+<pre><code>{
+  NoWork: 0, // No work is pending.
+  SynchronousPriority: 1, // For controlled text inputs. Synchronous side-effects.
+  TaskPriority: 2, // Completes at the end of the current tick.
+  HighPriority: 3, // Interaction that needs to complete pretty soon to feel responsive.
+  LowPriority: 4, // Data fetching, or result from updating stores.
+  OffscreenPriority: 5, // Won&#39;t be visible but do the work in case it becomes visible.
+}
+</code></pre><p>我们可以把Priority分为同步和异步两个类别，同步优先级的任务会在当前帧完成，包括SynchronousPriority和TaskPriority。异步优先级的任务则可能在接下来的几个帧中被完成，包括HighPriority、LowPriority以及OffscreenPriority。</p>
+<h3 id="React-16-Fiber源码目录结构"><a href="#React-16-Fiber源码目录结构" class="headerlink" title="React 16 Fiber源码目录结构"></a>React 16 Fiber源码目录结构</h3><p>React库的入口、组件的基类<code>ReactComponent</code>、<code>ReactElement.createElement</code>函数等等所有平台公用的代码位于<code>src/isomorphic</code>下。</p>
+<p>我们关注的Fiber代码位于<code>src/renderers/shared/fiber</code>下。我们先来看看<code>src/renderers</code>下面有什么：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fk1ka90rh0j20s109xacl.jpg" alt="renderers"></p>
+<p>可以看到<code>src/renderers</code>下的代码就是上文介绍的renderer，分dom、native、art等等平台。那我们再看看<code>src/renderers/shared</code>目录下有什么：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fk1kj1kekxj20s10ezq6q.jpg" alt="renderers/shared"></p>
+<p><code>src/renderers/shared</code>其实就是reconciler相关的代码了。可以看到里面有fiber和stack新老两大reconciler（在笔者发文时，Stack reconciler已经完成了它的使命，相关的代码已经被移除了）。</p>
+<p>最后让我们来看看<code>src/renderers/shared/fiber</code>下的代码：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fk1m7cifluj20sh0pk10v.jpg" alt="fiber"></p>
+<p>这些就是React fiber的核心代码了。Fiber节点的定义在<code>ReactFiber.js</code>中，Fiber的reconciler构造函数在<code>ReactFiberReconciler.js</code>中，Fiber节点的工作流程由<code>ReactFiberBeginWork.js</code>、<code>ReactFiberCommitWork.js</code>和<code>ReactFiberCompleteWork.js</code>组成。Fiber的子节点reconcile逻辑在<code>ReactChildFiber.js</code>中，<code>ReactFiberScheduler.js</code>则是调度相关的逻辑。接下来就让我们通过具体的场景，来分析React 16的源码吧！</p>
+<h3 id="阅读React源码须知"><a href="#阅读React源码须知" class="headerlink" title="阅读React源码须知"></a>阅读React源码须知</h3><p>下面简单介绍一下在React源码中，起辅助作用的代码。以免大家在看源码时被这些代码所迷惑。</p>
+<h4 id="flow-type"><a href="#flow-type" class="headerlink" title="flow type"></a>flow type</h4><p>React使用了flow作为静态类型检查工具。所以React源码中都是带有类型声明的。这对熟悉Java或者C++这些静态类型语言的同学应该不陌生。<strong>类型声明对于快速理解源码也是有很大帮助的</strong>。</p>
+<h4 id="if-DEV"><a href="#if-DEV" class="headerlink" title="if (__DEV__)"></a><code>if (__DEV__)</code></h4><p>React源码中常常有<code>if (__DEV__)</code>这样的代码，比如：</p>
+<pre><code>if (__DEV__) {
+    warning(
+      shouldUpdate !== undefined,
+      &#39;%s.shouldComponentUpdate(): Returned undefined instead of a &#39; +
+        &#39;boolean value. Make sure to return true or false.&#39;,
+      getComponentName(workInProgress) || &#39;Unknown&#39;,
+    );
+  }
+</code></pre><p>这些代码是为了更好的开发者体验而编写的。React中的友好的报错，render性能测试等等代码都是写在<code>if (__DEV__)</code>中的。在production build的时候，这些代码不会被打包。因此我们可以毫无顾虑的提供专为开发者服务的代码。React的最佳实践之一就是在开发时使用development build，在生产环境使用production build。</p>
+<p>大家在刚开始接触源码时可以跳过<code>if (__DEV__)</code>中的代码，专注于理解核心的部分。</p>
+<h4 id="源码阅读小技巧"><a href="#源码阅读小技巧" class="headerlink" title="源码阅读小技巧"></a>源码阅读小技巧</h4><p>如果读者想在阅读文本之后打算自己深入探索React源码，我可以给出一些阅读源码的小技巧。如果对于React中某个方法的调用过程感兴趣，可以在本地用create-react-app新建一下小demo项目，然后直接在node_modules中的react-dom.development.js和react.development.js两个文件里的对应方法<strong>打断点</strong>。这样在中断的时候就可以看到整个<strong>调用栈</strong>了，Chrome种可以通过点击调用栈切换到其中任何一帧的状态。如果发现调用过程中有自己感兴趣的函数，可以clone React的整个仓库，用编辑器对想要查看的函数进行<strong>全局搜索</strong>，找到那个函数的源码进行阅读。此外还有一个小tip，如果对某个特性的实现感兴趣，可以去<strong>搜索React的pull request和issue列表</strong>，说不定可以找到当初实现这个特性时候提的PR，PR中一般会写实现时的一些考虑。另外React源码的注释也是非常详尽的，有些已经等于简单的文档了，所以<strong>仔细的阅读注释</strong>也是理解源码的捷径之一。</p>
+<h4 id="本文源码的时效性"><a href="#本文源码的时效性" class="headerlink" title="本文源码的时效性"></a>本文源码的时效性</h4><p>React 16.0发布后，新架构的很多特性还没有完全开放，因此React这段时间还在一个积极的开发过程中，源码变动会比较大。本文是分析的源码是React v16.0的源码。大家在阅读时Github上的React源码时要注意，目前的master分支的React源码和本文中的源码会有一些差异。比如在本文发布时，React的目录结构就进行了调整，源码从src中转移到了packages目录下，按react、react-reconciler、react-dom等等NPM模块的方式划分。还有一些fiber的实现也在进行一些小的重构。比如在performWork相关的代码中加入performWorkOnRoot和renderRoot这几个函数，通过准确的命名让函数的作用更清晰。又比如Priority的概念直接被expirationTime取代了，workLoop中直接根据expirationTime来判断任务的执行时机。所以<strong>推荐大家阅读master分支下的最新代码</strong>，因为React 16在代码质量上的确还处于一个未完成的状态，随着进一步的开发，源码的可读性会更高。</p>
+<h3 id="确定源码分析的入口"><a href="#确定源码分析的入口" class="headerlink" title="确定源码分析的入口"></a>确定源码分析的入口</h3><h3 id="React-16组件源码分析：用户触发的setState开启的一次渲染"><a href="#React-16组件源码分析：用户触发的setState开启的一次渲染" class="headerlink" title="React 16组件源码分析：用户触发的setState开启的一次渲染"></a>React 16组件源码分析：用户触发的<code>setState</code>开启的一次渲染</h3><p>我们知道，React的渲染是由<code>setState</code>触发的，所以就让我们从<code>setState</code>入手，来分析React 16的组件渲染流程。</p>
+<h4 id="setState"><a href="#setState" class="headerlink" title="setState"></a>setState</h4><p><code>setState</code>方法是React基类上的一个方法。因此位于<code>src/isomorphic</code>下的<code>modern/class/ReactBaseClasses.js</code>：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fk1m7bwt6vj20fd05pdgr.jpg" alt="setState"></p>
+<p>我们看到<code>setState</code>调用了<code>this.updater.enqueueSetState</code>。updater是renderer在渲染的时候注入的对象，这个对象由reconciler提供。具体的逻辑可以看<code>ReactDOM.render</code>相关的代码，这里就不展开了。</p>
+<h4 id="enqueueSetState"><a href="#enqueueSetState" class="headerlink" title="enqueueSetState"></a>enqueueSetState</h4><p>既然updater是reconciler提供的，那我们就可以在fiber的代码中找到它。updater就位于<code>src/renderers/shared/fiberReactFiberCompleteWork.js</code>中。</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fk1m7by675j20ch06tjsg.jpg" alt="enqueueSetState"></p>
+<p>这里只截取了一部分的updater代码，可以看到updater提供了<code>enqueueSetState</code>方法，这个方法首先从全局拿到React组件实例对应的fiber，然后拿到了fiber的优先级。最后调用了<code>addUpdate</code>向队列中推入需要更新的fiber，并调用<code>scheduleUpdate</code>触发调度器调度一次新的更新。</p>
+<p>熟悉React源码的朋友应该知道，<code>setState</code>的流程到这里为止，和React 15的流程基本是一样的。从下面开始，我们就可以看到Fiber架构的不同之处了。</p>
+<h4 id="addUpdate"><a href="#addUpdate" class="headerlink" title="addUpdate"></a>addUpdate</h4><p>我们首先来看<code>addUpdate</code>函数，这个函数向Fiber的更新队列里加入一次更新：</p>
+<pre><code>function addUpdate(
+  fiber: Fiber,
+  partialState: PartialState&lt;any, any&gt; | null,
+  callback: mixed,
+  priorityLevel: PriorityLevel,
+): void {
+  const update = {
+    priorityLevel,
+    partialState,
+    callback,
+    isReplace: false,
+    isForced: false,
+    isTopLevelUnmount: false,
+    next: null,
+  };
+  insertUpdate(fiber, update);
+}
+</code></pre><p><code>addUpdate</code>函数组装了一个update，然后将fiber和update传入了insertUpdate函数中。我们先来看一下这里用到的两个类型，Update和UpdateQueue：</p>
+<pre><code>type UpdateQueue = {
+  first: Update | null,
+  last: Update | null,
+  hasForceUpdate: boolean,
+  callbackList: null | Array&lt;Callback&gt;,
+
+  // Dev only
+  isProcessing?: boolean,
+};
+</code></pre><pre><code>type Update = {
+  priorityLevel: PriorityLevel,
+  partialState: PartialState&lt;any, any&gt;,
+  callback: Callback | null,
+  isReplace: boolean,
+  isForced: boolean,
+  isTopLevelUnmount: boolean,
+  next: Update | null,
+};
+</code></pre><p>我们可以看到，UpdateQueue是一个单向链表，有first和last指针指向链表的头部和尾部。其中的每一个Update都有一个next属性指向下一个Update。这样的数据结构在React 16中是很常见的。</p>
+<p>之前说到，在更新时，一个React element会有一个current fiber和一个alternate fiber。我们又把alternate fiber叫working in progress fiber。这两个fiber都有一个Update Queue。这两个Queue里面的item的引用是相同的，也就是所谓的persistent structure。区别在于，working in progress fiber会在更新完一个队列项之后将其从队列中移除。所以working in progress update queue永远是current queue的一个子集。在更新完成之后，working in progress fiber取代current fiber成为新的current fiber。如果更新中断（有更高优先级的更新插入），current fiber的update queue就可以作为备份，使得之前中断的更新可以重新开始。</p>
+<p>再看<code>insertUpdate</code>，这个函数处理了将一个update插入到current queue和work-in-progress queue两个队列中的逻辑：</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkbtqzlproj21eq210nik.jpg" alt="insertUpdate"></p>
+<h4 id="scheduleUpdate"><a href="#scheduleUpdate" class="headerlink" title="scheduleUpdate"></a>scheduleUpdate</h4><p>看完了<code>addUpdate</code>相关的逻辑，我们再来看<code>scheduleUpdate</code>：</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkbz4oej2tj21do3c91kx.jpg" alt="scheduleUpdate"></p>
+<h4 id="performWork"><a href="#performWork" class="headerlink" title="performWork"></a>performWork</h4><p>performWork的作用就是“刷新”待更新队列，执行待更新的事务：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fkc077e5vgj20g2244gun.jpg" alt="performWork"></p>
+<p>performWork的代码很长，其中很大一部分是错误处理代码，这些代码和React16中的新特性有关，官方博客的介绍如下：</p>
+<blockquote>
+<p>Previously, runtime errors during rendering could put React in a broken state, producing cryptic error messages and requiring a page refresh to recover. To address this problem, React 16 uses a more resilient error-handling strategy. By default, if an error is thrown inside a component’s render or lifecycle methods, the whole component tree is unmounted from the root. This prevents the display of corrupted data. However, it’s probably not the ideal user experience.<br>Instead of unmounting the whole app every time there’s an error, you can use error boundaries. Error boundaries are special components that capture errors inside their subtree and display a fallback UI in its place. Think of error boundaries like try-catch statements, but for React components.</p>
+</blockquote>
+<p>我们需要关注的函数，一个是<code>workLoop</code>，这个函数是React更新pendingWork队列的主循环。一个是<code>scheduleDeferredCallback</code>，这个函数会在未来安排一次更新，来处理<code>workLoop</code>中没有做完的事务。</p>
+<h4 id="workLoop"><a href="#workLoop" class="headerlink" title="workLoop"></a>workLoop</h4><p><em>图片注释还需要打磨</em></p>
+<p>我们来看<code>workLoop</code>的代码：</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkc0p3sx5fj21e93z97wh.jpg" alt="workLoop"></p>
+<p>除了图中所注释的，<code>workLoop</code>中有一个值得注意的细节。我们看到，loop中首先判断nextUnitOfWork的优先级是不是高于或等于TaskPriority。如果不是，则进入另一个分支，这个分支和前一个在对nextUnitOfWork的处理上有着微妙的区别。之前在介绍Priority的时候我们说到过，TaskPriority以及更高的优先级属于同步优先级，这些更新会在nextTick之前完成。所以loop中的两个分支其实就是对同步和异步的任务做了不同的处理。两个分支的区别主要是第二个分支使用了deadline.timeRemaining()来判断是否还有时间继续处理任务。</p>
+<p>在之前的分析中，我们没有关注deadline这个参数，workLoop中的这个参数是从performWork中传入的，而performWork中的deadline参数是由scheduleUpdateImpl传入的。scheduleUpdateImpl给同步优先级的任务的deadline参数传入的是null。这是符合常理的，因为同步优先级的任务会一定会在一次workLoop中执行完毕。scheduleUpdateImpl中的异步优先级的任务在scheduleDeferredCallback中处理，我们看这个函数的类型：</p>
+<pre><code>scheduleDeferredCallback(
+    callback: (deadline: Deadline) =&gt; void,
+  ): number | void,
+</code></pre><p>deadline出现了！所以异步任务的deadline是在被scheduleDeferredCallback调用时传入的。</p>
+<h4 id="scheduleDeferredCallback"><a href="#scheduleDeferredCallback" class="headerlink" title="scheduleDeferredCallback"></a>scheduleDeferredCallback</h4><p>让我们来看看<code>scheduleDeferredCallback</code>这个函数。全局搜索一番，我们发现这个函数是在renderer初始化时被注入的。</p>
+<p>React 16抽象出了一个叫<code>ReactFiberReconciler</code>的工厂函数。这个函数接收一个<code>HostConfig</code>类型的参数，返回一个Reconciler。每个renderer初始化时需要传入当前平台相关的配置，也就是一个<code>HostConfig</code>实例，才能拿到一个自定义的Reconciler。</p>
+<blockquote>
+<p>这里说一点题外话，React抽象出这个工厂函数意味着React标准化了自定义Renderer的接口。Renderer通过<code>ReactFiberReconciler</code>这个API就可以将自定义Renderer接入FiberReconciler。<a href="https://github.com/nitin42/Making-a-custom-React-renderer" target="_blank" rel="noopener">Making-a-custom-React-renderer</a>就利用了这个函数来打造自定义Renderer。</p>
+</blockquote>
+<p><code>HostConfig</code>的类型签名是这样的：</p>
+<pre><code>export type HostConfig&lt;T, P, I, TI, PI, C, CX, PL&gt; = {
+  getRootHostContext(rootContainerInstance: C): CX,
+  getChildHostContext(parentHostContext: CX, type: T, instance: C): CX,
+  getPublicInstance(instance: I | TI): PI,
+
+  createInstance(
+    type: T,
+    props: P,
+    rootContainerInstance: C,
+    hostContext: CX,
+    internalInstanceHandle: OpaqueHandle,
+  ): I,
+  appendInitialChild(parentInstance: I, child: I | TI): void,
+  finalizeInitialChildren(
+    parentInstance: I,
+    type: T,
+    props: P,
+    rootContainerInstance: C,
+  ): boolean,
+
+  prepareUpdate(
+    instance: I,
+    type: T,
+    oldProps: P,
+    newProps: P,
+    rootContainerInstance: C,
+    hostContext: CX,
+  ): null | PL,
+  commitUpdate(
+    instance: I,
+    updatePayload: PL,
+    type: T,
+    oldProps: P,
+    newProps: P,
+    internalInstanceHandle: OpaqueHandle,
+  ): void,
+  commitMount(
+    instance: I,
+    type: T,
+    newProps: P,
+    internalInstanceHandle: OpaqueHandle,
+  ): void,
+
+  shouldSetTextContent(type: T, props: P): boolean,
+  resetTextContent(instance: I): void,
+  shouldDeprioritizeSubtree(type: T, props: P): boolean,
+
+  createTextInstance(
+    text: string,
+    rootContainerInstance: C,
+    hostContext: CX,
+    internalInstanceHandle: OpaqueHandle,
+  ): TI,
+  commitTextUpdate(textInstance: TI, oldText: string, newText: string): void,
+
+  appendChild(parentInstance: I, child: I | TI): void,
+  appendChildToContainer(container: C, child: I | TI): void,
+  insertBefore(parentInstance: I, child: I | TI, beforeChild: I | TI): void,
+  insertInContainerBefore(
+    container: C,
+    child: I | TI,
+    beforeChild: I | TI,
+  ): void,
+  removeChild(parentInstance: I, child: I | TI): void,
+  removeChildFromContainer(container: C, child: I | TI): void,
+
+  scheduleDeferredCallback(
+    callback: (deadline: Deadline) =&gt; void,
+  ): number | void,
+
+  prepareForCommit(): void,
+  resetAfterCommit(): void,
+
+  // Optional hydration
+  canHydrateInstance?: (instance: I | TI, type: T, props: P) =&gt; boolean,
+  canHydrateTextInstance?: (instance: I | TI, text: string) =&gt; boolean,
+  getNextHydratableSibling?: (instance: I | TI) =&gt; null | I | TI,
+  getFirstHydratableChild?: (parentInstance: I | C) =&gt; null | I | TI,
+  hydrateInstance?: (
+    instance: I,
+    type: T,
+    props: P,
+    rootContainerInstance: C,
+    hostContext: CX,
+    internalInstanceHandle: OpaqueHandle,
+  ) =&gt; null | PL,
+  hydrateTextInstance?: (
+    textInstance: TI,
+    text: string,
+    internalInstanceHandle: OpaqueHandle,
+  ) =&gt; boolean,
+  didNotHydrateInstance?: (parentInstance: I | C, instance: I | TI) =&gt; void,
+  didNotFindHydratableInstance?: (
+    parentInstance: I | C,
+    type: T,
+    props: P,
+  ) =&gt; void,
+  didNotFindHydratableTextInstance?: (
+    parentInstance: I | C,
+    text: string,
+  ) =&gt; void,
+
+  useSyncScheduling?: boolean,
+};
+</code></pre><p>这里主要包括一些平台相关的代码，比如节点的操作（<code>insertBefore</code>和<code>appendChild</code>等等），还有一些配置项，比如<code>useSyncScheduling</code>。我们看到<code>scheduleDeferredCallback</code>就在其中。我们来看看renderer初始化的代码：</p>
+<p>在React DOM的入口中：</p>
+<pre><code>scheduleDeferredCallback: ReactDOMFrameScheduling.rIC,
+</code></pre><p>在React Native的入口中：</p>
+<pre><code>scheduleDeferredCallback: global.requestIdleCallback,
+</code></pre><p>我们可以看到<code>scheduleDeferredCallback</code>的实现和平台相关。在Native环境下，它是React Native的js runtime提供的<code>global.requestIdleCallback</code>，在浏览器环境下，它是<code>ReactDOMFrameScheduling.rIC</code>。</p>
+<h4 id="Cooperative-Scheduling-amp-amp-requestIdleCallback"><a href="#Cooperative-Scheduling-amp-amp-requestIdleCallback" class="headerlink" title="Cooperative Scheduling &amp;&amp; requestIdleCallback"></a>Cooperative Scheduling &amp;&amp; requestIdleCallback</h4><p><code>window.requestIdleCallback</code>的函数签名和<code>scheduleDeferredCallback</code>是一模一样的。requestIdleCallback的callback接收一个<code>IdleDeadline</code>类型的参数。这个<code>IdleDeadline</code>和React中的<code>deadline</code>都有一个<code>timeRemaining</code>方法。</p>
+<p>requestIdleCallback的W3C规范叫Cooperative Scheduling of Background Tasks。React官方在介绍fiber时也提到了Cooperative Scheduling这种技术。从源码来看，React主要利用了浏览器提供的requestIdleCallback API来实现这一特性。</p>
+<p>相比于利用setTimout这样的API实现task scheduling，requestIdleCallback带来的Cooperative Scheduling让开发者让浏览器在空闲时间调用callback，并且在callback中可以获取到当前帧剩余的时间。利用这个信息我们可以合理的安排当前帧需要做的工作，如果工作太多而时间不够，就再调用requestIdleCallback来做剩余的工作。</p>
+<p>requestIdleCallback的回调具体执行的时间点是在一帧开始，JavaScript执行完，浏览器执行渲染流程之后，到这帧结束之前。图示如下：</p>
+<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fkc7kiv42qj20kh03vq3a.jpg" alt="idleCallback"></p>
+<p><code>deadline</code>中的<code>timeRemaining</code>的最大值是50ms，以免浏览器长期空闲时，callback的任务一直执行，使得UI不能及时响应用户输入。</p>
+<h4 id="ReactDOMFrameScheduling-rIC"><a href="#ReactDOMFrameScheduling-rIC" class="headerlink" title="ReactDOMFrameScheduling.rIC"></a>ReactDOMFrameScheduling.rIC</h4><p><code>ReactDOMFrameScheduling.rIC</code>的逻辑是，如果浏览器实现了requestIdleCallback，就返回原生API。如果没有实现，就返回一个polyfill。这个polyfill的实现非常有趣，可以学到很多有意思的黑科技。</p>
+<p>我们来看看<code>ReactDOMFrameScheduling.rIC</code>的实现：</p>
+<p>虽然Chrome和Firefox都已经实现了requestIdleCallback，但某些浏览器还是需要polyfill，所以我们重点关注一下requestIdleCallback的polyfill的实现。</p>
+<p>预估一个比较低的frame rate。requestAnimationFrame获取一帧开始，时间戳，触发一个message事件，postMessage在layout paint和composite之后被调用。deadline通过frame rate - rafTime可以得到</p>
+<pre><code>| frame start time                                      deadline |
+[requestAnimationFrame] [layout] [paint] [composite] [postMessage]
+</code></pre><p>通过requestAnimationFrame直接的时间差获取过去两帧的准确frame rate，动态调整当前帧的frame rate。</p>
+<h4 id="默认优先级"><a href="#默认优先级" class="headerlink" title="默认优先级"></a>默认优先级</h4><p>既然一次更新是同步还是异步是由优先级决定的，那我们在用户代码中通过<code>setState</code>来schedule的一次update的优先级是多少呢？</p>
+<p>我们回顾一下<code>enqueueSetState</code>的代码：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fk1m7by675j20ch06tjsg.jpg" alt="enqueueSetState"></p>
+<p><code>addUpdate</code>和<code>scheduleUpdate</code>的<code>priorityLevel</code>是通过<code>getPriorityContext(fiber, false)</code>获取的。</p>
+<p>我们来看看<code>getPriorityContext</code>的实现：</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fkd4vrvbycj20ox0ian05.jpg" alt="getPriorityContext"></p>
+<p>所以我们得出了一个重要的结论。在React 16中，<strong>异步渲染默认是关闭的</strong>。用户代码的优先级是同步的。</p>
+<h4 id="performUnitOfWork"><a href="#performUnitOfWork" class="headerlink" title="performUnitOfWork"></a>performUnitOfWork</h4><p>讲完了deadline对象的由来，我们回到workLoop，看看React是的reconcilation是如何进行的。我们可以看到首先被调用的是performUnitOfWork，这个函数做的就是所谓的reconcilation阶段的工作了。然后React将调用commitAllWork进入commit阶段，将reconcilation结果真正应用到DOM中。</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkc84mx1vij20fa0gq7af.jpg" alt="performUnitOfWork"></p>
+<p>React 16保持了之前版本的事务风格，一个“work”会被分解为begin和complete两个阶段来完成。我们先关注beginWork</p>
+<h4 id="beginWork"><a href="#beginWork" class="headerlink" title="beginWork"></a>beginWork</h4><p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fk6jdy25scj20wq1kvqdw.jpg" alt="beginWOrk"></p>
+<p><code>beginWork</code>函数根据fiber节点不同的tag，调用对应的update方法。可以说是一个入口函数。真正的逻辑要看update开头的这一些了函数。</p>
+<h4 id="updateClassComponent-amp-amp-updateHostComponent"><a href="#updateClassComponent-amp-amp-updateHostComponent" class="headerlink" title="updateClassComponent &amp;&amp; updateHostComponent"></a>updateClassComponent &amp;&amp; updateHostComponent</h4><p>上一节中讲到，<code>beginWork</code>中不同tag的元素有不同的update系列方法，我们重点关注的是对ClassComponent和HostComponent两种component的更新方法。ClassComponent对应的是React组件实例，HostComponent对应的是一个视图层节点，在浏览器环境中就等于DOM节点。</p>
+<p>我们先关注<code>updateClassComponent</code>函数：</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fkq4dx9ljkj20ox0jyn2j.jpg" alt="updateClassComponent"></p>
+<p><code>updateHostComponent</code>这里就不再详细分析了。因此HostComponent没有生命周期钩子需要处理，这个函数主要做的就是调用<code>reconcileChildren</code>对子节点进行diff。</p>
+<h4 id="reconcileChildren"><a href="#reconcileChildren" class="headerlink" title="reconcileChildren"></a>reconcileChildren</h4><p><code>reconcileChildren</code>实现的就是江湖上广为流传的Virtul DOM diff。这年头人人都看过一两个Virtul DOM diff的实现，那React 16的diff是如何实现的呢？</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkurhf1dgwj20p60sy44v.jpg" alt="reconcileChildren"></p>
+<p><code>reconcileChildren</code>这个函数里调用了三个功能相似的函数：<code>mountChildFibersInPlace</code>、<code>reconcileChildFibers</code>和<code>reconcileChildFibersInPlace</code>。在源码中我们发现，这三个函数其实是同一个函数，通过传入不同的参数“重载”而来的。</p>
+<pre><code>exports.reconcileChildFibers = ChildReconciler(true, true);
+
+exports.reconcileChildFibersInPlace = ChildReconciler(false, true);
+
+exports.mountChildFibersInPlace = ChildReconciler(false, false);
+</code></pre><p>ChildReconciler是一个工厂函数，它接收shouldClone, shouldTrackSideEffects两个参数。reconcileChildFibers函数的目的是产出effect list，所以shouldClone, shouldTrackSideEffects两个参数都是true。mountChildFibersInPlace是组件初始化时用的，所以不用clone fiber来diff，也不用产出effect list。reconcileChildFibersInPlace是在之前reconcile被中断的fiber树上继续工作，因此shouldClone参数为false。</p>
+<p>ChildReconciler内部有很多helper函数，最终返回的函数叫reconcileChildFibers，这个函数实现了对子fiber节点的reconciliation。下面我们关注reconcileChildFibers函数的实现。</p>
+<h4 id="reconcileChildFibers"><a href="#reconcileChildFibers" class="headerlink" title="reconcileChildFibers"></a>reconcileChildFibers</h4><p>图的注释：</p>
+<ul>
+<li>总的，这个函数根据newChild的类型调用不同的方法。newChild可能是一个元素，也可能是一个数组（React16新特性）</li>
+<li>如果是reconcile单个元素，以reconcileSingleElement为例比较key和type，如果相同，复用fiber，删除多余的元素（currentFirstChild的sibling），如果不同，调用createFiberFromElement，返回新创建的。</li>
+<li>如果是string，reconcileSingleTextNode</li>
+<li>如果是array，reconcileChildrenArray</li>
+<li>如果是空，deleteRemainingChildren删除老的子元素</li>
+</ul>
+<p>React的reconcile算法采用的是层次遍历，这种算法是建立在一个节点的插入、删除、移动等操作都是在<strong>节点树的同一层级中进行</strong>这个假设下的。所以reconcile算法的核心就是如何diff两个子节点数组。</p>
+<h4 id="reconcileChildrenArray"><a href="#reconcileChildrenArray" class="headerlink" title="reconcileChildrenArray"></a>reconcileChildrenArray</h4><p>React16的diff算法采用和来自社区的两端同时比较法同样结构的算法。</p>
+<blockquote>
+<p>关于diff算法演化历史可以看司徒正美的<a href="https://segmentfault.com/a/1190000011235844" target="_blank" rel="noopener">这篇博客</a></p>
+</blockquote>
+<p>因为fiber树是单链表结构，没有子节点数组这样的数据结构。也就没有可以供两端同时比较的尾部游标。所以React的这个算法是一个简化的两端比较法，只从头部开始比较。</p>
+<p>下面我们来看一下代码：</p>
+<p>图片</p>
+<p>从头部遍历。第一次遍历新数组，对上了，新老index都++，比较新老数组哪些元素是一样的，（通过updateSlot，比较key），如果是同样的就update。第一次遍历玩了，如果新数组遍历完了，那就可以把老数组中剩余的fiber删除了。</p>
+<p>如果老数组完了新数组还没完，那就把新数组剩下的都插入。</p>
+<p>如果这些情况都不是，就把所有老数组元素按key放map里，然后遍历新数组，插入老数组的元素，这是移动的情况。</p>
+<p>最后再删除没有被上述情况涉及的元素（也就是老数组中有新数组中无的元素，上面的删除只是fast path，特殊情况）</p>
+<h4 id="completeUnitOfWork"><a href="#completeUnitOfWork" class="headerlink" title="completeUnitOfWork"></a>completeUnitOfWork</h4><blockquote>
+<p>注：这里effect list链表插入的想法只是猜测，需要进一步确认。</p>
+</blockquote>
+<p><code>completeUnitOfWork</code>是complete阶段的入口。complete阶段的作用就是在一个节点diff完成之后，对它进行一些收尾工作，主要是更新props和调用生命周期方法等等。<code>completeUnitOfWork</code>主要的逻辑是调用<code>completeWork</code>完成收尾，然后将当前子树的effect list插入到HostRoot的effect list中。具体的让我们来看代码：</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fks860npkqj20p41foalg.jpg" alt="completeUnitOfWork"></p>
+<h4 id="completeWork"><a href="#completeWork" class="headerlink" title="completeWork"></a>completeWork</h4><p>complete阶段主要工作都是在<code>completeWork</code>中完成的。这个函数很长，需要仔细梳理。</p>
+<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fkurhf2r9jj20ou3c9x1u.jpg" alt="completeWork"></p>
+<p>可见completeWork主要是完成reconciliation阶段的扫尾工作，重点是对HostComponent的props进行diff，并标记更新。</p>
+<p>到这里，我们就讲完了reconciliation阶段。这个阶段主要负责产出effect list。所以可以说reconcile的过程相当于是一个纯函数，输入是fiber节点，输出一个effect list。side-effects是在commit阶段被应用到UI中的，这样就将side-effects从reconciliation中隔离开了。因为纯函数的可预测性，让我们可以随时中断reconciliation阶段的执行，而不用担心side-effects给让组件状态和实际UI产生不一致。</p>
+<p>commit这个阶段有点像Git的commit概念。在缓冲区中的代码改动只有在commit之后才会被添加到Git的Object store中。</p>
+<p>下面我们就来关注commit阶段的实现。看看effect list是如何被“提交”到UI中的。</p>
+<h4 id="commitAllWork"><a href="#commitAllWork" class="headerlink" title="commitAllWork"></a>commitAllWork</h4><p>reconciliation阶段结束之后，我们需要将effect list更新到UI中。这就是commit节点的工作。commit阶段的入口是<code>commitAllWork</code>函数，我们来看看它的实现：</p>
+<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fkorwi0836j20oz2f71b8.jpg" alt="commitAllWork"></p>
+<p>这里需要注意的是，React 16中的生命周期方法是在reconciliation和commit两个阶段中被调用的，commit阶段的<code>commitAllLifeCycles</code>函数中的生命周期方法包括<code>componentDidMount</code>、<code>componentDidUpdate</code>和<code>componentWillUnmount</code>三个。</p>
+<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fknn7fnubmj20eb08wjt7.jpg" alt="lifeCycle"></p>
+<h4 id="reconciliation-commit流程总结"><a href="#reconciliation-commit流程总结" class="headerlink" title="reconciliation+commit流程总结"></a>reconciliation+commit流程总结</h4><p>经过上述对reconciliation和commit两个阶段的源码分析，是不是觉得有些混乱？我总结了一张reconciliation+commit过程中的函数调用图，希望可以帮助你理清这两个阶段的函数调用流程。从图中我们可以看出，<code>workLoop</code>中调用了<code>performUnitOfWork</code>和<code>commitAllWork</code>，分别作为reconciliation和commit两个阶段的入口。<code>performUnitOfWork</code>中又分为begin和complete两个阶段来处理。</p>
+<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fkota00kyhj20o402ydg3.jpg" alt="callStack"></p>
+<h3 id="展望-amp-amp-结语"><a href="#展望-amp-amp-结语" class="headerlink" title="展望&amp;&amp;结语"></a>展望&amp;&amp;结语</h3><h4 id="潜伏的大招——异步渲染"><a href="#潜伏的大招——异步渲染" class="headerlink" title="潜伏的大招——异步渲染"></a>潜伏的大招——异步渲染</h4><p>在上文中，我们知道，React 16中默认没有开启异步渲染。用户的setState都是和React 15一样，在一个tick内完成的。fiber可以解决的问题，比如将优先级低的任务分散在多个帧中完成，在每一帧中留足够的时间给响应用户输入和渲染这样优先级高的任务。在默认不开启异步渲染的情况下，是不能做到的。因此我们期待未来版本的React可以开启这个杀手特性。</p>
+<p>我们在阅读源码的过程中，看到了一些没有被文档记录的组件类型，比如CoroutineComponent和YieldComponent。这也许意味着未来React会把渲染的时机掌控权交给用户。我们可以定义一个CoroutineComponent，在reconcile完成后交出控制权给用户。由用户主动调用commit来让组件继续渲染。因为React将组件的渲染分为reconcile和commit两个阶段，reconcile又是没有副作用的，由多个院子操作组成。因此这样的设想是完全可行的。以上只是笔者的推测，丢一个A Clark的链接。</p>
+<h4 id="React-16的设计给前端框架带来的思考"><a href="#React-16的设计给前端框架带来的思考" class="headerlink" title="React 16的设计给前端框架带来的思考"></a>React 16的设计给前端框架带来的思考</h4><p>这次React更新核心架构，让我们看到Facebook的工程师再次用技术推进了用户体验的极限。淘宝FED的口号是用技术为体验提供无限可能，笔者觉得这句话用来形容React也是很合适的。在React上，我们看到了一些借鉴自操作系统中的设计。Fiber可以被比作是一个轻量级线程。有自己的数据，也有优先级的分别。React的作用就是调度fiber，使得优先级高的任务优先执行，同时也保证低优先级的任务会在未来一段时间执行完毕。在diff算法的设计上，React借鉴了社区的经验，这是对社区的一种认可。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/19/table-component-slot-passing/" rel="next" title="Table组件中slot内容的跨级传递">
+                <i class="fa fa-chevron-left"></i> Table组件中slot内容的跨级传递
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/26/k8s-setup-1-7/" rel="prev" title="Kubernete安装不完全指南">
+                Kubernete安装不完全指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一次预谋已久的重写"><span class="nav-number">1.</span> <span class="nav-text">一次预谋已久的重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fiber概念简介"><span class="nav-number">2.</span> <span class="nav-text">Fiber概念简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#reconciler-VS-renderer"><span class="nav-number">2.1.</span> <span class="nav-text">reconciler VS renderer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fiber是什么"><span class="nav-number">2.2.</span> <span class="nav-text">Fiber是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fiber节点的数据结构"><span class="nav-number">2.3.</span> <span class="nav-text">Fiber节点的数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TypeOfWork"><span class="nav-number">2.4.</span> <span class="nav-text">TypeOfWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TypeOfSideEffect"><span class="nav-number">2.5.</span> <span class="nav-text">TypeOfSideEffect</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Priority"><span class="nav-number">2.6.</span> <span class="nav-text">Priority</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-16-Fiber源码目录结构"><span class="nav-number">3.</span> <span class="nav-text">React 16 Fiber源码目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阅读React源码须知"><span class="nav-number">4.</span> <span class="nav-text">阅读React源码须知</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#flow-type"><span class="nav-number">4.1.</span> <span class="nav-text">flow type</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#if-DEV"><span class="nav-number">4.2.</span> <span class="nav-text">if (__DEV__)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码阅读小技巧"><span class="nav-number">4.3.</span> <span class="nav-text">源码阅读小技巧</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#本文源码的时效性"><span class="nav-number">4.4.</span> <span class="nav-text">本文源码的时效性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确定源码分析的入口"><span class="nav-number">5.</span> <span class="nav-text">确定源码分析的入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-16组件源码分析：用户触发的setState开启的一次渲染"><span class="nav-number">6.</span> <span class="nav-text">React 16组件源码分析：用户触发的setState开启的一次渲染</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#setState"><span class="nav-number">6.1.</span> <span class="nav-text">setState</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#enqueueSetState"><span class="nav-number">6.2.</span> <span class="nav-text">enqueueSetState</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#addUpdate"><span class="nav-number">6.3.</span> <span class="nav-text">addUpdate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scheduleUpdate"><span class="nav-number">6.4.</span> <span class="nav-text">scheduleUpdate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#performWork"><span class="nav-number">6.5.</span> <span class="nav-text">performWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#workLoop"><span class="nav-number">6.6.</span> <span class="nav-text">workLoop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scheduleDeferredCallback"><span class="nav-number">6.7.</span> <span class="nav-text">scheduleDeferredCallback</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cooperative-Scheduling-amp-amp-requestIdleCallback"><span class="nav-number">6.8.</span> <span class="nav-text">Cooperative Scheduling &amp;&amp; requestIdleCallback</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReactDOMFrameScheduling-rIC"><span class="nav-number">6.9.</span> <span class="nav-text">ReactDOMFrameScheduling.rIC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#默认优先级"><span class="nav-number">6.10.</span> <span class="nav-text">默认优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#performUnitOfWork"><span class="nav-number">6.11.</span> <span class="nav-text">performUnitOfWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#beginWork"><span class="nav-number">6.12.</span> <span class="nav-text">beginWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#updateClassComponent-amp-amp-updateHostComponent"><span class="nav-number">6.13.</span> <span class="nav-text">updateClassComponent &amp;&amp; updateHostComponent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reconcileChildren"><span class="nav-number">6.14.</span> <span class="nav-text">reconcileChildren</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reconcileChildFibers"><span class="nav-number">6.15.</span> <span class="nav-text">reconcileChildFibers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reconcileChildrenArray"><span class="nav-number">6.16.</span> <span class="nav-text">reconcileChildrenArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#completeUnitOfWork"><span class="nav-number">6.17.</span> <span class="nav-text">completeUnitOfWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#completeWork"><span class="nav-number">6.18.</span> <span class="nav-text">completeWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#commitAllWork"><span class="nav-number">6.19.</span> <span class="nav-text">commitAllWork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reconciliation-commit流程总结"><span class="nav-number">6.20.</span> <span class="nav-text">reconciliation+commit流程总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#展望-amp-amp-结语"><span class="nav-number">7.</span> <span class="nav-text">展望&amp;&amp;结语</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#潜伏的大招——异步渲染"><span class="nav-number">7.1.</span> <span class="nav-text">潜伏的大招——异步渲染</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#React-16的设计给前端框架带来的思考"><span class="nav-number">7.2.</span> <span class="nav-text">React 16的设计给前端框架带来的思考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

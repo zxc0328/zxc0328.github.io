@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Zindex's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Liso源码阅读笔记">
+<meta property="og:url" content="http://yoursite.com/2018/02/12/liso/index.html">
+<meta property="og:site_name" content="Zindex&#39;s blog">
+<meta property="og:description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw1024/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg">
+<meta property="og:updated_time" content="2018-06-19T02:51:15.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Liso源码阅读笔记">
+<meta name="twitter:description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
+<meta name="twitter:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/12/liso/"/>
+
+
+
+
+
+  <title>Liso源码阅读笔记 | Zindex's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zindex's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Frontend Rocks</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/liso/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zindex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zindex's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Liso源码阅读笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-12T11:16:05+08:00">
+                2018-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文介绍了CMU 15-441的课程项目<a href="https://www.cs.cmu.edu/~prs/15-441-F16/project1/project1.pdf" target="_blank" rel="noopener">Liso</a>的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。</p>
+<a id="more"></a>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>我看的是这位同学的<a href="https://github.com/zhuansunxt/Liso" target="_blank" rel="noopener">实现</a>。</p>
+<h3 id="一个HTTP静态文件请求的流程"><a href="#一个HTTP静态文件请求的流程" class="headerlink" title="一个HTTP静态文件请求的流程"></a>一个HTTP静态文件请求的流程</h3><p>首先我们拿一个简单的静态文件请求来梳理一下Liso的流程。在<code>liso.c</code>的<code>main</code>函数中，有这个服务器的主循环，这个循环每次做的事情就是用<code>select</code>来查询I/O事件。<code>select</code>之后，我们首先做的是查看<code>listenfd</code>是不是有read事件，如果有就<code>accept</code>这个连接。然后把连接加入到连接池里。一个连接的初始状态是<code>READY_FOR_READ</code>。</p>
+<p><code>listenfd</code>是连接池中的第一个item，也是一直存在于连接池中的一个描述符。</p>
+<p>在循环的最后，我们会调用<code>handle_clients</code>对连接池中可读和可写的描述符依次进行处理。具体的方式就是遍历连接池，如果一个连接是可读的，并且状态是<code>READY_FOR_READ</code>，我们就读取这个连接中的数据。</p>
+<p>每次从每个连接读取的数据是固定的长度，比如4KB。这是为了控制I/O的粒度，不让server在一个连接上花太多时间，使得新的连接请求被阻塞。</p>
+<p>我们把收到的数据，放到<code>client_buffer</code>里面。然后看一下HTTP的Header是不是已经读取完全了（调用<code>handle_recv_header</code>判断读取到的数据中是否有<code>&quot;\r\n\r\n&quot;</code>）。如果HTTP的header还没有读取完全，那就继续留在<code>READY_FOR_READ</code>状态，等待下一次循环。</p>
+<p>如果Header已经读取完全了，我们就调用<code>handle_http_request</code>处理请求，在处理请求时，我们把要返回的数据写在<code>client_buffer</code>里，然后调整这个client的state到<code>READY_FOR_WRITE</code>。</p>
+<p>在<code>handle_clients</code>的循环中，如果我们发现一个client的状态是<code>READY_FOR_WRITE</code>，我们就会把<code>client_buffer</code>里相关的数据写到客户端，然后根据这个连接的<code>Connection</code>Header选择关闭或者保留这个连接。</p>
+<p>这就是一个简单的HTTP静态文件请求的流程。</p>
+<h3 id="连接池的数据结构"><a href="#连接池的数据结构" class="headerlink" title="连接池的数据结构"></a>连接池的数据结构</h3><pre><code>typedef struct {
+  /* Client pool global data */
+  fd_set master;              /* all descritors */
+  fd_set read_fds;            /* all ready-to-read descriptors */
+  fd_set write_fds;           /* all ready-to_write descriptors */
+  int maxfd;                  /* maximum value of all descriptors */
+  int nready;                 /* number of ready descriptors */
+  int maxi;                   /* maximum index of available slot */
+
+  /* Client specific data */
+  int client_fd[FD_SETSIZE];  /* client slots */
+  dynamic_buffer * client_buffer[FD_SETSIZE];   /* client&#39;s dynamic-size buffer */
+  dynamic_buffer * back_up_buffer[FD_SETSIZE];  /* store historical pending request */
+  size_t received_header[FD_SETSIZE];           /* store header ending&#39;s offset */
+  char should_be_close[FD_SETSIZE];             /* whether client should be closed when checked */
+  client_state state[FD_SETSIZE];               /* client&#39;s state */
+  char *remote_addr[FD_SETSIZE];                /* client&#39;s remote address */
+
+  /* SSL related */
+  client_type type[FD_SETSIZE];                 /* client&#39;s type: HTTP or HTTPS */
+  SSL * context[FD_SETSIZE];                    /* set if client&#39;s type is HTTPS */
+
+  /* CGI related */
+  int cgi_client[FD_SETSIZE];
+} client_pool;
+</code></pre><p>每个socket连接在建立之后都会被放到<code>client_pool</code>里面。连接池在概念上就是一个大的数组。实现的时候，我们把每个连接相关的属性各自设置为一个相同大小的数组。每个item的属性就是属性数组中相应index的值。比如我们可以通过<code>client_pool-&gt;client_fd[i]</code>拿到第i个请求的fd。其他属性也是类似的。</p>
+<p><code>FD_SETSIZE</code>这个常量是这个server并发连接的最大值，这个常量的大小一般是1024。这个值是操作系统设置的。这个连接池里除了各个连接相关信息的数组之外，还有几个<code>fd_set</code>类型的全局属性，其中<code>master</code>里保存了整个连接池的描述符。这也就是我们<code>select</code>循环时监听的目标。需要注意的是CGI连接在建立之后，也会被放到这个连接池中（<code>client_fd</code>指向发起CGI请求的客户端，<code>cgi_client</code>指向CGI连接，这个连接在CGI处理完后会被我们从连接池中清除）。这样我们就可以利用<code>select</code>对CGI请求进行事件驱动的异步处理。</p>
+<h3 id="client的状态机模型"><a href="#client的状态机模型" class="headerlink" title="client的状态机模型"></a>client的状态机模型</h3><p>我们知道有限状态机由一组状态和一组转移组成，在Liso里，一个client的状态有以下几种：</p>
+<pre><code>typedef enum client_state {
+    INVALID,
+    READY_FOR_READ,
+    READY_FOR_WRITE,
+    WAITING_FOR_CGI,
+    CGI_FOR_READ,
+    CGI_FOR_WRITE
+} client_state;
+</code></pre><p>在讲具体的状态模型之前，我们要把连接池中的连接分为两种，一种是客户端的连接描述符，一种是CGI连接。这两种连接的在连接池中的数据结构是相同的。</p>
+<p>在处理HTTP请求时，如果一个请求是CGI请求，我们就会fork一个进程，获取CGI的文件描述符，然后调用<code>add_cgi_fd_to_pool</code>函数将这个描述符加入到连接池中。加入操作的核心代码是：</p>
+<pre><code>/* Update client data */
+p-&gt;client_fd[i] = cgi_fd;
+p-&gt;state[i] = state;
+
+/* CGI */
+p-&gt;cgi_client[i] = clientfd;
+</code></pre><p>所以这个连接和普通的连接一样，都有<code>client_fd</code>属性，不同的是这个连接有一个<code>cgi_client</code>属性，指向CGI连接的文件描述符。所以在处理CGI请求的时候，一个连接在连接池中有客户端连接和CGI连接两个item。CGI连接的状态仅仅只是在<code>CGI_FOR_READ</code>和<code>CGI_FOR_WRITE</code>之间转换。在CGI连接可读，并被写到客户端之后，我们会从连接池中清除这个CGI的item。所以客户端连接和CGI连接的状态机模型应该分开讲述。</p>
+<h4 id="客户端连接状态机模型"><a href="#客户端连接状态机模型" class="headerlink" title="客户端连接状态机模型"></a>客户端连接状态机模型</h4><p><img src="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg" alt="static fsm"></p>
+<p>客户端连接，如果是CGI连接，会比静态资源请求多一个<code>WAITING_FOR_CGI</code>的状态。这里我们需要注意的是，我们在读取一个连接的数据时，如果是一个POST请求，一般会分很多次。如果读取之后数据不够，这个连接的状态就会停留在<code>READY_FOR_READ</code>，等待下一次<code>select</code>循环。直到读取到足够的数据（根据Header里的<code>content-length</code>）之后，才把这个请求的状态转移到<code>READY_FOR_WRITE</code>。</p>
+<h4 id="CGI连接状态机模型"><a href="#CGI连接状态机模型" class="headerlink" title="CGI连接状态机模型"></a>CGI连接状态机模型</h4><p><img src="https://wx2.sinaimg.cn/mw1024/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg" alt="cgi fsm"></p>
+<h3 id="长连接"><a href="#长连接" class="headerlink" title="长连接"></a>长连接</h3><p>我们知道HTTP的Header中有一个Connection字段。如果这个字段的值为close，在<code>READY_FOR_WRITE</code>状态时，如果我们写完了当前请求所请求的数据，我们就关闭连接。如果这个字段的值为<code>keep-alive</code>，连接会经过<code>Persist</code>转移，重新进入<code>READY_FOR_WRITE</code>状态。</p>
+<p>在写完数据之后依然保持<code>READY_FOR_WRITE</code>状态，不关闭连接，这就是我们常说的HTTP<code>keep-alive</code>长连接。在这种情况下，server假定的是在未来的某个时间节点，这个客户端上还有数据可以读取，所以我们暂时不关闭连接。</p>
+<p>举例说一下HTTP长连接的用途：如果一个域下有多个资源需要请求，浏览器会复用同一个TCP连接。也就是说服务器可以在一个TCP连接上进行多次HTTP请求。这样有利于减少网络延迟和服务器的并发压力。</p>
+<h3 id="Dynamic-Buffer数据结构"><a href="#Dynamic-Buffer数据结构" class="headerlink" title="Dynamic Buffer数据结构"></a>Dynamic Buffer数据结构</h3><p>Dynamic Buffer数据结构是对普通buffer的封装。为了应对HTTP请求中长度不一定的二进制数据，我们需要一个封装良好的buffer结构，让我们方向的使用，不用担心内存管理问题。</p>
+<pre><code>typedef struct dynamic_buffer{
+  char *buffer;
+  size_t offset;
+  size_t capacity;
+  size_t send_offset;
+} dynamic_buffer;
+</code></pre><p><code>dynamic_buffer</code>类型用struct封装了一个新的类型，<code>buffer</code>指向实际存储数据的buffer。另外还有<code>offset</code>、<code>capacity</code>和<code>send_offset</code>这些属性来辅助内存管理。<code>offset</code>让我们掌握目前buffer的实际容量是多少。<code>capacity</code>让我们可以掌握buffer占用的内存大小，方便动态的扩容。作者说这个设计是模仿的C++ vector STL。</p>
+<h3 id="CGI相关"><a href="#CGI相关" class="headerlink" title="CGI相关"></a>CGI相关</h3><p>Liso中用来描述一个CGI执行进程的数据结构是这样的：</p>
+<pre><code>typedef struct CGI_executor {
+  int clientfd;
+  int stdin_pipe[2];    /* { write data --&gt; stdin_pipe[1] } -&gt; { stdin_pipe[0] --&gt; stdin } */
+  int stdout_pipe[2];   /* { read data &lt;--  stdout_pipe[0] } &lt;-- {stdout_pipe[1] &lt;-- stdout } */
+  dynamic_buffer* cgi_buffer;
+  CGI_param* cgi_parameter;
+} CGI_executor;
+</code></pre><p>里面主要的成员除了<code>cgi_buffer</code>和用于传入环境变量的<code>cgi_parameter</code>之外，<code>stdin_pipe</code>和<code>stdout_pipe</code>两个成员值得注意。</p>
+<h4 id="pipe"><a href="#pipe" class="headerlink" title="pipe"></a>pipe</h4><p><code>stdin_pipe</code>和<code>stdout_pipe</code>两个成员代表了两个pipe。pipe是Linux中的一种通信机制。一个pipe有两个fd组成，第一个代表read端，第二个代表write端。写入的数据会缓存在内核中，在读取时被取出。我们可以用pipe函数来创建一个pipe，pipe中的两个文件描述符在fork时也会被复制。所以pipe可以被作为一种进程间通信的手段。</p>
+<blockquote>
+<p>关于pipe的更多信息请参考<em>The Linux Programming Interface</em> Chapter 44</p>
+</blockquote>
+<p>我们的server主进程要和CGI进程通信，就是通过pipe做到的。</p>
+<p>在CGI进程中的代码：</p>
+<pre><code>close(cgi_pool-&gt;executors[slot]-&gt;stdout_pipe[0]);
+close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[1]);
+dup2(cgi_pool-&gt;executors[slot]-&gt;stdout_pipe[1], fileno(stdout));
+dup2(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0], fileno(stdin));
+</code></pre><p>我们关闭了CGI进程中<code>stdout_pipe</code>的read端，把write端重定向到CGI进程的stdout，因为主进程要从这个pipe读取CGI进程的输出。</p>
+<p>我们关闭了CGI进程中<code>stdin_pipe</code>的write端，把read端重定向到CGI进程的stdin，因为主进程要向CGI进程中写入一些信息，比如POST请求的body。</p>
+<p>在主进程中，我们关闭用不到的两个fd，分别是<code>stdout_pipe</code>的write端和<code>stdin_pipe</code>的read端。</p>
+<pre><code>close(cgi_pool-&gt;executors[slot]-&gt;stdout_pipe[1]);
+close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
+</code></pre><h4 id="select-CGI"><a href="#select-CGI" class="headerlink" title="select + CGI"></a>select + CGI</h4><p>在CGI进程被创建之后，我们调用<code>add_cgi_fd_to_pool</code>函数把这个clientfd和CGI的fd一起加入到监听的连接池里面。CGI的fd是什么呢？没错，就是<code>stdin_pipe[1]</code>和<code>stdout_pipe[0]</code>，<code>stdin_pipe[1]</code>代表着CGI进程的输入，当这个fd为可写时，我们可以向CGI进程写入数据。<code>stdout_pipe[0]</code>代表着CGI进程的输出，当这个fd为可读时，我们可以从CGI进程中读取数据。加入到连接池中意味着我们可以通过select来监听CGI进程的I/O事件。所以在select的<code>handle_clients</code>里，除了客户端可写和客户端可读之外，我们需要处理CGI可写和CGI可读两种情况。</p>
+<p>由此我们便可以在select中根据事件，来对客户端进行处理，转移它们的状态。一个非阻塞的事件驱动Server设计已经有了雏形。</p>
+<h3 id="如何加强Liso"><a href="#如何加强Liso" class="headerlink" title="如何加强Liso"></a>如何加强Liso</h3><p>Liso距离一个工业级的Server还有很大的差距，我们可以做的改进有：</p>
+<ul>
+<li>将静态文件I/O改造为基于线程池的设计。</li>
+<li>使用<code>epoll</code>代替<code>select</code>。</li>
+<li>支持使用DSL对服务器进行配置。</li>
+<li>支持Gzip。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/26/k8s-setup-1-7/" rel="next" title="Kubernete安装不完全指南">
+                <i class="fa fa-chevron-left"></i> Kubernete安装不完全指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/12/hdchrome-long-capture/" rel="prev" title="Headless Chrome long image capture issue">
+                Headless Chrome long image capture issue <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Zindex" />
+          <p class="site-author-name" itemprop="name">Zindex</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zxc0328" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/zindex" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.douban.com/people/51764245/" target="_blank" title="douban">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      douban
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个HTTP静态文件请求的流程"><span class="nav-number">2.</span> <span class="nav-text">一个HTTP静态文件请求的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接池的数据结构"><span class="nav-number">3.</span> <span class="nav-text">连接池的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#client的状态机模型"><span class="nav-number">4.</span> <span class="nav-text">client的状态机模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端连接状态机模型"><span class="nav-number">4.1.</span> <span class="nav-text">客户端连接状态机模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CGI连接状态机模型"><span class="nav-number">4.2.</span> <span class="nav-text">CGI连接状态机模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长连接"><span class="nav-number">5.</span> <span class="nav-text">长连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamic-Buffer数据结构"><span class="nav-number">6.</span> <span class="nav-text">Dynamic Buffer数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CGI相关"><span class="nav-number">7.</span> <span class="nav-text">CGI相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipe"><span class="nav-number">7.1.</span> <span class="nav-text">pipe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#select-CGI"><span class="nav-number">7.2.</span> <span class="nav-text">select + CGI</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何加强Liso"><span class="nav-number">8.</span> <span class="nav-text">如何加强Liso</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zindex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
