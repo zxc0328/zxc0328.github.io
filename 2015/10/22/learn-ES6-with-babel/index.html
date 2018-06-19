@@ -960,6 +960,23 @@ var LogView = (function(_View) {
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
+    <div id="comments"></div>
+
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+
+<script>
+const gitment = new Gitment({
+  owner: 'zxc0328',
+  repo: 'zxc0328/zxc0328.github.io',
+  oauth: {
+    client_id: '302ba372e27f8bae34df',
+    client_secret: '7c8df18cdd7bbefb5f685b207a1d2846910c29e7',
+  },
+})
+
+gitment.render('comments')
+</script>
 
 
   
@@ -1014,24 +1031,6 @@ var LogView = (function(_View) {
 
   
 
-  <div id="comments"></div>
 
-  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-
-<script>
-const gitment = new Gitment({
-  owner: 'zxc0328',
-  repo: 'https://github.com/zxc0328/zxc0328.github.io',
-  oauth: {
-    client_id: '302ba372e27f8bae34df',
-    client_secret: '7c8df18cdd7bbefb5f685b207a1d2846910c29e7',
-  },
-  // ...
-  // For more available options, check out the documentation below
-})
-
-gitment.render('comments')
-</script>
 </body>
 </html>
