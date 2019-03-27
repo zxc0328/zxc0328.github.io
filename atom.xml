@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-27T09:58:31.375Z</updated>
+  <updated>2019-03-27T12:35:18.815Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,13 +17,19 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>muxi-arch-2019</title>
+    <title>木犀的第二代后端架构</title>
     <link href="http://yoursite.com/2019/03/27/muxi-arch-2019/"/>
     <id>http://yoursite.com/2019/03/27/muxi-arch-2019/</id>
     <published>2019-03-27T09:58:31.000Z</published>
-    <updated>2019-03-27T09:58:31.375Z</updated>
+    <updated>2019-03-27T12:35:18.815Z</updated>
+    
+    <content type="html"><![CDATA[<p>2019 是木犀的第五年。前五年，木犀的后端发展经过了一个从无到有的过程，从最初的单机 Flask + 自己部署的数据库到如今基于 K8s 的分布式架构 + 云数据库，从 Python 到 Golang，我们逐渐确立了我们的第二代架构。</p><p>如今，已经没有必要去细究这个过程究竟是如何逐步发生的。现在要做的，就是确立我们现在的新架构，并且在今年把我们的主力应用都切换到新架构上，为下一个五年的发展打好基础。</p><p>新架构，简单的说，就是 Cloud Native，拥抱了当前非常流行的容器云，Golang 等云原生相关的技术。其实这套架构没什么特殊的，用到的都是热门技术，但这依然是我们经过了过去几年间不断的摸索而总结出来的。后面我们会在这套技术上深入挖掘，争取知其然，知其所以然。</p><a id="more"></a><h3 id="应用技术栈"><a href="#应用技术栈" class="headerlink" title="应用技术栈"></a>应用技术栈</h3><blockquote><p>动态语言一时爽</p></blockquote><p>我们需要一门强类型，静态编译型，高性能，高并发，稳定，健壮的语言，来作为我们的主力开发语言。Golang 就是一样的一门语言，而且我们重点关注的云计算领域，Golang 是统治级的存在。所以我们选了 Golang 作为今后我们应用开发的主力语言。</p><p>Java 也是备选之一，今后可以调研 Java 的运行时开销，来确定是不是使用 Go + Java 作为我们的技术栈。目前来看 Golang 做 Web 开发还是比较快的，Java 的开发速度也是一个不确定因素。Java 的好处就是就业市场上需求广，生态繁荣，Web 开发上社区有多年的积累，大数据领域 Java 是绝对的主流。</p><p>在服务内部通信上我们使用 <a href="https://grpc.io/" target="_blank" rel="noopener">grpc</a>。grpc 对 Golang 的技术栈比较友好，以后也有跨语言通信的能力。服务发现和服务治理之类，K8s 其实已经做好了，所以我们不用做特别的工作。</p><p>在开发流程规范上，我们针对 Go Web 项目有一个<a href="https://github.com/muxih4ck/Go-Web-Application-Guideline" target="_blank" rel="noopener">规范</a>。</p><h3 id="DB"><a href="#DB" class="headerlink" title="DB"></a>DB</h3><p>主力是阿里云 RDS 上的 MySQL，单独的云端数据库让我们免除了运维的麻烦，但 SQL 查询性能，建索引等等还是需要我们自己把关。</p><p>另外自己搭了一个 Mongo，因为阿里云上的 Mongo 太贵了。Mongo 要做好自动数据备份工作。</p><h3 id="容器调度"><a href="#容器调度" class="headerlink" title="容器调度"></a>容器调度</h3><p>Kubernetes 在木犀已经投入生产接近两年了，我们在 Kubernetes 上有了一定的使用过经验，踩了一些坑。对于原理我们还需要深入研究。</p><blockquote><p>对 K8s 抱有疑问的同学可以看这篇文章 <a href="https://www.yuque.com/huarou/gd4szw/remeed" target="_blank" rel="noopener">Kubernetes 是下一代操作系统 | 面向 Kubernetes 编程</a> </p></blockquote><p>下一步要做的就是开发一个部署平台，可以自动化的构建镜像和部署应用。但这个事情需要对 k8s 掌握的比较好，因此进展比较慢。</p><p>今年出现的 <a href="https://k3s.io/" target="_blank" rel="noopener">k3s</a> 也会被我们投入使用，k3s 适合在嵌入式环境和边缘计算等场景使用，是 k8s 的裁剪版，大大降低了运行时的内存占用。我们会用大量的廉价机器（学生机）组成集群，作为我们的测试集群，以及运行一些分布式任务。</p><h3 id="错误监控"><a href="#错误监控" class="headerlink" title="错误监控"></a>错误监控</h3><p>用户经常会报错误，当然大部分时候用户没有办法反馈给你，出错了就默默的卸载了应用。我们需要一种方式来监控错误，以便提升发现问题，提升用户体验。</p><p>想看错误，就要看应用该的日志。使用 K8s 部署之后，日志需要登录到集群去看。而且我们无法统计错误出现的次数和种类，除非把做好日志的分析工作。</p><p>有没有一种服务可以简单方便的提供错误的监控呢？<a href="https://sentry.io/" target="_blank" rel="noopener">Sentry</a> 就是我们想要的答案。</p><p>错误监控的效果其实可以通过对日志进行分析处理而达到。但日志处理需要不菲的机器配置支持，因此现阶段可以自建，配置要求普通的 Sentry 是我们的最佳选择。</p><h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>日志处理上，ELK stack 是不错的选择。但目前来看，日志分析还不是刚需，因此在第二代架构中，这是一个可选的部分。</p><h3 id="App-监控"><a href="#App-监控" class="headerlink" title="App 监控"></a>App 监控</h3><p>我们使用 Influxdb 搭建简单的服务，App 把日志上报到 Influx，后续可以做用户留存，错误监控等等作用。</p><h3 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h3><p>消息队列目前用 Rabbitmq，还需要采坑。缓存一直用的 Redis。</p><h3 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h3><p>广度上，对于 Service Mesh/Serverless/Spark 等等这些新老技术，我们没有涉足过的，我们在今后都要去调研和尝试。新技术让我们的应用开发边的更加稳定和简单。</p><p>深度上，对于目前我们使用的中间件和 DB，我们要作为我们的主要研究方向，深入的了解和学习。最终只有成为领域专家，才能在这个技术圈子有立足之地。才能形成我们团队的技术壁垒。</p>]]></content>
     
     <summary type="html">
+    
+      &lt;p&gt;2019 是木犀的第五年。前五年，木犀的后端发展经过了一个从无到有的过程，从最初的单机 Flask + 自己部署的数据库到如今基于 K8s 的分布式架构 + 云数据库，从 Python 到 Golang，我们逐渐确立了我们的第二代架构。&lt;/p&gt;
+&lt;p&gt;如今，已经没有必要去细究这个过程究竟是如何逐步发生的。现在要做的，就是确立我们现在的新架构，并且在今年把我们的主力应用都切换到新架构上，为下一个五年的发展打好基础。&lt;/p&gt;
+&lt;p&gt;新架构，简单的说，就是 Cloud Native，拥抱了当前非常流行的容器云，Golang 等云原生相关的技术。其实这套架构没什么特殊的，用到的都是热门技术，但这依然是我们经过了过去几年间不断的摸索而总结出来的。后面我们会在这套技术上深入挖掘，争取知其然，知其所以然。&lt;/p&gt;
     
     </summary>
     
