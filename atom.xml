@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-27T12:46:17.953Z</updated>
+  <updated>2019-06-05T07:34:07.415Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>k3s 安装小记</title>
+    <link href="http://yoursite.com/2019/06/04/k3s-setup/"/>
+    <id>http://yoursite.com/2019/06/04/k3s-setup/</id>
+    <published>2019-06-04T06:22:24.000Z</published>
+    <updated>2019-06-05T07:34:07.415Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://k3s.io/" target="_blank" rel="noopener">k3s</a> 刚出来的时候，我刚好看到这个项目，然后了解到这是一个轻量级的 k8s 发行版。之前刚好遇到在阿里云<a href="https://promotion.aliyun.com/ntms/act/campus2018.html" target="_blank" rel="noopener">学生机</a>（1C2G）上安装 k8s 后内存占用太多的问题，因此就决定尝试。最后的效果超出了预期，k3s 可以帮助我们在低配置机器上运行 k8s 集群，缓解了 k8s 对于资源占用的压力，降低了服务器的成本。</p><a id="more"></a><h3 id="k3s-简介"><a href="#k3s-简介" class="headerlink" title="k3s 简介"></a>k3s 简介</h3><p>k3s 是 <a href="https://rancher.com/" target="_blank" rel="noopener">Rancher</a> 推出的轻量级 k8s。k3s 本身包含了 k8s 的源码，所以本质上和 k8s 没有区别。但为了降低资源占用，k3s 和 k8s 还是有一些区别的，主要是：</p><ul><li>使用了相比 Docker 更轻量的 <a href="https://containerd.io/" target="_blank" rel="noopener">containerd</a> 作为容器运行时（Docker 并不是唯一的容器选择）</li><li>去掉了 k8s 的 Legacy, alpha, non-default features</li><li>用 sqlite3 作为默认的存储，而不是 etcd</li><li>其他的一些优化，最终 k3s 只是一个 binary 文件，非常易于部署</li></ul><p>所以 k3s 适用于边缘计算，IoT 等资源紧张的场景。同时 k3s 也是非常容易部署的，官网上提供了<a href="https://raw.githubusercontent.com/rancher/k3s/master/install.sh" target="_blank" rel="noopener">一键部署的脚本</a>。</p><h3 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h3><p> 本文的安装环境：</p><ul><li>阿里云 1C2G 机器若干，运行 CentOS 7.6 64位</li><li>k3s <a href="https://github.com/rancher/k3s/releases/tag/v0.5.0" target="_blank" rel="noopener">v0.5.0</a></li></ul><h3 id="安装脚本"><a href="#安装脚本" class="headerlink" title="安装脚本"></a>安装脚本</h3><p><code>https://get.k3s.io</code> 这是 k3s 的安装脚本。我们直接运行这个脚本就可以安装 k3s。因为我们需要在 k3s 运行之前做一些事情，所以运行脚本的时候我们选择只安装，不启动 k3s</p><pre><code>// 下载脚本curl -sfL https://get.k3s.io &gt; install.sh// 运行脚本INSTALL_K3S_SKIP_START=true ./install.sh</code></pre><p>如果速度太慢，可以把 binary 手动下载然后传到国内的对象存储，然后去脚本里面把 binary 地址改成国内的地址。</p><h3 id="镜像获取-amp-amp-启动-k3s"><a href="#镜像获取-amp-amp-启动-k3s" class="headerlink" title="镜像获取 &amp;&amp; 启动 k3s"></a>镜像获取 &amp;&amp; 启动 k3s</h3><p>安装玩之后我们还要做一个事情，就是把之后 k3s 要用到的一些镜像下载到本地。因为 k3s 用的 pause 镜像地址是 gcr.io 的，所以国内是访问不了的。</p><blockquote><p>k3s 提供了 air-gap support 这个特性来支持镜像的本地预加载。这个特性本身是为了无法访问外网的环境准备的。国内的环境其实也是等于是没法访问外网，所以刚好可以用这个特性解决问题。一开始 k3s 刚出来的时候没有这个特性，所以只能重新编译 k3s binary 然后改掉硬编码的镜像地址了。</p></blockquote><p>我们去 k3s 的 release 里面获取 <code>k3s-airgap-images-$ARCH.tar</code> $ARCH 是我们服务器的 CPU 架构。想办法把这个文件传到服务器上。</p><p>然后运行：</p><pre><code>sudo mkdir -p /var/lib/rancher/k3s/agent/images/sudo cp ./k3s-airgap-images-$ARCH.tar /var/lib/rancher/k3s/agent/images/</code></pre><p>最后运行：</p><pre><code>systemctl start k3s</code></pre><p>然后 k3s 就启动了。</p><p>可以运行 <code>kubectl</code> 和 <code>netstat -nplt</code> 查看 k3s 是否正常启动。值得注意的是要看看 <code>ipconfig</code> 里是否出现了 flannel 的网络设备。之后的操作就和 k8s 一样了，用 <code>kubectl</code> 命令进行操作。</p><p>这个时候我们启动的是一个 k3s server（master节点），当然这个节点本身也是一个 worker Node。我们如果需要更多的节点，就需要手动加入更多。</p><h3 id="加入节点"><a href="#加入节点" class="headerlink" title="加入节点"></a>加入节点</h3><p>和 master 节点安装一样，首先获取安装脚本，然后运行：</p><pre><code>K3S_TOKEN=xxx K3S_URL=https://server-url:6443 INSTALL_K3S_SKIP_START=true ./install.sh </code></pre><blockquote><p>token 是从 master 节点的 <code>/var/lib/rancher/k3s/server/node-token</code> 文件里获取的。</p></blockquote><p>就可以安装节点了，然后按上一节里的复制镜像到本地目录。</p><p>最后启动节点：</p><pre><code>systemctl start k3s-agent</code></pre><h3 id="一点黑魔法"><a href="#一点黑魔法" class="headerlink" title="一点黑魔法"></a>一点黑魔法</h3><p>如果我们用的是多台学生机，就肯定会遇到一个问题，这些机器不在同一个局域网里面，用内网 IP 是没法相互访问的（因为一个账号只能有一台机器，专有网络是无法跨账号的）。</p><p>如果机器之前内网 IP 不通，那 k3s 就算搭建起来了，节点之间的通信也是有问题的。</p><p>因此我们需要一点黑魔法，这个魔法就是阿里云<a href="https://help.aliyun.com/product/59006.html" target="_blank" rel="noopener">云企业网</a>。云企业网可以将多个 VPC 连接起来，可以跨账号，跨区域。这就是我们想要的东西！阿里云真香~</p><p>把我们的所有节点都加入云企业网之后，所有的节点之间就是内网互通的了。这之后再安装 k3s，整个集群就可以正常的工作了。</p><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>k3s 默认安装了 Traefik，如果不想用这个，可以在启动的时候加入参数：</p><pre><code>INSTALL_K3S_SKIP_START=true INSTALL_K3S_EXEC=&quot;--no-deploy traefik&quot; ./install.sh</code></pre><p>官方的安装脚本写的很好，如果需要一些定制化的安装需求，多看看安装脚本，往往可以解决问题。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://k3s.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;k3s&lt;/a&gt; 刚出来的时候，我刚好看到这个项目，然后了解到这是一个轻量级的 k8s 发行版。之前刚好遇到在阿里云&lt;a href=&quot;https://promotion.aliyun.com/ntms/act/campus2018.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;学生机&lt;/a&gt;（1C2G）上安装 k8s 后内存占用太多的问题，因此就决定尝试。最后的效果超出了预期，k3s 可以帮助我们在低配置机器上运行 k8s 集群，缓解了 k8s 对于资源占用的压力，降低了服务器的成本。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>木犀的第二代后端架构</title>
@@ -486,28 +504,6 @@
     
     </summary>
     
-    
-  </entry>
-  
-  <entry>
-    <title>《编程语言实现模式》-阅读笔记</title>
-    <link href="http://yoursite.com/2017/03/30/lip-notes/"/>
-    <id>http://yoursite.com/2017/03/30/lip-notes/</id>
-    <published>2017-03-30T13:34:59.000Z</published>
-    <updated>2018-06-19T11:42:51.667Z</updated>
-    
-    <content type="html"><![CDATA[<p>这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！</p><a id="more"></a><p>Jame Kyle的分享—<a href="https://www.youtube.com/watch?v=Tar4WgAfMr4&amp;t=9s" target="_blank" rel="noopener">《How to write a compiler》</a>虽然很好，但是和有实际运用价值的编译技能还差的远呢。</p><p>看龙书看的欲哭无泪，后来转而看《自制编程语言》，把crowbar的代码和流程大概了解了一下。最大的收获就是了解了yacc和lex。此前我对于Lexer和Parser还是抱有一定的恐惧心理的。</p><p>最终让我认清门路的是戴嘉华的<a href="https://github.com/livoras/blog/issues/14" target="_blank" rel="noopener">这篇博客</a>。后来我去翻了翻编译原理课本，让我彻底搞清楚几个事情：</p><p>第一点，虽然波神说的很对，最关键的是动手去写，但了解必要的理论是很重要的。问题就在于，编译这边理论很多，类似有限自动机和正规表达式的转换等等知识，后端代码生成和优化等等，会加重认知的负担。所以关键就是，对于一个普通的工程师来说，开发文本处理或者DSL相关程序需要掌握的编译原理知识是哪些。</p><p>第二点，需要了解的概念有：</p><ul><li>主流编译器，解释器的流水线</li><li>形式文法（EBNF）</li><li>LL(1)文法，以及EBNF和LL(1)之间的转换</li><li>根据LL(1)文法写递归下降Parser</li><li>了解不同的AST类型，会设计AST</li></ul><h3 id="第二章-amp-amp-第三章"><a href="#第二章-amp-amp-第三章" class="headerlink" title="第二章&amp;&amp;第三章"></a>第二章&amp;&amp;第三章</h3><p>这章主要讲基于LL(1)的Tokenizing和Parsing。</p><p>很妙的一点在于，在写关于形式文法的地方，这本书没有将BNF和乔姆斯基之类的科班教材中讲的，而是讲文法当成是一种DSL，这其实是非常正确的。Parser Generator的输入一般就是某种类似BNF的DSL。本书中的例子是ANTLR（一个parser generator）的DSL。</p><p>这种务实的风格是延续在整个第二章中的，讲LL(1)的First和Follow集的时候，是这样说的：</p><blockquote><p>正规的定义中通常使用FIRST和FOLLOW两个运算来计算向前看集合，而实际使用时，这个问题可以等价于“哪些词法单元可能会出现在这个解析选项的开头”，这种思维方式更容易掌握，FIRST和严格定义就不在这里解释了，因为它比较复杂，而且这里也用不着其原理。如果有兴趣，可以在网上找到很多相关材料。</p></blockquote><p>First集合的数学定义是这样的：</p><p>试想一下，如果初学者接触到的是严谨的数学定义，而不是一个相对直白的解释和代码演示的话，还是会有不少人打退堂鼓的。</p><p>在实际的学习中，还是需要一些如上文中的“等价于”那样的解释。</p><p>LL(1)的parser是最简单的。也是其余递归下降模式的基础框架。实现的方式就是为每一个规则写一个对应的函数，函数里按First集合来编写，规则里的运算符都可以转化为if或者while等到逻辑，如果是终结符就match，如果是非终结符就递归调用对应规则的函数。</p><p>我看了Regularjs中parser的代码以及上文中vdom模板引擎的代码，结合书中的例子，大概搞懂了，接下来可以把书中的例子用js写一遍试试。</p><p>第二章最后讲了LL(k)类型的parser。LL(k)就是任意k个token的lookup。LL(k)的需求，拿mcss来说，就是：</p><blockquote><p>mcss有点特殊，是个LL(n)的解释器，比如在设计中，函数在mcss是 First-class的，可以被返回或传入函数，并保持作用域信息，所以它是一种特殊的值，定义我设计与一般赋值一样。</p><pre><code>$size = ($width, $height) { // ...}</code></pre><p>这里当你不读取到<code>{</code> 是无法判断 <code>=</code> 后面是函数定义 还是 普通css中的 compound<br>values  . 众所周知参数列表可能无限长，所以必须是LL(n)的Parser才能够解答。 </p></blockquote><p>有些语言语法里有很相似的语言结构，它们只在最后边才有区别。比如C++的函数定义和函数声明的前面都是一样的，直到;或{才能加以区别。</p><p>所以想要能够写DSL解释器的话，LL(k)式的模式也是要懂的。LL(k)的问题就是要要预parse，如果条件满足，再真正parse一遍。这样带来的问题就是运行效率上比较慢。解决的办法是<strong>回溯法</strong>，通过类似动态规划的空间换时间的方法，缓存parse的结果，加速parse的过程。</p><h3 id="第四章"><a href="#第四章" class="headerlink" title="第四章"></a>第四章</h3><p>Vue的AST。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;这里记录一下我阅读《编程语言实现模式》这本书的一些感受。一开始，对于编译原理，我的印象是这门课非常的艰深。在正式学习之前其实我已经看了很多编译相关的东西，比如V8，以及前端模板引擎等等。当时的感觉就是十分神奇。上了课之后首先接触的是形式文法、自动机和正规表达式等等。我的感觉就是，这些东西，是如何被前端大神们运用来写相关框架的呢，完全看不出门路嘛！&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Notes" scheme="http://yoursite.com/categories/Notes/"/>
-    
-    
-      <category term="Notes" scheme="http://yoursite.com/tags/Notes/"/>
     
   </entry>
   
