@@ -96,23 +96,23 @@
 
 
 
-<meta name="description" content="Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes，为木犀所有应用的构建、部署、监控和扩容提供了一个统一的入口，让我们能专注于服务本身的开发。同时MAE也为木犀提供了一套标准化的运维流程，使得团队开发中的工程化程度进一步提高。 说的这么厉害，那如果你是一个技术小白，我应该如何来解释MAE呢？">
+<meta name="description" content="2019/6/5 今年我们有同学拿到了腾讯云和 Azure 的实习，所以未来在云计算上我们会有更多的领路人，来带领团队在这个方向进行探索。MAE 虽然还没做出来，但 k3s 的发现让我们在服务器上实现了自由，相信很快就会设计出下一代的 MAE 架构。  Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes">
 <meta name="keywords" content="Cloud,Muxistudio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="云端木犀-MAE初步构想">
 <meta property="og:url" content="http://yoursite.com/2017/05/27/mae/index.html">
 <meta property="og:site_name" content="Zindex&#39;s blog">
-<meta property="og:description" content="Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes，为木犀所有应用的构建、部署、监控和扩容提供了一个统一的入口，让我们能专注于服务本身的开发。同时MAE也为木犀提供了一套标准化的运维流程，使得团队开发中的工程化程度进一步提高。 说的这么厉害，那如果你是一个技术小白，我应该如何来解释MAE呢？">
+<meta property="og:description" content="2019/6/5 今年我们有同学拿到了腾讯云和 Azure 的实习，所以未来在云计算上我们会有更多的领路人，来带领团队在这个方向进行探索。MAE 虽然还没做出来，但 k3s 的发现让我们在服务器上实现了自由，相信很快就会设计出下一代的 MAE 架构。  Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcly1fg0dnygziij212a0ue4e7.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcly1fg0etf4yg9j20ku0r4k1f.jpg">
-<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcly1fg0era6a66j214q0mmwoc.jpg">
-<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcly1fg0ftnkesej213a0o07g6.jpg">
-<meta property="og:updated_time" content="2018-06-19T11:43:07.105Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0dnygziij212a0ue4e7.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0etf4yg9j20ku0r4k1f.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0era6a66j214q0mmwoc.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0ftnkesej213a0o07g6.jpg">
+<meta property="og:updated_time" content="2019-06-05T08:09:08.934Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云端木犀-MAE初步构想">
-<meta name="twitter:description" content="Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes，为木犀所有应用的构建、部署、监控和扩容提供了一个统一的入口，让我们能专注于服务本身的开发。同时MAE也为木犀提供了一套标准化的运维流程，使得团队开发中的工程化程度进一步提高。 说的这么厉害，那如果你是一个技术小白，我应该如何来解释MAE呢？">
-<meta name="twitter:image" content="http://wx2.sinaimg.cn/large/64c45edcly1fg0dnygziij212a0ue4e7.jpg">
+<meta name="twitter:description" content="2019/6/5 今年我们有同学拿到了腾讯云和 Azure 的实习，所以未来在云计算上我们会有更多的领路人，来带领团队在这个方向进行探索。MAE 虽然还没做出来，但 k3s 的发现让我们在服务器上实现了自由，相信很快就会设计出下一代的 MAE 架构。  Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0dnygziij212a0ue4e7.jpg">
 
 
 
@@ -380,7 +380,10 @@
       
 
       
-        <p>Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes，为木犀所有应用的构建、部署、监控和扩容提供了一个统一的入口，让我们能专注于服务本身的开发。同时MAE也为木犀提供了一套标准化的运维流程，使得团队开发中的工程化程度进一步提高。</p>
+        <blockquote>
+<p>2019/6/5 今年我们有同学拿到了腾讯云和 Azure 的实习，所以未来在云计算上我们会有更多的领路人，来带领团队在这个方向进行探索。MAE 虽然还没做出来，但 k3s 的发现让我们在服务器上实现了自由，相信很快就会设计出下一代的 MAE 架构。</p>
+</blockquote>
+<p>Muxi App Engine，简称MAE，是木犀的私有PaaS方案，也是木犀云的重要组成部分。MAE主要基于Docker和Kubernetes，为木犀所有应用的构建、部署、监控和扩容提供了一个统一的入口，让我们能专注于服务本身的开发。同时MAE也为木犀提供了一套标准化的运维流程，使得团队开发中的工程化程度进一步提高。</p>
 <p>说的这么厉害，那如果你是一个技术小白，我应该如何来解释MAE呢？</p>
 <a id="more"></a>
 <h3 id="TD-LR"><a href="#TD-LR" class="headerlink" title="TD;LR"></a>TD;LR</h3><p>比如我们有一个应用，华师匣子。华师匣子是由很多的服务构成的，比如成绩服务，课表服务，图书馆服务等等。每个服务都实现了对应的接口。我们使用Docker来运行这些服务。Docker是一种容器技术。我们可以简单的理解为一种沙盒环境。这些容器的存在，已经很大程度上方便了我们的部署。因为容器可以实现系统资源的隔离，使得服务器上可以同时运行很多不同的服务，而相互不打扰。</p>
@@ -390,7 +393,7 @@
 <p>MAE带来的最大变革是，今后我们的应用从一开始就应该按Cloud Native的思路去编写。要拥抱云计算，我们必须编写Cloud Native的应用，具体的说，使用微服务架构，写无状态的功能单元，容器技术，将数据库等等持久化的组件作为单独的部分等等，都是Cloud Native的体现。只有这样，我们的应用才能和目前公有云和私有云的基础设施完美结合。</p>
 <p>下面就是纯粹的技术讨论了，请耐心阅读。</p>
 <h3 id="MAE的技术选型"><a href="#MAE的技术选型" class="headerlink" title="MAE的技术选型"></a>MAE的技术选型</h3><p>简单的说，就是Docker和Kubernetes。Docker是容器技术的实现，Kubernetes主要提供了容器编排管理的功能。上一节中说到的大部分自动化功能，都是Kubernetes实现的。MAE中需要我们研发的主要是MAE API服务、Web UI还有CLI程序。除了这些，还有就是在MAE中实现一套最适合我们的<strong>对应用的抽象</strong>。这套抽象是非常重要的。Kubernetes的概念并不是所有人都可以理解的，也没有必要对使用者暴露最底层的概念。PaaS的用户是从是应用和服务这些逻辑上的概念去看待问题的。所以MAE就提供了针对应用和服务的抽象，并且和Kubernetes整合起来。</p>
-<h3 id="MAE的组成部分"><a href="#MAE的组成部分" class="headerlink" title="MAE的组成部分"></a>MAE的组成部分</h3><p><img src="http://wx2.sinaimg.cn/large/64c45edcly1fg0dnygziij212a0ue4e7.jpg" alt="mae parts"></p>
+<h3 id="MAE的组成部分"><a href="#MAE的组成部分" class="headerlink" title="MAE的组成部分"></a>MAE的组成部分</h3><p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0dnygziij212a0ue4e7.jpg" alt="mae parts"></p>
 <p>MAE的组成，从上到下，大致有三层：</p>
 <ul>
 <li><strong>MAE服务层</strong> MAE服务层是暴露给用户的一些服务。MAE API Server是MAE是中枢。负责和底层的集群通信，保存应用配置等等。MAE Web UI提供了一个Web界面，用户可以通过Web UI对MAE发出指令，查看监控数据。MAE CLI是一个命令行程序，提供了从命令行和API Server通信的渠道。</li>
@@ -398,7 +401,7 @@
 <li><strong>Kubernetes层</strong> Kubernetes这层就是底层的实现层了。包括了Service，Deployment和Pods。其中Service和Deployment在上层共同支撑了MAE服务。Pods则属于最底层的调度单元。在MAE层是完全不可见的。一个Pod由至少一个容器构成。</li>
 </ul>
 <h3 id="MAE的流量分发"><a href="#MAE的流量分发" class="headerlink" title="MAE的流量分发"></a>MAE的流量分发</h3><p>那么作为一个分布式系统，一个用户的请求究竟是经过怎样的路径，到达最底层的Kubernetes Pod的呢？</p>
-<p><img src="http://wx4.sinaimg.cn/large/64c45edcly1fg0etf4yg9j20ku0r4k1f.jpg" alt="mae request"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0etf4yg9j20ku0r4k1f.jpg" alt="mae request"></p>
 <p>首先DNS把域名解析到Kubernetes的Master节点的公网IP上，然后部署在Master节点上的Nginx入口服务接管，Nginx根据MAE应用设置的域名和URL规则，将这个请求转发到对应应用的某个服务上。Kubernetes的服务都是可以通过<code>&lt;Master内网IP&gt;:&lt;Service Port&gt;</code>来进行访问的。然后Kubernetes proxy用iptables规则，将请求转发到某个节点上的Pod。</p>
 <p>由于Kubernetes proxy提供了均衡负载，我们不用再操心如何分配流量到服务下属的多个Pod中的某一个这样的问题。今后可以做的优化是，实现Kubernetes Master节点的高可用，也就是同时部署多个Master节点。这样的话就需要在Master节点之上再实现一个均衡负载。</p>
 <h3 id="MAE的实现细节"><a href="#MAE的实现细节" class="headerlink" title="MAE的实现细节"></a>MAE的实现细节</h3><p>MAE做的抽象，一个是应用，应用之下是服务。对于这两个抽象，应该各自保存一些什么样的数据，这属于MAE的实现细节。</p>
@@ -407,10 +410,10 @@
 <p>因为服务是部署的最小单元，因此相对来说服务是MAE中比较核心的一个部分。MAE需要将数据库中保存的服务信息，自动转化为Kubernetes需要的<code>.yaml</code>文件。将数据库中保存的应用信息，自动转化为nginx的配置文件。这是实现上需要去考虑的一个问题。</p>
 <p>另外，现在还需要仔细考虑的一点，<strong>MAE在全局/应用/服务这几个层面分别需要哪些监控数据</strong>。</p>
 <h3 id="MAE时代的部署工作流"><a href="#MAE时代的部署工作流" class="headerlink" title="MAE时代的部署工作流"></a>MAE时代的部署工作流</h3><p>部署服务之前，首先我们要构建镜像（构建之前可以引入CI，测试通过才可以构建镜像）。给镜像打上版本号，然后发布到云端的镜像仓库（可以用阿里云/蜂巢/Daocloud）。之后我们就可以在MAE中为某个服务新建一次部署了，填上新的版本号，点击部署，就启动了一次部署了。得益于Kubernetes超强的部署能力，我们可以回滚、暂停、继续每一次部署。</p>
-<p><img src="http://wx1.sinaimg.cn/large/64c45edcly1fg0era6a66j214q0mmwoc.jpg" alt="mae deployment"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0era6a66j214q0mmwoc.jpg" alt="mae deployment"></p>
 <p>MAE的API Server把服务目前的配置转换为<code>.yaml</code>格式，向Kubernetes API Server发送请求。然后Kubernetes会进行相应的处理。和Service相关的就调整Service，和Deployment相关的就调整Deployment。最终服务更新到目标状态，部署完成。</p>
 <h3 id="MAE的物理节点组成"><a href="#MAE的物理节点组成" class="headerlink" title="MAE的物理节点组成"></a>MAE的物理节点组成</h3><p>MAE的逻辑组成已经介绍了，那MAE和具体的云主机之间是什么关系呢。请看下图：</p>
-<p><img src="http://wx3.sinaimg.cn/large/64c45edcly1fg0ftnkesej213a0o07g6.jpg" alt="mae nodes"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcly1fg0ftnkesej213a0o07g6.jpg" alt="mae nodes"></p>
 <p>图中的一个框对应一台云主机。其中Master节点目前只打算部署在一台机器上。今后会做高可用（具体要看kubeadm的支持情况，自己部署HA也是可以的，参见<a href="http://tonybai.com/2017/05/15/setup-a-ha-kubernetes-cluster-based-on-kubeadm-part1/" target="_blank" rel="noopener">这篇博客</a>）。Kubernetes Node是负载Pod调度的机器，也就是分布式系统主从节点中的Slave节点。Kubernetes的Pod可能会被调度到其中任意一台机器上。因此应用在物理上运行在哪个节点，在MAE中并没有太多的意义。</p>
 <p>MAE的Server在理论上会单独部署在一台服务器上，MAE Server如果出现问题，其实并不影响当前集群的正常运转。Kubernetes的Master节点才是真正负责调度和管理的，因此才会有做高可用的打算。</p>
 <h3 id="MAE时代的前端服务化"><a href="#MAE时代的前端服务化" class="headerlink" title="MAE时代的前端服务化"></a>MAE时代的前端服务化</h3><p>MAE要求一个应用由几个服务构成。这给了我们一个机会，去改进目前的前端代码部署流程。目前的前端代码是放在后端容器中部署的。每次部署需要后端工程师参与，或者使用配置复杂的Webhook。前端代码部署时需要重启后端容器，因此无法实现无副作用的前端部署。MAE架构下，我们将前端作为一个单独的服务。这个服务主要接受的是从Nginx入口服务转发而来的需要返回HTML的请求，也就是我们一般所说的View层，或者说同步路由层。技术上我们选用Nodejs来实现前端的服务。</p>
@@ -573,7 +576,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -584,7 +587,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

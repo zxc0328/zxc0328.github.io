@@ -104,12 +104,12 @@
 <meta property="og:site_name" content="Zindex&#39;s blog">
 <meta property="og:description" content="在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 Casbin 接入 Iris Web 框架。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
-<meta property="og:updated_time" content="2018-06-19T11:40:28.003Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
+<meta property="og:updated_time" content="2019-06-05T07:55:14.535Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Iris + Casbin 权限控制实战">
 <meta name="twitter:description" content="在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 Casbin 接入 Iris Web 框架。">
-<meta name="twitter:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1frlkp8fedzj20da0c3t91.jpg">
 
 
 
@@ -380,7 +380,7 @@
         <p>在木犀的 PaaS 云平台的设计中，需要有一个细粒度比较小的权限控制系统。不同用户对不同的资源，拥有不同的权限。土办法已经不管用了，我们需要更系统，更规范的权限控制系统。本文讲的就是如何将权限控制库 <a href="https://github.com/casbin/casbin" target="_blank" rel="noopener">Casbin</a> 接入 Iris Web 框架。</p>
 <a id="more"></a>
 <h3 id="Iris-中间件机制简介"><a href="#Iris-中间件机制简介" class="headerlink" title="Iris 中间件机制简介"></a>Iris 中间件机制简介</h3><p>Iris 这个框架是基于中间件的，和 Nodejs 的 Koa 和 Express 很像。所谓中间件机制，就是一个请求到达之后，会生成一个上下文信息，里面包含了这个请求的一些信息。然后我们依次调用中间件函数，把上下文对象作为参数传入。需要注意是中间件函数的调用是嵌套的，在中间件函数中我们可以调用 <code>ctx.Next()</code> 方法，进入下一个中间件函数。当最后一个中间件函数返回时，之前调用过的中间件会依次返回。这个数据流被形象的称为“洋葱模型”。</p>
-<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1frlkp8fedzj20da0c3t91.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1frlkp8fedzj20da0c3t91.jpg" alt=""></p>
 <p>一个典型的中间件是这样的：</p>
 <pre><code>func middleware(ctx iris.Context) {
    // get info from context
@@ -699,7 +699,7 @@ Enforcer.AddGroupingPolicy(&quot;alice&quot;, &quot;admin&quot;, &quot;app&quot;
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -710,7 +710,7 @@ Enforcer.AddGroupingPolicy(&quot;alice&quot;, &quot;admin&quot;, &quot;app&quot;
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

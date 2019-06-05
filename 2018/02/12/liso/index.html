@@ -104,13 +104,13 @@
 <meta property="og:site_name" content="Zindex&#39;s blog">
 <meta property="og:description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
-<meta property="og:image" content="https://wx2.sinaimg.cn/mw1024/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg">
-<meta property="og:updated_time" content="2018-06-19T11:34:44.088Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg">
+<meta property="og:updated_time" content="2019-06-05T07:54:26.778Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Liso源码阅读笔记">
 <meta name="twitter:description" content="本文介绍了CMU 15-441的课程项目Liso的一个实现。主要介绍了请求流程、Client状态机模型、Dynamic Buffer数据结构等等。SSL相关的部分没有涉及。">
-<meta name="twitter:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg">
 
 
 
@@ -434,9 +434,9 @@ p-&gt;state[i] = state;
 /* CGI */
 p-&gt;cgi_client[i] = clientfd;
 </code></pre><p>所以这个连接和普通的连接一样，都有<code>client_fd</code>属性，不同的是这个连接有一个<code>cgi_client</code>属性，指向CGI连接的文件描述符。所以在处理CGI请求的时候，一个连接在连接池中有客户端连接和CGI连接两个item。CGI连接的状态仅仅只是在<code>CGI_FOR_READ</code>和<code>CGI_FOR_WRITE</code>之间转换。在CGI连接可读，并被写到客户端之后，我们会从连接池中清除这个CGI的item。所以客户端连接和CGI连接的状态机模型应该分开讲述。</p>
-<h4 id="客户端连接状态机模型"><a href="#客户端连接状态机模型" class="headerlink" title="客户端连接状态机模型"></a>客户端连接状态机模型</h4><p><img src="https://wx1.sinaimg.cn/mw1024/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg" alt="static fsm"></p>
+<h4 id="客户端连接状态机模型"><a href="#客户端连接状态机模型" class="headerlink" title="客户端连接状态机模型"></a>客户端连接状态机模型</h4><p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1flgj3kbvxjj20vu0g0adc.jpg" alt="static fsm"></p>
 <p>客户端连接，如果是CGI连接，会比静态资源请求多一个<code>WAITING_FOR_CGI</code>的状态。这里我们需要注意的是，我们在读取一个连接的数据时，如果是一个POST请求，一般会分很多次。如果读取之后数据不够，这个连接的状态就会停留在<code>READY_FOR_READ</code>，等待下一次<code>select</code>循环。直到读取到足够的数据（根据Header里的<code>content-length</code>）之后，才把这个请求的状态转移到<code>READY_FOR_WRITE</code>。</p>
-<h4 id="CGI连接状态机模型"><a href="#CGI连接状态机模型" class="headerlink" title="CGI连接状态机模型"></a>CGI连接状态机模型</h4><p><img src="https://wx2.sinaimg.cn/mw1024/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg" alt="cgi fsm"></p>
+<h4 id="CGI连接状态机模型"><a href="#CGI连接状态机模型" class="headerlink" title="CGI连接状态机模型"></a>CGI连接状态机模型</h4><p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1flgj3k7yopj20uc0dwacw.jpg" alt="cgi fsm"></p>
 <h3 id="长连接"><a href="#长连接" class="headerlink" title="长连接"></a>长连接</h3><p>我们知道HTTP的Header中有一个Connection字段。如果这个字段的值为close，在<code>READY_FOR_WRITE</code>状态时，如果我们写完了当前请求所请求的数据，我们就关闭连接。如果这个字段的值为<code>keep-alive</code>，连接会经过<code>Persist</code>转移，重新进入<code>READY_FOR_WRITE</code>状态。</p>
 <p>在写完数据之后依然保持<code>READY_FOR_WRITE</code>状态，不关闭连接，这就是我们常说的HTTP<code>keep-alive</code>长连接。在这种情况下，server假定的是在未来的某个时间节点，这个客户端上还有数据可以读取，所以我们暂时不关闭连接。</p>
 <p>举例说一下HTTP长连接的用途：如果一个域下有多个资源需要请求，浏览器会复用同一个TCP连接。也就是说服务器可以在一个TCP连接上进行多次HTTP请求。这样有利于减少网络延迟和服务器的并发压力。</p>
@@ -613,7 +613,7 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -624,7 +624,7 @@ close(cgi_pool-&gt;executors[slot]-&gt;stdin_pipe[0]);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

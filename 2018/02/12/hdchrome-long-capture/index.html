@@ -104,12 +104,12 @@
 <meta property="og:site_name" content="Zindex&#39;s blog">
 <meta property="og:description" content="The problemRecently I had received complaint about my capture service not export complete image. It seems that this problem only occurs when the page’s is extremely long.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/huihuihui-h5/master/Screen%20Shot%202017-12-19%20at%2010.30.21%20AM.png">
-<meta property="og:updated_time" content="2018-06-19T11:41:58.206Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fmlvek2n5xj208y07aaah.jpg">
+<meta property="og:updated_time" content="2019-06-05T07:55:54.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Headless Chrome long image capture issue">
 <meta name="twitter:description" content="The problemRecently I had received complaint about my capture service not export complete image. It seems that this problem only occurs when the page’s is extremely long.">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/huihuihui-h5/master/Screen%20Shot%202017-12-19%20at%2010.30.21%20AM.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fmlvek2n5xj208y07aaah.jpg">
 
 
 
@@ -369,7 +369,7 @@
         <h3 id="The-problem"><a href="#The-problem" class="headerlink" title="The problem"></a>The problem</h3><p>Recently I had received complaint about my capture service not export complete image. It seems that this problem only occurs when the page’s is extremely long.</p>
 <a id="more"></a>
 <p>The broken image is like this:</p>
-<p><img src="https://raw.githubusercontent.com/zxc0328/huihuihui-h5/master/Screen%20Shot%202017-12-19%20at%2010.30.21%20AM.png" alt="broken"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fmlvek2n5xj208y07aaah.jpg" alt="broken"></p>
 <h3 id="Chromium’s-limit"><a href="#Chromium’s-limit" class="headerlink" title="Chromium’s limit"></a>Chromium’s limit</h3><p>So I Googled for the problem and I found <a href="https://github.com/GoogleChrome/puppeteer/issues/477" target="_blank" rel="noopener">a lot issues</a> on Github that target the same problem. When reading throught <a href="https://github.com/GoogleChrome/puppeteer/pull/937" target="_blank" rel="noopener">this issue</a>, I got the fact that this problem is caused by Chromium’s limit.</p>
 <p>Since normal server don’t have a GPU inside, Headless Chrome had to use software renderer, that is, using CPU to calculate the pixels. </p>
 <p>Chromium’s compositor has a maximum texture size when using software GL backend, this limit is 16384px. So large image will not be renderer completely.</p>
@@ -540,7 +540,7 @@ const maxScreenshotHeight = 7000;
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -551,7 +551,7 @@ const maxScreenshotHeight = 7000;
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

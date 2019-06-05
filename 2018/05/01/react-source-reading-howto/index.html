@@ -104,17 +104,17 @@
 <meta property="og:site_name" content="Zindex&#39;s blog">
 <meta property="og:description" content="目前网上有很多「XX源码分析」这样的文章，不过这些文章分析源码的范围有限，有时候讲的内容不是读者最关心的。同时我也注意到，源码是在不断更新的，文章里写的源码往往已经过时了。因为这些问题，很多同学都喜欢自己看源码，自己动手，丰衣足食。 这篇文章主要讲的是阅读大型的前端开源项目比如 React、Vue、Webpack、Babel 的源码时的一些技巧。目的是让大家在遇到需要阅读源码才能解决的问题时，可以">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fqw0buj08wj20go0aztie.jpg">
-<meta property="og:image" content="https://wx3.sinaimg.cn/mw1024/64c45edcgy1fqsdkkvpjtj21k00wmaka.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/large/64c45edcgy1fqv1g5muerj21jm14kqe3.jpg">
-<meta property="og:image" content="https://wx1.sinaimg.cn/mw1024/64c45edcgy1fqshma4atzj21js0ietdc.jpg">
-<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fqx8qcid0aj200i00q053.jpg">
-<meta property="og:image" content="http://wx2.sinaimg.cn/large/64c45edcgy1fqvtw441ytj20c60ukae9.jpg">
-<meta property="og:updated_time" content="2018-06-19T11:44:23.932Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqw0buj08wj20go0aztie.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqsdkkvpjtj21k00wmaka.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqv1g5muerj21jm14kqe3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqshma4atzj21js0ietdc.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqx8qcid0aj200i00q053.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqvtw441ytj20c60ukae9.jpg">
+<meta property="og:updated_time" content="2019-06-05T07:46:13.083Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何阅读大型前端开源项目的源码">
 <meta name="twitter:description" content="目前网上有很多「XX源码分析」这样的文章，不过这些文章分析源码的范围有限，有时候讲的内容不是读者最关心的。同时我也注意到，源码是在不断更新的，文章里写的源码往往已经过时了。因为这些问题，很多同学都喜欢自己看源码，自己动手，丰衣足食。 这篇文章主要讲的是阅读大型的前端开源项目比如 React、Vue、Webpack、Babel 的源码时的一些技巧。目的是让大家在遇到需要阅读源码才能解决的问题时，可以">
-<meta name="twitter:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fqw0buj08wj20go0aztie.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqw0buj08wj20go0aztie.jpg">
 
 
 
@@ -380,7 +380,7 @@
 <h3 id="看最新版的源码"><a href="#看最新版的源码" class="headerlink" title="看最新版的源码"></a>看最新版的源码</h3><p>之前看到一种说法，看源码要从项目的第一个 commit 开始看。如果是为了解决前文中对框架/工具产生的困惑，那自然要看当前项目中用到的框架/工具的版本。</p>
 <p>如果是为了学习源码，我也建议看最新的源码。因为一个项目是在不断迭代和重构的。不同版本之间可能是一次完全的重写。比如 Vue 2.x 和 React 16。重构导致了代码架构上的一些变化，Vue 2.x 引入了 Vritual DOM，Pull + Push 的数据变化检测方式让整个代码的结构变的更清晰了，所以 2.x 的代码其实比 1.x 的更容易阅读。React 16 重写了 Reconciler，引入了 fiber 这个概念，整个代码仓库结构也更清晰，所以更推荐阅读。</p>
 <h3 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h3><p>看源码怎么看，当然不能一把梭了。</p>
-<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fqw0buj08wj20go0aztie.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqw0buj08wj20go0aztie.jpg" alt=""></p>
 <p>看源码之前需要对项目的<strong>原理</strong>有一个基本的了解。所谓原理就是，这个项目有哪些组成部分，为了达到最终的产出，要经过哪几步流程。这些流程里，业界主流的方案有哪几种。</p>
 <p>比如前端 View 层框架，要渲染出 UI，组件要经过 mount、 render 等等步骤。数据驱动的前端框架，在 mounted 之后，就会进入一个循环，当用户交互触发组件数据变化时，会更新 UI。其中数据的检测方式又有分 Push 和 Pull 两种方案。渲染 UI 可以是全量的字符串模板替换，也可以是基于 Virtual DOM 的差量 DOM 更新。</p>
 <p>又比如前端的一些工具，Webpack 和 Babel 这些工具都是基于插件的。基本的工作流程就是读取文件，解析代码成 AST，调用插件去转换 AST，最后生成代码。要了解 Webpack 的原理，就要知道 Webpack 基于一个叫 <a href="https://github.com/webpack/tapable" target="_blank" rel="noopener">tapable</a> 的模块系统。</p>
@@ -396,12 +396,12 @@
 <p>你可以尝试着在项目的入口文件中加入一句 log，看看是不是可以在控制台/终端看到这句 log。如果可以的话，恭喜你，你现在可以随便把玩这个项目了！</p>
 <h3 id="理清目录结构"><a href="#理清目录结构" class="headerlink" title="理清目录结构"></a>理清目录结构</h3><p>在看具体的代码之前，我们需要理清项目的目录结构，这样我们才能更快的知道在哪里地方找相关功能的代码。</p>
 <p>我们看看 React 的目录结构。React 是一个 monorepo。也就是一个仓库里包含了多个子仓库。我们在 packages 目录下可以看到很多单独的 package：</p>
-<p><img src="https://wx3.sinaimg.cn/mw1024/64c45edcgy1fqsdkkvpjtj21k00wmaka.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqsdkkvpjtj21k00wmaka.jpg" alt=""></p>
 <p>在 React 16 之后，React 的代码分为 React Core，Renderer 和 Reconciler 三部分。这是因为 React 的设计让我们可以把负责映射数据到 UI 的 Reconciler 以及负责渲染 Vritual DOM 到各个终端的 Renderer 和 React Core 分开。React Core 包含了 React 的类定义和一些顶级 API。大部分的渲染和 View 层 diff 的逻辑都在 Reconciler 和 Renderer 中。</p>
 <p>Babel 也是一个 monorepo。Babel 的核心代码是 babel-core 这个 package，Babel 开放了接口，让我们可以自定义 Visitor，在AST转换时被调用。所以 Babel 的仓库中还包括了很多插件，真正实现语法转换的其实是这些插件，而不是 babel-core 本身。</p>
-<p><img src="http://wx4.sinaimg.cn/large/64c45edcgy1fqv1g5muerj21jm14kqe3.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqv1g5muerj21jm14kqe3.jpg" alt=""></p>
 <p>Vuejs 的代码比较典型，核心代码在 src 目录下，按功能模块划分。因为 Vue 也支持多平台渲染，所以把平台相关的代码都放到了 platform 文件夹下，core 文件夹中是 Vue 的核心代码，compiler 是 Vue 的模板编译器，把 HTML 风格的模板编译为 render function。</p>
-<p><img src="https://wx1.sinaimg.cn/mw1024/64c45edcgy1fqshma4atzj21js0ietdc.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqshma4atzj21js0ietdc.jpg" alt=""></p>
 <p>Webpack 和 Babel 一样，可以说都是基于插件的系统。Webpack 的主要源码在 lib 目录下，里面的 webpack.js 就是入口文件。</p>
 <p>上面说了四个项目的目录结构，那我们遇到一个新的开源项目，应该怎么了解它的目录结构呢？</p>
 <p>如果这个项目是一个 monorepo，首先我们要找到核心的那个 package，然后看里面的代码。</p>
@@ -422,9 +422,9 @@
   this.updater.enqueueSetState(this, partialState, callback, &#39;setState&#39;);
 };
 </code></pre><p>然后运行本地 React build 的 demo 页面，让组件触发 setState，我们就可以在 Devtool 里看到断点了。</p>
-<p>我们走进 this.updater.enqueueSetState 这个调用，就来到了 ReactFiberClassComponent 这个函数中的 enqueueSetState，这里调用了 enqueueUpdate 和 scheduleWork 两个函数，如果要深入 setState 之后的流程，我们只需要再点击 <img src="http://wx2.sinaimg.cn/large/64c45edcgy1fqx8qcid0aj200i00q053.jpg" alt=""> 走进这两个函数里看具体的代码就可以了。</p>
+<p>我们走进 this.updater.enqueueSetState 这个调用，就来到了 ReactFiberClassComponent 这个函数中的 enqueueSetState，这里调用了 enqueueUpdate 和 scheduleWork 两个函数，如果要深入 setState 之后的流程，我们只需要再点击 <img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqx8qcid0aj200i00q053.jpg" alt=""> 走进这两个函数里看具体的代码就可以了。</p>
 <p>如果想看 setState 之前发生了什么，我们只需要看 Devtool 右边的调用栈：</p>
-<p><img src="http://wx2.sinaimg.cn/large/64c45edcgy1fqvtw441ytj20c60ukae9.jpg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fqvtw441ytj20c60ukae9.jpg" alt=""></p>
 <p>点击每一个 frame 就可以跳到对应的函数中，并且恢复当时的上下文。</p>
 <p>结合一步一步的代码调试，我们可以看到框架的函数调用栈。对于每个重要的函数，我们可以在仓库里搜索到源码，进一步研究。</p>
 <p>Node 工具的调试方法也是相似的，我们可以在运行 node 命令时加上 –inspect 参数。具体可以看<a href="https://medium.com/@paul_irish/debugging-node-js-nightlies-with-chrome-devtools-7c4a1b95ae27" target="_blank" rel="noopener"> <em>Debugging Node.js with Chrome DevTools</em></a> 这篇博客。</p>
@@ -574,7 +574,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -585,7 +585,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

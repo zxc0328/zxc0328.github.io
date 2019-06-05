@@ -104,15 +104,15 @@
 <meta property="og:site_name" content="Zindex&#39;s blog">
 <meta property="og:description" content="TL;DR给太长不看同学的内容速览：  Headless是Chrome 59中加入的一种新的运行模式 Headless Chrome可以替代PhantomJS，并且更加强大 可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试 chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装 可以使用">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
-<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fi6if8s30uj203d023q2q.jpg">
-<meta property="og:image" content="http://wx1.sinaimg.cn/large/64c45edcgy1fi6i22r84kj21402hdjux.jpg">
-<meta property="og:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg">
-<meta property="og:updated_time" content="2018-06-19T11:29:09.193Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6if8s30uj203d023q2q.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6i22r84kj21402hdjux.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg">
+<meta property="og:updated_time" content="2019-06-05T08:15:18.790Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Headless Chrome截图服务实战">
 <meta name="twitter:description" content="TL;DR给太长不看同学的内容速览：  Headless是Chrome 59中加入的一种新的运行模式 Headless Chrome可以替代PhantomJS，并且更加强大 可以通过Chrome DevTools Protocol这个协议对远程的Chrome浏览器进行调试 chrome-remote-interface是Nodejs下Chrome DevTools Protocol的封装 可以使用">
-<meta name="twitter:image" content="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6ilca424j20ct08y0t3.jpg">
 
 
 
@@ -455,8 +455,8 @@ const capture = function (url) {
 <p>我们调用<code>CDP.New()</code>初始化一个新的Tab，等待Page加载完成，打开url，然后等待页面的加载事件触发之后执行回调，在回调里调用截屏API并且获取数据。最后我们关闭这个Tab。整个截图的流程就是这样。</p>
 <h3 id="Tip：截取整个页面"><a href="#Tip：截取整个页面" class="headerlink" title="Tip：截取整个页面"></a>Tip：截取整个页面</h3><p>我遇到的一个很大的问题就是，页面比较长，我希望截取的图片的高度就是页面的高度，也就是说我希望给整个页面截屏。</p>
 <p>一开始我截屏的结果是这样的：</p>
-<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fi6ilca424j20ct08y0t3.jpg" alt=""></p>
-<p>这和想象的不一样啊，下面的大半截都没有了 <img src="http://wx1.sinaimg.cn/large/64c45edcgy1fi6if8s30uj203d023q2q.jpg" alt="xiaohuangji"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6ilca424j20ct08y0t3.jpg" alt=""></p>
+<p>这和想象的不一样啊，下面的大半截都没有了 <img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6if8s30uj203d023q2q.jpg" alt="xiaohuangji"></p>
 <p>所以要如何截取整个页面的呢？我在chrome-remote-interface的wiki里看到了一篇<a href="https://medium.com/@dschnr/using-headless-chrome-as-an-automated-screenshot-tool-4b07dffba79a?1" target="_blank" rel="noopener">文章</a>。然而截屏的时候报错，说<code>Emulation.forceViewport</code>不存在.原来这个API已经在新版的Chrome中被废弃了。</p>
 <p>最终我找到了一篇<a href="https://jonathanmh.com/taking-full-page-screenshots-headless-chrome/" target="_blank" rel="noopener">神奇的博客</a>，完美的解决了我的问题，核心代码是这样的：</p>
 <pre><code>Page.loadEventFired(async() =&gt; {
@@ -495,7 +495,7 @@ const capture = function (url) {
 <p>Resizes the frame/viewport of the page. Note that this does not affect the frame’s container (e.g. browser window). Can be used to produce screenshots of the specified size.</p>
 </blockquote>
 <p>然后我们就可以愉快的给整个页面截屏了，比如这样：</p>
-<p><img src="http://wx1.sinaimg.cn/large/64c45edcgy1fi6i22r84kj21402hdjux.jpg" alt="full image"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6i22r84kj21402hdjux.jpg" alt="full image"></p>
 <h3 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h3><p>最后我们需要部署这两个服务，社区里有自制的Headless Chrome的Docker镜像，比如<a href="https://github.com/yukinying/chrome-headless-browser-docker" target="_blank" rel="noopener">yukinying/chrome-headless-browser-docker</a>。注意如果我们需要调整Chrome的默认window大小，可以修改<a href="https://github.com/yukinying/chrome-headless-browser-docker/blob/master/chrome/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>然后自行build镜像。</p>
 <pre><code>ENTRYPOINT [&quot;/usr/bin/dumb-init&quot;, &quot;--&quot;, \
             &quot;/usr/bin/google-chrome-unstable&quot;, \
@@ -517,7 +517,7 @@ EXPOSE 3000
 CMD [ &quot;node&quot;, &quot;index.js&quot; ]
 </code></pre><p>生产中应该用pm2这样的Process Manager来保持进程的运行。依赖也应该写在package.json里。</p>
 <p>服务之间的关系如下：</p>
-<p><img src="http://wx3.sinaimg.cn/large/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg" alt="service"></p>
+<p><img src="https://raw.githubusercontent.com/zxc0328/for-picgo/master/64c45edcgy1fi6j3jqs0cj20fj07saaf.jpg" alt="service"></p>
 <h3 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h3><p>如果大家想使用Headless Chrome的话，最好还是去浏览一下相关的文档，因为这些内容都属于比较新的东西，变化也比较快。本文主要是简单的介绍一下这方面实现的可行性。下面是相关的链接：</p>
 <ul>
 <li><a href="https://developers.google.com/web/updates/2017/04/headless-chrome" target="_blank" rel="noopener">Getting Started with Headless Chrome</a></li>
@@ -655,7 +655,7 @@ CMD [ &quot;node&quot;, &quot;index.js&quot; ]
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-count">49</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -666,7 +666,7 @@ CMD [ &quot;node&quot;, &quot;index.js&quot; ]
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
