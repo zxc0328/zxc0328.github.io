@@ -1,0 +1,28 @@
+baseURL: 'https://example.org/'
+languageCode: en-us
+title: Harold Zhao's blog
+theme: PaperMod
+params:
+  homeInfoParams:
+    Title: Hi there👋
+    Content: Welcome to my blog 🥺. I write about front end and other tech stuffs here.
+  mainSections:
+    - posts
+menu:
+  main:
+    - identifier: posts
+      name: Posts
+      url: /posts/
+      weight: 10
+    - identifier: posts-cn
+      name: 中文博客
+      url: /posts-cn/
+      weight: 15
+    - identifier: categories
+      name: Categories
+      url: /categories/
+      weight: 20
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 30
