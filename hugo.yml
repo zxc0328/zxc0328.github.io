@@ -3,6 +3,7 @@ languageCode: en-us
 title: Harold Zhao's blog
 theme: PaperMod
 params:
+  comments: true
   homeInfoParams:
     Title: Hi there👋
     Content: Welcome to my blog 🥺. I write about front end and other tech stuffs here.
@@ -26,3 +27,6 @@ menu:
       name: Tags
       url: /tags/
       weight: 30
+services:
+  disqus:
+    shortname: harold-zhaos-blog
