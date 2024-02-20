@@ -30,3 +30,7 @@ menu:
 services:
   disqus:
     shortname: harold-zhaos-blog
+markup:
+  goldmark:
+    renderer:
+       unsafe: true
